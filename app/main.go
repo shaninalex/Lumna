@@ -1,5 +1,3 @@
-// package main is the entry point for Lumna.
-
 package main
 
 import (
