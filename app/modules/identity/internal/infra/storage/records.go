@@ -28,7 +28,7 @@ func toDomainIdentity(rec identityRecord) *domain.Identity {
 	}
 }
 
-// identityRecord — shape in database
+// credentialRecord — shape in database
 type credentialRecord struct {
 	ID             int       `gorm:"primaryKey;autoIncrement"`
 	IdentityID     int       `gorm:"column:identity_id;not null"`
@@ -39,7 +39,7 @@ type credentialRecord struct {
 	CreatedAt      time.Time `gorm:"autoCreateTime"`
 }
 
-func (credentialRecord) TableName() string { return "identities" }
+func (credentialRecord) TableName() string { return "credentials" }
 
 func toDomainCredential(rec credentialRecord) *domain.Credential {
 	return &domain.Credential{

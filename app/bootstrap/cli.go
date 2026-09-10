@@ -2,11 +2,13 @@ package bootstrap
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/spf13/cobra"
 	"gitlab.com/shaninalex/lumna/app/adapters/cli"
 	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
 
@@ -14,10 +16,19 @@ func RunCLI(assets Assets) int {
 	root, cleanup := NewCLI(assets)
 	defer cleanup()
 
+	defer func() {
+		if r := recover(); r != nil {
+			err, ok := r.(*errs.Error)
+			if ok {
+				fmt.Printf("Error: %s - %s\nExit with: %d\n", err.Code, err.Message, err.Kind)
+				return
+			}
+			fmt.Println("Error: ", r)
+		}
+	}()
+
 	if err := root.Execute(); err != nil {
 		panic(err)
-		// TODO: get actual code from error
-		// return int(errs.KindInternal)
 	}
 	return 0
 }

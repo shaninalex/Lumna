@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"strings"
-	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -61,37 +60,36 @@ func (r *IdentityRepo) ByID(ctx context.Context, id int) (*domain.Identity, erro
 
 // Save implements [domain.IdentityRepo].
 func (r *IdentityRepo) Save(ctx context.Context, i *domain.Identity) error {
-	_, err := r.db.InTx(ctx, func(ctx context.Context) (any, error) {
-		record := identityRecord{
-			ID:        i.ID,
-			Email:     i.Email,
-			FullName:  i.FullName,
-			Active:    i.Active,
-			CreatedAt: time.Now(),
-		}
-		if err := r.db.From(ctx).Create(&record).Error; err != nil {
-			return nil, err
-		}
+	record := identityRecord{
+		ID:        i.ID,
+		Email:     i.Email,
+		FullName:  i.FullName,
+		Active:    i.Active,
+		CreatedAt: i.Created,
+	}
+	if err := r.db.From(ctx).Save(&record).Error; err != nil {
+		return err
+	}
 
-		return toDomainIdentity(record), nil
-	})
-
-	return err
+	i.ID = record.ID
+	return nil
 }
 
+// List implements [domain.IdentityRepo].
 func (r *IdentityRepo) List(ctx context.Context, limit, offset int) ([]*domain.Identity, error) {
-	rec, err := gorm.G[identityRecord](r.db.From(ctx)).Limit(limit).Offset(offset).Find(ctx)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domain.ErrNotFound
+	q := gorm.G[identityRecord](r.db.From(ctx)).Offset(offset)
+	if limit > 0 {
+		q = q.Limit(limit)
 	}
+
+	recs, err := q.Find(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	result := []*domain.Identity{}
-	for _, rec := range rec {
+	result := make([]*domain.Identity, 0, len(recs))
+	for _, rec := range recs {
 		result = append(result, toDomainIdentity(rec))
 	}
-
 	return result, nil
 }

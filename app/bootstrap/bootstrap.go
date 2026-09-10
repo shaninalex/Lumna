@@ -12,6 +12,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
+	pmw "gitlab.com/shaninalex/lumna/app/platform/middleware"
 )
 
 type App struct {
@@ -50,7 +51,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
 		// pmw.Recover(log),
 		// pmw.RequestLog(log),
 		// pmw.Authorize(guard), // permisions BEFORE open transactions
-		// pmw.Transaction(db),  // tx in ctx; commit/rollback
+		pmw.Transaction(db), // tx in ctx; commit/rollback
 		// pmw.Metrics(),
 	}
 
