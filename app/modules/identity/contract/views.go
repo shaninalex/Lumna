@@ -15,3 +15,9 @@ type SessionView struct {
 	RefreshToken string
 	ExpiresAt    time.Time
 }
+
+type ListProfilesView struct {
+	Profiles []ProfileView
+	Limit    int
+	Offset   int
+}

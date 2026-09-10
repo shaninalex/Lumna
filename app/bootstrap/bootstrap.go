@@ -2,12 +2,12 @@ package bootstrap
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/fs"
 	"log/slog"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
@@ -16,9 +16,21 @@ import (
 
 type App struct {
 	Core    *core.App
-	HTTP    *gin.Engine
 	Log     *slog.Logger
 	modules []core.Module
+
+	closers []func(context.Context) error
+}
+
+// Close clear resources. Required for CLI
+func (a *App) Close(ctx context.Context) error {
+	var errs []error
+	for i := len(a.closers) - 1; i >= 0; i-- { // backwards
+		if err := a.closers[i](ctx); err != nil {
+			errs = append(errs, err)
+		}
+	}
+	return errors.Join(errs...)
 }
 
 type Assets struct {
@@ -71,12 +83,8 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
 	c.Commands.Seal()
 	c.Queries.Seal()
 
-	// ======= Adapters =======
-	router := gin.Default()
-
 	return &App{
 		Core:    c,
-		HTTP:    router,
 		Log:     log,
 		modules: mods,
 	}, nil

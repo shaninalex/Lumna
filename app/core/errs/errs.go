@@ -66,6 +66,5 @@ func Validation(code, msg string) *Error {
 }
 
 func KindOf(err error) Kind {
-	// TODO: implement
 	return KindInternal
 }
