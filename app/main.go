@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"gitlab.com/shaninalex/lumna/app/cmd"
+	"gitlab.com/shaninalex/lumna/app/adapters/cli"
 )
 
 func main() {
-	os.Exit(cmd.Execute())
+	os.Exit(cli.Execute())
 }

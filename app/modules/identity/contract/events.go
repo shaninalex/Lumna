@@ -8,4 +8,6 @@ type Registered struct {
 	At         time.Time
 }
 
-func (Registered) EventName() string { return "identity.registered" }
+func (Registered) EventName() string {
+	return "identity.registered"
+}

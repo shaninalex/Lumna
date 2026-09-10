@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/models"
-	"gitlab.com/shaninalex/lumna/app/pkg/config"
+	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/services/persistence"
 	"gorm.io/gorm"
 )

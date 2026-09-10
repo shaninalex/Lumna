@@ -3,7 +3,7 @@ package setup
 import (
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/shaninalex/lumna/app/web/setup/templates"
+	"gitlab.com/shaninalex/lumna/app/adapters/webui/setup/templates"
 	"gorm.io/gorm"
 )
 

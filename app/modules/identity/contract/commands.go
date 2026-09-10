@@ -1,10 +1,15 @@
 package contract
 
-import "context"
+import (
+	"context"
+
+	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/bus"
+)
 
 type Register struct {
 	Email    string
-	Password Secret
+	Password bus.Secret
 	FullName string
 }
 
@@ -12,7 +17,7 @@ func (Register) Permission() (action string, scope int) { return "", 0 }
 
 type Authenticate struct {
 	Email    string
-	Password Secret
+	Password bus.Secret
 }
 
 func (Authenticate) Permission() (string, int) { return "", 0 }

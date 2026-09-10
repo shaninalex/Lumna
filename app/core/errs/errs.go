@@ -42,5 +42,3 @@ func Validation(code, msg string) *Error {
 func KindOf(err error) Kind {
 	panic("not implemented")
 }
-
-// через errors.As

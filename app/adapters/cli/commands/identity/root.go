@@ -1,8 +1,6 @@
 package identity
 
-import (
-	"github.com/spf13/cobra"
-)
+import "github.com/spf13/cobra"
 
 func NewIdentitiesRootCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -10,8 +8,6 @@ func NewIdentitiesRootCmd() *cobra.Command {
 		Short: "Manage identities",
 	}
 
-	cmd.AddCommand(NewIdentitiesCreateCmd())
-	cmd.AddCommand(NewIdentitiesDeleteCmd())
 	cmd.AddCommand(NewIdentitiesListCmd())
 
 	return cmd

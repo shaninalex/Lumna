@@ -9,9 +9,9 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
+	"gitlab.com/shaninalex/lumna/app/adapters/webui/setup/templates"
 	"gitlab.com/shaninalex/lumna/app/models"
 	"gitlab.com/shaninalex/lumna/app/services/auth"
-	"gitlab.com/shaninalex/lumna/app/web/setup/templates"
 	"gorm.io/gorm"
 )
 

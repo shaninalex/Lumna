@@ -12,6 +12,7 @@ type Interface interface {
 	String(param string) string
 	Bool(param string) bool
 	StringSlice(param string) []string
+	AuthSecret() string
 }
 
 type Environment string
@@ -34,6 +35,8 @@ func (s *Config) String(param string) string { return s.v.GetString(param) }
 func (s *Config) Bool(param string) bool { return s.v.GetBool(param) }
 
 func (s *Config) StringSlice(param string) []string { return s.v.GetStringSlice(param) }
+
+func (s *Config) AuthSecret() string { return s.v.GetString("secret_key") }
 
 func ReadConfig(path string) *Config {
 	s := &Config{
