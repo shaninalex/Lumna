@@ -13,6 +13,7 @@ type Interface interface {
 	Bool(param string) bool
 	StringSlice(param string) []string
 	AuthSecret() string
+	SetupEnabled() bool
 }
 
 type Environment string
@@ -37,6 +38,8 @@ func (s *Config) Bool(param string) bool { return s.v.GetBool(param) }
 func (s *Config) StringSlice(param string) []string { return s.v.GetStringSlice(param) }
 
 func (s *Config) AuthSecret() string { return s.v.GetString("secret_key") }
+
+func (s *Config) SetupEnabled() bool { return s.v.GetBool("serve.setup") }
 
 func ReadConfig(path string) *Config {
 	s := &Config{

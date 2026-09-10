@@ -6,11 +6,12 @@ import (
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
+	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/actor"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
 )
 
-func NewIdentitiesRootCmd(app Resolve) *cobra.Command {
+func NewIdentitiesRootCmd(app core.Resolve) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "identities",
 		Short: "Manage identities",
@@ -21,15 +22,14 @@ func NewIdentitiesRootCmd(app Resolve) *cobra.Command {
 	return cmd
 }
 
-func newIdentitiesListCmd(app Resolve) *cobra.Command {
+func newIdentitiesListCmd(app core.Resolve) *cobra.Command {
 	var limit, offset int
 
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List identities",
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			// The CLI acts on behalf of the system — there are no user
-			// permissions here.
+			// The CLI acts on behalf of the system — there are no user permissions here.
 			ctx := actor.With(cmd.Context(), actor.System())
 
 			page, err := contract.AskListProfiles(ctx, app(), contract.ListProfiles{

@@ -1,7 +1,7 @@
 package setup
 
 import (
-	"context"
+	"fmt"
 	"net/http"
 	"net/mail"
 	"strings"
@@ -9,7 +9,9 @@ import (
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/webui/setup/templates"
-	"gorm.io/gorm"
+	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
 )
 
 type SetupData struct {
@@ -50,7 +52,7 @@ func (d *SetupData) validate() map[string]string {
 	return errors
 }
 
-func handleSetupSubmit(db *gorm.DB) gin.HandlerFunc {
+func handleSetupSubmit(app core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data SetupData
 		if err := c.ShouldBind(&data); err != nil {
@@ -70,7 +72,12 @@ func handleSetupSubmit(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		if err := createAdminUser(c, db, data); err != nil {
+		_, err := contract.ExecRegister(c.Request.Context(), app(), contract.Register{
+			Email:    data.Email,
+			Password: bus.Secret(data.Password),
+			FullName: fmt.Sprintf("%s %s", data.FirstName, data.LastName),
+		})
+		if err != nil {
 			templ.Handler(templates.SetupView(templates.SetupViewData{
 				Errors: map[string]string{"general": err.Error()},
 			})).ServeHTTP(c.Writer, c.Request)
@@ -79,32 +86,4 @@ func handleSetupSubmit(db *gorm.DB) gin.HandlerFunc {
 
 		c.Redirect(http.StatusFound, "/")
 	}
-}
-
-func createAdminUser(ctx context.Context, db *gorm.DB, data SetupData) error {
-	// identity := &models.Identity{
-	// 	FullName: fmt.Sprintf("%s %s", data.FirstName, data.LastName),
-	// 	Email:    data.Email,
-	// 	Active:   true,
-	// }
-
-	// if err := db.WithContext(ctx).Create(identity).Error; err != nil {
-	// 	return err
-	// }
-	// pwdHash, err := auth.CreatePasswordHash(data.Password)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// credential := &models.Credential{
-	// 	IdentityID:   identity.ID,
-	// 	Provider:     "local",
-	// 	Email:        &identity.Email,
-	// 	PasswordHash: &pwdHash,
-	// }
-	// if err := db.WithContext(ctx).Create(credential).Error; err != nil {
-	// 	return err
-	// }
-
-	return nil
 }

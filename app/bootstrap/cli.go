@@ -51,12 +51,12 @@ func NewCLI(assets Assets) (*cobra.Command, func()) {
 	}
 
 	root.PersistentFlags().String("config", "", "Path to config yaml")
-	resolve := cli.Resolve(func() *core.App { return app.Core })
+	resolve := core.Resolve(func() *core.App { return app.Core })
 
 	root.AddCommand(
 		// Composition. 2 very different application entrypoints.
-		serveCmd(app),
-		migrateCmd(app),
+		serveCmd(resolve),
+		migrateCmd(resolve),
 
 		// regular cli commands
 		cli.NewIdentitiesRootCmd(resolve),
