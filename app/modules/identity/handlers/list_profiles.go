@@ -17,9 +17,24 @@ func NewListProfiles(
 	return &ListProfiles{i}
 }
 
-// Handle — implements bus.RegisterCommand.
-func (u *ListProfiles) Handle(ctx context.Context, cmd contract.Register) (contract.ListProfilesView, error) {
-	//var zero contract.ListProfilesView
-
-	return contract.ListProfilesView{}, nil
+func (u *ListProfiles) Handle(ctx context.Context, cmd contract.ListProfiles) (contract.ListProfilesView, error) {
+	var zero contract.ListProfilesView
+	identities, err := u.identities.List(ctx, cmd.Limit, cmd.Offset)
+	if err != nil {
+		return zero, err
+	}
+	profiles := make([]contract.ProfileView, len(identities))
+	for i := range identities {
+		profiles[i] = contract.ProfileView{
+			ID:       identities[i].ID,
+			Email:    identities[i].Email,
+			FullName: identities[i].FullName,
+			Active:   identities[i].Active,
+		}
+	}
+	return contract.ListProfilesView{
+		Profiles: profiles,
+		Limit:    cmd.Limit,
+		Offset:   cmd.Offset,
+	}, nil
 }

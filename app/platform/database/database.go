@@ -1,13 +1,16 @@
 package database
 
 import (
+	"context"
+	"errors"
+
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 type DB struct {
-	db *gorm.DB
+	gorm *gorm.DB
 }
 
 func New(cfg *config.Config) *DB {
@@ -21,17 +24,14 @@ func New(cfg *config.Config) *DB {
 	}
 
 	// ============ Enable foreign keys for SQLite ============
-	sqlDB, err := gdb.DB()
-	if err != nil {
-		panic(err)
-	}
-	if _, err := sqlDB.Exec("PRAGMA foreign_keys = ON"); err != nil {
+	result := gorm.WithResult()
+	if err := gorm.G[any](gdb, result).Exec(context.Background(), "PRAGMA foreign_keys = ON"); err != nil {
 		panic(err)
 	}
 	// ============= =============  ============= =============
 
 	return &DB{
-		db: gdb,
+		gorm: gdb,
 	}
 }
 
@@ -41,4 +41,26 @@ func connectionOptions(conf *config.Config) *gorm.Config {
 	//	opt.Logger = silentLogger()
 	//}
 	return opt
+}
+
+type txKey struct{}
+
+func (d *DB) From(ctx context.Context) *gorm.DB {
+	if tx, ok := ctx.Value(txKey{}).(*gorm.DB); ok {
+		return tx
+	}
+	return d.gorm.WithContext(ctx)
+}
+
+func (d *DB) InTx(ctx context.Context, fn func(context.Context) (any, error)) (any, error) {
+	if _, nested := ctx.Value(txKey{}).(*gorm.DB); nested {
+		return nil, errors.New("database: nested transaction")
+	}
+	var out any
+	err := d.gorm.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var e error
+		out, e = fn(context.WithValue(ctx, txKey{}, tx))
+		return e
+	})
+	return out, err
 }

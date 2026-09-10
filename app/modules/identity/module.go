@@ -57,7 +57,7 @@ func (m *Module) Reader() contract.Reader {
 	return m.reader
 }
 
-// Register — subscrube on commands/queries/events. With error awareness
+// Register — subscribe on commands/queries/events. With error awareness
 func (m *Module) Register(a *core.App) error {
 	return errors.Join(
 		bus.RegisterCommand(a.Commands, m.register.Handle),

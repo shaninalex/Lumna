@@ -44,7 +44,7 @@ func newIdentitiesListCmd(app Resolve) *cobra.Command {
 		},
 	}
 
-	cmd.PersistentFlags().Int("limit", 0, "Limit identities amount in list")
+	cmd.PersistentFlags().Int("limit", 10, "Limit identities amount in list")
 	cmd.PersistentFlags().Int("offset", 0, "Pagination offset")
 
 	return cmd
