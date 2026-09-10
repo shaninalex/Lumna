@@ -5,7 +5,9 @@ import (
 	"log/slog"
 
 	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
+	"gitlab.com/shaninalex/lumna/app/modules/identity/handlers"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/infra"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/infra/storage"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -22,27 +24,30 @@ type Deps struct {
 type Module struct {
 	deps Deps
 
-	identities *storage.IdentityRepo
-	// creds      *storage.CredentialRepo
-	reader *infra.Reader
+	identities  *storage.IdentityRepo
+	credentials *storage.CredentialRepo
+	reader      *infra.Reader
 
-	// register     *usecase.Register
-	// authenticate *usecase.Authenticate
-	// getProfile   *usecase.GetProfile
+	// commands
+	register *handlers.Register
+
+	// query
+	profileList *handlers.ListProfiles
 }
 
 func New(d Deps) *Module {
 	identities := storage.NewIdentityRepo(d.DB)
+	credentials := storage.NewCredentialRepo(d.DB)
+	hasher := infra.NewHasher()
 
 	return &Module{
-		deps:       d,
-		identities: identities,
-		// creds:      creds,
-		reader: infra.NewReader(identities),
+		deps:        d,
+		identities:  identities,
+		credentials: credentials,
+		reader:      infra.NewReader(identities),
 
-		// register:     usecase.NewRegister(identities, creds, hasher, d.Mailer, d.Clock),
-		// authenticate: usecase.NewAuthenticate(identities, creds, hasher, tokens, d.Clock),
-		// getProfile:   usecase.NewGetProfile(identities),
+		register:    handlers.NewRegister(identities, credentials, hasher, d.Mailer),
+		profileList: handlers.NewListProfiles(identities),
 	}
 }
 
@@ -52,11 +57,10 @@ func (m *Module) Reader() contract.Reader {
 	return m.reader
 }
 
-// Register — підписка на команди/запити/події. Помилки НЕ ковтаються.
+// Register — subscrube on commands/queries/events. With error awareness
 func (m *Module) Register(a *core.App) error {
 	return errors.Join(
-	// bus.RegisterCommand(a.Commands, m.register.Handle),
-	// bus.RegisterCommand(a.Commands, m.authenticate.Handle),
-	// bus.RegisterQuery(a.Queries, m.getProfile.Handle),
+		bus.RegisterCommand(a.Commands, m.register.Handle),
+		bus.RegisterQuery(a.Queries, m.profileList.Handle),
 	)
 }

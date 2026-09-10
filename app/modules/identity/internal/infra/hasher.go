@@ -7,6 +7,10 @@ import (
 type Hasher struct {
 }
 
+func NewHasher() *Hasher {
+	return &Hasher{}
+}
+
 func (s *Hasher) Hash(plain string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(plain), 12)
 	if err != nil {
