@@ -22,7 +22,7 @@ func NewEventBus() *EventBus {
 }
 
 func Subscribe[E Event](b *EventBus, h func(context.Context, E) error) error {
-	panic("not implemented")
+	panic("Subscribe: not implemented")
 }
 
 func (b *EventBus) Publish(ctx context.Context, e Event) error {
@@ -36,5 +36,5 @@ func (b *EventBus) Publish(ctx context.Context, e Event) error {
 }
 
 func safeCall(ctx context.Context, h Invoke, e Event) error {
-	panic("not implemented")
+	panic("safeCall: not implemented")
 }

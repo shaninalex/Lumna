@@ -1,13 +1,8 @@
 package setup
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"gitlab.com/shaninalex/lumna/app/models"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
-	"gitlab.com/shaninalex/lumna/app/services/persistence"
-	"gorm.io/gorm"
 )
 
 func RegisterSetupRoute(router *gin.Engine, conf *config.Config) {
@@ -15,24 +10,24 @@ func RegisterSetupRoute(router *gin.Engine, conf *config.Config) {
 		return
 	}
 
-	db := persistence.ProvideDB(conf)
-	router.GET("/setup", setupIdentityMiddleware(db), handleSetup(db))
-	router.POST("/setup", setupIdentityMiddleware(db), handleSetupSubmit(db))
+	// db := persistence.ProvideDB(conf)
+	// router.GET("/setup", setupIdentityMiddleware(db), handleSetup(db))
+	// router.POST("/setup", setupIdentityMiddleware(db), handleSetupSubmit(db))
+	router.GET("/setup", nil)
+	router.POST("/setup", nil)
 }
 
-func setupIdentityMiddleware(db *gorm.DB) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		var identities []*models.Identity
-		if err := db.WithContext(ctx).Find(&identities).Error; err != nil {
-			ctx.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
-
-		if len(identities) > 0 {
-			ctx.Redirect(http.StatusFound, "/")
-			return
-		}
-
-		ctx.Next()
-	}
-}
+// func setupIdentityMiddleware(db *gorm.DB) gin.HandlerFunc {
+// 	return func(ctx *gin.Context) {
+// 		var identities []*models.Identity
+// 		if err := db.WithContext(ctx).Find(&identities).Error; err != nil {
+// 			ctx.AbortWithStatus(http.StatusInternalServerError)
+// 			return
+// 		}
+// 		if len(identities) > 0 {
+// 			ctx.Redirect(http.StatusFound, "/")
+// 			return
+// 		}
+// 		ctx.Next()
+// 	}
+// }

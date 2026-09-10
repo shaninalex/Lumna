@@ -52,8 +52,6 @@ func ReadConfig(path string) *Config {
 	return s
 }
 
-func ProvideConfig(configPath string) func() *Config {
-	return func() *Config {
-		return ReadConfig(configPath)
-	}
+func ProvideConfig(configPath string) *Config {
+	return ReadConfig(configPath)
 }

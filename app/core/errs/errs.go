@@ -1,5 +1,7 @@
 package errs
 
+import "errors"
+
 type Kind uint8
 
 const (
@@ -24,21 +26,46 @@ func (e *Error) Error() string { return e.Message }
 func (e *Error) Unwrap() error { return e.cause }
 
 func NotFound(code, msg string) *Error {
-	panic("not implemented")
+	return &Error{
+		Kind:    KindNotFound,
+		Code:    code,
+		Message: msg,
+		Fields:  nil,
+		cause:   errors.New(msg),
+	}
 }
 
 func Conflict(code, msg string) *Error {
-	panic("not implemented")
+	return &Error{
+		Kind:    KindConflict,
+		Code:    code,
+		Message: msg,
+		Fields:  nil,
+		cause:   errors.New(msg),
+	}
 }
 
 func Forbidden(code, msg string) *Error {
-	panic("not implemented")
+	return &Error{
+		Kind:    KindForbidden,
+		Code:    code,
+		Message: msg,
+		Fields:  nil,
+		cause:   errors.New(msg),
+	}
 }
 
 func Validation(code, msg string) *Error {
-	panic("not implemented")
+	return &Error{
+		Kind:    KindValidation,
+		Code:    code,
+		Message: msg,
+		Fields:  nil,
+		cause:   errors.New(msg),
+	}
 }
 
 func KindOf(err error) Kind {
-	panic("not implemented")
+	// TODO: implement
+	return KindInternal
 }

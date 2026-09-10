@@ -2,7 +2,6 @@ package setup
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"net/mail"
 	"strings"
@@ -10,8 +9,6 @@ import (
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/webui/setup/templates"
-	"gitlab.com/shaninalex/lumna/app/models"
-	"gitlab.com/shaninalex/lumna/app/services/auth"
 	"gorm.io/gorm"
 )
 
@@ -85,29 +82,29 @@ func handleSetupSubmit(db *gorm.DB) gin.HandlerFunc {
 }
 
 func createAdminUser(ctx context.Context, db *gorm.DB, data SetupData) error {
-	identity := &models.Identity{
-		FullName: fmt.Sprintf("%s %s", data.FirstName, data.LastName),
-		Email:    data.Email,
-		Active:   true,
-	}
+	// identity := &models.Identity{
+	// 	FullName: fmt.Sprintf("%s %s", data.FirstName, data.LastName),
+	// 	Email:    data.Email,
+	// 	Active:   true,
+	// }
 
-	if err := db.WithContext(ctx).Create(identity).Error; err != nil {
-		return err
-	}
-	pwdHash, err := auth.CreatePasswordHash(data.Password)
-	if err != nil {
-		return err
-	}
+	// if err := db.WithContext(ctx).Create(identity).Error; err != nil {
+	// 	return err
+	// }
+	// pwdHash, err := auth.CreatePasswordHash(data.Password)
+	// if err != nil {
+	// 	return err
+	// }
 
-	credential := &models.Credential{
-		IdentityID:   identity.ID,
-		Provider:     "local",
-		Email:        &identity.Email,
-		PasswordHash: &pwdHash,
-	}
-	if err := db.WithContext(ctx).Create(credential).Error; err != nil {
-		return err
-	}
+	// credential := &models.Credential{
+	// 	IdentityID:   identity.ID,
+	// 	Provider:     "local",
+	// 	Email:        &identity.Email,
+	// 	PasswordHash: &pwdHash,
+	// }
+	// if err := db.WithContext(ctx).Create(credential).Error; err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

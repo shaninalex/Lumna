@@ -14,7 +14,6 @@ func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger) ([]core
 		DB:     db,
 		Log:    log,
 		Secret: []byte(cfg.AuthSecret()),
-		// Mailer: notify.Mailer(), // ← брідж
 	})
 
 	return []core.Module{

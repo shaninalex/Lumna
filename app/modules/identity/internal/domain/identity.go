@@ -15,13 +15,12 @@ type Identity struct {
 	Created  time.Time
 }
 
-// Hasher — порт. Argon2 живе в infra, домен знає лише інтерфейс.
 type Hasher interface {
 	Hash(plain string) (string, error)
 	Verify(hash, plain string) error
 }
 
-// NewIdentity тримає інваріант «email нормалізований і валідний».
+// NewIdentity - makes new identity
 func NewIdentity(email, fullName string, now time.Time) (*Identity, error) {
 	email = strings.ToLower(strings.TrimSpace(email))
 	if _, err := mail.ParseAddress(email); err != nil {
