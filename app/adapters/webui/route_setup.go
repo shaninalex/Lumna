@@ -1,4 +1,4 @@
-package setup
+package web
 
 import (
 	"fmt"
@@ -8,11 +8,38 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/shaninalex/lumna/app/adapters/webui/setup/templates"
+	"gitlab.com/shaninalex/lumna/app/adapters/webui/templates"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
 )
+
+func RegisterSetupRoute(app core.Resolve, router *gin.Engine) {
+	router.GET("/setup", setupIdentityMiddleware(app), handleSetup())
+	router.POST("/setup", setupIdentityMiddleware(app), handleSetupSubmit(app))
+}
+
+func handleSetup() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		templ.Handler(templates.SetupView(templates.SetupViewData{})).ServeHTTP(c.Writer, c.Request)
+	}
+}
+
+func setupIdentityMiddleware(app core.Resolve) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		response, err := contract.AskListProfiles(ctx, app(), contract.ListProfiles{Limit: 1, Offset: 0})
+		if err != nil {
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+
+		if len(response.Profiles) > 0 {
+			ctx.Redirect(http.StatusFound, "/")
+			return
+		}
+		ctx.Next()
+	}
+}
 
 type SetupData struct {
 	Email           string `form:"email"`

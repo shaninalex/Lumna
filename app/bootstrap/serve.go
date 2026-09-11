@@ -13,7 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
-	"gitlab.com/shaninalex/lumna/app/adapters/webui/setup"
+	"gitlab.com/shaninalex/lumna/app/adapters/webui"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
@@ -26,11 +26,15 @@ func serveCmd(resolve core.Resolve) *cobra.Command {
 			path, _ := cmd.Flags().GetString("config")
 			cfg := config.ReadConfig(path)
 
+			// router and routes registration
 			router := gin.Default()
 			if cfg.SetupEnabled() {
-				setup.RegisterSetupRoute(resolve, router)
+				web.RegisterSetupRoute(resolve, router)
 			}
 
+			web.RegisterDocsRoute(router)
+
+			// server
 			srv := &http.Server{
 				Addr:    fmt.Sprintf(":%d", cfg.Int("serve.port")),
 				Handler: router,

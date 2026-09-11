@@ -1,4 +1,4 @@
-package docs
+package web
 
 import (
 	"net/http"
