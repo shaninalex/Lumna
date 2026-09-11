@@ -68,3 +68,13 @@ func Validation(code, msg string) *Error {
 func KindOf(err error) Kind {
 	return KindInternal
 }
+
+func Unauthenticated(code, msg string) *Error {
+	return &Error{
+		Kind:    KindUnauthenticated,
+		Code:    code,
+		Message: msg,
+		Fields:  nil,
+		cause:   errors.New(msg),
+	}
+}

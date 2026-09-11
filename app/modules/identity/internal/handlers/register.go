@@ -24,7 +24,7 @@ func NewRegister(
 	return &Register{i, c, h, m}
 }
 
-// Handle — implements bus.RegisterCommand.
+// Handle - executes ExecRegister command
 func (u *Register) Handle(ctx context.Context, cmd contract.Register) (contract.ProfileView, error) {
 	var zero contract.ProfileView
 
@@ -37,7 +37,6 @@ func (u *Register) Handle(ctx context.Context, cmd contract.Register) (contract.
 		return zero, err
 	}
 
-	// Транзакція вже відкрита middleware — окремий tx-код тут не потрібен.
 	if err := u.identities.Save(ctx, ident); err != nil {
 		return zero, err
 	}

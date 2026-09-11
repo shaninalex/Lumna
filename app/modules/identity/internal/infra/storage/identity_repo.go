@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// IdentityRepo implements [domain.IdentityRepo].
 type IdentityRepo struct {
 	db *database.DB
 }
@@ -18,7 +19,6 @@ func NewIdentityRepo(db *database.DB) *IdentityRepo { return &IdentityRepo{db: d
 
 var _ domain.IdentityRepo = (*IdentityRepo)(nil)
 
-// ByEmail implements [domain.IdentityRepo].
 func (r *IdentityRepo) ByEmail(ctx context.Context, email string) (*domain.Identity, error) {
 	rec, err := gorm.G[identityRecord](r.db.From(ctx)).Where("email = ?", strings.ToLower(email)).First(ctx)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -30,7 +30,6 @@ func (r *IdentityRepo) ByEmail(ctx context.Context, email string) (*domain.Ident
 	return toDomainIdentity(rec), nil
 }
 
-// DisplayNames implements [domain.IdentityRepo].
 func (r *IdentityRepo) DisplayNames(ctx context.Context, ids []int) (map[int]string, error) {
 	if len(ids) == 0 {
 		return map[int]string{}, nil
@@ -46,7 +45,6 @@ func (r *IdentityRepo) DisplayNames(ctx context.Context, ids []int) (map[int]str
 	return out, nil
 }
 
-// ByID implements [domain.IdentityRepo].
 func (r *IdentityRepo) ByID(ctx context.Context, id int) (*domain.Identity, error) {
 	rec, err := gorm.G[identityRecord](r.db.From(ctx)).Where("id = ?", id).First(ctx)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -58,7 +56,6 @@ func (r *IdentityRepo) ByID(ctx context.Context, id int) (*domain.Identity, erro
 	return toDomainIdentity(rec), nil
 }
 
-// Save implements [domain.IdentityRepo].
 func (r *IdentityRepo) Save(ctx context.Context, i *domain.Identity) error {
 	record := identityRecord{
 		ID:        i.ID,
@@ -75,7 +72,6 @@ func (r *IdentityRepo) Save(ctx context.Context, i *domain.Identity) error {
 	return nil
 }
 
-// List implements [domain.IdentityRepo].
 func (r *IdentityRepo) List(ctx context.Context, limit, offset int) ([]*domain.Identity, error) {
 	q := gorm.G[identityRecord](r.db.From(ctx)).Offset(offset)
 	if limit > 0 {

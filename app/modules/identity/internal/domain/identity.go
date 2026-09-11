@@ -1,4 +1,3 @@
-// app/modules/identity/internal/domain/identity.go
 package domain
 
 import (

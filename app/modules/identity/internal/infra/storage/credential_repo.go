@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// CredentialRepo implements [domain.CredentialRepo].
 type CredentialRepo struct{ db *database.DB }
 
 func NewCredentialRepo(db *database.DB) *CredentialRepo {
@@ -17,9 +18,6 @@ func NewCredentialRepo(db *database.DB) *CredentialRepo {
 
 var _ domain.CredentialRepo = (*CredentialRepo)(nil)
 
-// Save implements [domain.CredentialRepo].
-//
-// No transaction here: the write chain owns it, From(ctx) hands it over.
 func (r *CredentialRepo) Save(ctx context.Context, c *domain.Credential) error {
 	record := credentialRecord{
 		ID:             c.ID,
@@ -38,7 +36,6 @@ func (r *CredentialRepo) Save(ctx context.Context, c *domain.Credential) error {
 	return nil
 }
 
-// ByIdentityAndProvider implements [domain.CredentialRepo].
 func (r *CredentialRepo) ByIdentityAndProvider(ctx context.Context, id int, p domain.Provider) (*domain.Credential, error) {
 	rec, err := gorm.G[credentialRecord](r.db.From(ctx)).
 		Where("identity_id = ? and provider = ?", id, string(p)).

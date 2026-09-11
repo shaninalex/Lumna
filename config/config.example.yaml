@@ -22,3 +22,8 @@ email:
   port: 587
   username: "email@example.com"
   password: "password"
+
+# token lifetimes in minutes (defaults: 15 / 43200)
+auth:
+  access_ttl: 15
+  refresh_ttl: 43200

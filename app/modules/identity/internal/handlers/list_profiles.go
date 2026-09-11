@@ -7,6 +7,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/domain"
 )
 
+// ListProfiles - AskListProfiles query
 type ListProfiles struct {
 	identities domain.IdentityRepo
 }
@@ -17,9 +18,9 @@ func NewListProfiles(
 	return &ListProfiles{i}
 }
 
-func (u *ListProfiles) Handle(ctx context.Context, cmd contract.ListProfiles) (contract.ListProfilesView, error) {
+func (u *ListProfiles) Handle(ctx context.Context, q contract.ListProfiles) (contract.ListProfilesView, error) {
 	var zero contract.ListProfilesView
-	identities, err := u.identities.List(ctx, cmd.Limit, cmd.Offset)
+	identities, err := u.identities.List(ctx, q.Limit, q.Offset)
 	if err != nil {
 		return zero, err
 	}
@@ -34,7 +35,8 @@ func (u *ListProfiles) Handle(ctx context.Context, cmd contract.ListProfiles) (c
 	}
 	return contract.ListProfilesView{
 		Profiles: profiles,
-		Limit:    cmd.Limit,
-		Offset:   cmd.Offset,
+		Limit:    q.Limit,
+		Offset:   q.Offset,
+		// add total?
 	}, nil
 }
