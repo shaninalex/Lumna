@@ -59,3 +59,38 @@ func (t *Tokens) HashRefresh(plain string) string {
 	sum := sha256.Sum256([]byte(plain))
 	return hex.EncodeToString(sum[:])
 }
+
+func (t *Tokens) keyFunc(token *jwt.Token) (any, error) {
+	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		return nil, fmt.Errorf("unexpected signing method")
+	}
+	return t.secret, nil
+}
+
+// ParseAccess validates the signature, issuer and expiry, and returns the
+// identity the token was issued for.
+func (t *Tokens) ParseAccess(accessToken string) (int, error) {
+	token, err := jwt.ParseWithClaims(
+		accessToken,
+		&jwt.RegisteredClaims{},
+		t.keyFunc,
+		jwt.WithValidMethods([]string{"HS256"}),
+		jwt.WithExpirationRequired(),
+		jwt.WithIssuer(t.issuer),
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	claims, ok := token.Claims.(*jwt.RegisteredClaims)
+	if !ok || !token.Valid {
+		return 0, fmt.Errorf("invalid token claims")
+	}
+
+	identityID, err := strconv.Atoi(claims.Subject)
+	if err != nil {
+		return 0, fmt.Errorf("invalid subject")
+	}
+
+	return identityID, nil
+}

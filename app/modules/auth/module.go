@@ -32,6 +32,9 @@ type Module struct {
 
 	refresh *storage.RefreshTokenRepo
 
+	// bridges — what this module exposes to adapters and other modules
+	verifier *infra.Verifier
+
 	// commands
 	emailLogin     *handlers.EmailLogin
 	refreshSession *handlers.RefreshSession
@@ -46,6 +49,8 @@ func New(d Deps) *Module {
 		deps:    d,
 		refresh: refresh,
 
+		verifier: infra.NewVerifier(tokens),
+
 		emailLogin:     handlers.NewEmailLogin(d.Identities, tokens, refresh),
 		refreshSession: handlers.NewRefreshSession(tokens, refresh),
 		logout:         handlers.NewLogout(tokens, refresh),
@@ -53,6 +58,9 @@ func New(d Deps) *Module {
 }
 
 func (m *Module) Name() string { return "auth" }
+
+// Verifier — bridge. Access-token verification for the HTTP middleware.
+func (m *Module) Verifier() contract.Verifier { return m.verifier }
 
 // Register — subscribe on commands/queries/events. With error awareness
 func (m *Module) Register(a *core.App) error {

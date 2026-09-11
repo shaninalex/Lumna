@@ -3,6 +3,11 @@ env: testing
 serve:
   port: 8000
   setup: true
+  # allow a SPA on another origin to call the API with cookies;
+  # empty = same-origin only
+  cors_origins: []
+  # false only for plain-http local development
+  secure_cookies: false
 
 database:
   type: "sqlite"

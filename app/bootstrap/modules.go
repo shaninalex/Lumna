@@ -7,6 +7,7 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/modules/auth"
+	authc "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/identity"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -18,10 +19,17 @@ const (
 	tokenIssuer       = "lumna"
 )
 
-func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger) ([]core.Module, error) {
+// Bridges are module-provided ports that an adapter needs directly, without
+// going through the bus. Only for work that is neither a command nor a query:
+// no transaction, no authorization, no persistence.
+type Bridges struct {
+	AuthVerifier authc.Verifier
+}
+
+func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger) ([]core.Module, Bridges, error) {
 	secret := []byte(cfg.AuthSecret())
 	if len(secret) == 0 {
-		return nil, errors.New("bootstrap: secret_key is empty, cannot sign tokens")
+		return nil, Bridges{}, errors.New("bootstrap: secret_key is empty, cannot sign tokens")
 	}
 
 	identityModule := identity.New(identity.Deps{
@@ -42,10 +50,16 @@ func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger) ([]core
 		Provisioner: identityModule.Provisioner(),
 	})
 
-	return []core.Module{
+	modules := []core.Module{
 		identityModule,
 		authModule,
-	}, nil
+	}
+
+	bridges := Bridges{
+		AuthVerifier: authModule.Verifier(),
+	}
+
+	return modules, bridges, nil
 }
 
 func minutesOr(minutes int, fallback time.Duration) time.Duration {

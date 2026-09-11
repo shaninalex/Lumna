@@ -55,7 +55,7 @@ func NewCLI(assets Assets) (*cobra.Command, func()) {
 
 	root.AddCommand(
 		// Composition. 2 very different application entrypoints.
-		serveCmd(resolve),
+		serveCmd(resolve, func() *App { return app }),
 		migrateCmd(resolve),
 
 		// regular cli commands

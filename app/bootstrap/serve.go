@@ -13,12 +13,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
+	"gitlab.com/shaninalex/lumna/app/adapters/api"
 	"gitlab.com/shaninalex/lumna/app/adapters/webui"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
 
-func serveCmd(resolve core.Resolve) *cobra.Command {
+// appRef resolves the application after PersistentPreRunE has built it.
+// serve is composition, not an adapter, so it is allowed to see the whole App
+// and hand module bridges to the adapters that need them.
+type appRef func() *App
+
+func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "serve",
 		Short: "Run http server",
@@ -33,6 +39,10 @@ func serveCmd(resolve core.Resolve) *cobra.Command {
 			}
 
 			web.RegisterDocsRoute(router)
+			api.RegisterApiRouter(resolve, app().Bridges.AuthVerifier, api.Config{
+				CORSOrigins:   cfg.CORSOrigins(),
+				SecureCookies: cfg.SecureCookies(),
+			}, router)
 
 			// server
 			srv := &http.Server{

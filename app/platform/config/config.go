@@ -14,6 +14,8 @@ type Interface interface {
 	StringSlice(param string) []string
 	AuthSecret() string
 	SetupEnabled() bool
+	CORSOrigins() []string
+	SecureCookies() bool
 }
 
 type Environment string
@@ -40,6 +42,13 @@ func (s *Config) StringSlice(param string) []string { return s.v.GetStringSlice(
 func (s *Config) AuthSecret() string { return s.v.GetString("secret_key") }
 
 func (s *Config) SetupEnabled() bool { return s.v.GetBool("serve.setup") }
+
+// CORSOrigins lists the origins allowed to call the API with credentials.
+// Empty means same-origin only, which is the default self-hosted setup.
+func (s *Config) CORSOrigins() []string { return s.v.GetStringSlice("serve.cors_origins") }
+
+// SecureCookies must be false only for plain-http local development.
+func (s *Config) SecureCookies() bool { return s.v.GetBool("serve.secure_cookies") }
 
 func ReadConfig(path string) *Config {
 	s := &Config{

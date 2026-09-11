@@ -65,8 +65,31 @@ func Validation(code, msg string) *Error {
 	}
 }
 
+// KindOf reports the classification of err, unwrapping as needed.
 func KindOf(err error) Kind {
+	var e *Error
+	if errors.As(err, &e) {
+		return e.Kind
+	}
 	return KindInternal
+}
+
+// CodeOf returns the machine-readable code of a classified error, or "".
+func CodeOf(err error) string {
+	var e *Error
+	if errors.As(err, &e) {
+		return e.Code
+	}
+	return ""
+}
+
+// FieldsOf returns per-field validation details, or nil.
+func FieldsOf(err error) map[string]string {
+	var e *Error
+	if errors.As(err, &e) {
+		return e.Fields
+	}
+	return nil
 }
 
 func Unauthenticated(code, msg string) *Error {

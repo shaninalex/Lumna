@@ -18,6 +18,7 @@ import (
 type App struct {
 	Core    *core.App
 	Log     *slog.Logger
+	Bridges Bridges
 	modules []core.Module
 
 	closers []func(context.Context) error
@@ -70,7 +71,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
 	}
 
 	// ======= Modules =======
-	mods, err := buildModules(cfg, db, log)
+	mods, bridges, err := buildModules(cfg, db, log)
 	if err != nil {
 		return nil, err
 	}
@@ -87,6 +88,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
 	return &App{
 		Core:    c,
 		Log:     log,
+		Bridges: bridges,
 		modules: mods,
 	}, nil
 }

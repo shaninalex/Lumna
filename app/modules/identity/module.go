@@ -37,6 +37,7 @@ type Module struct {
 
 	// query
 	profileList *handlers.ListProfiles
+	getProfile  *handlers.GetProfile
 }
 
 func New(d Deps) *Module {
@@ -55,6 +56,7 @@ func New(d Deps) *Module {
 
 		register:    handlers.NewRegister(identities, credentials, hasher, d.Mailer),
 		profileList: handlers.NewListProfiles(identities),
+		getProfile:  handlers.NewGetProfile(identities),
 	}
 }
 
@@ -80,5 +82,6 @@ func (m *Module) Register(a *core.App) error {
 	return errors.Join(
 		bus.RegisterCommand(a.Commands, m.register.Handle),
 		bus.RegisterQuery(a.Queries, m.profileList.Handle),
+		bus.RegisterQuery(a.Queries, m.getProfile.Handle),
 	)
 }

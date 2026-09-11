@@ -8,4 +8,5 @@ var (
 	ErrTokenExpired   = errs.Unauthenticated("AUT003", "refresh token has expired")
 	ErrTokenRevoked   = errs.Unauthenticated("AUT004", "refresh token has been revoked")
 	ErrEmptyToken     = errs.Validation("AUT005", "refresh token is empty")
+	ErrBadAccessToken = errs.Unauthenticated("AUT006", "access token is missing or invalid")
 )
