@@ -43,8 +43,6 @@ linters:
         godox:
             keywords:
                 - TEMP
-        goheader:
-            template: Copyright © 2025 Lumna. All rights reserved.
         maintidx:
             under: 12
         revive:
