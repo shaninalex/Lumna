@@ -9,28 +9,27 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
 )
 
-func NewBoardRootCmd(app core.Resolve) *cobra.Command {
+func NewScopeRootCmd(app core.Resolve) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "board",
-		Short: "Manage boards",
+		Use:   "scope",
+		Short: "Manage scopes",
 	}
 
-	cmd.AddCommand(newCreateBoardCmd(app))
+	cmd.AddCommand(newCreateScopeCmd(app))
 
 	return cmd
 }
 
-func newCreateBoardCmd(app core.Resolve) *cobra.Command {
+func newCreateScopeCmd(app core.Resolve) *cobra.Command {
 	var title string
 	var projectId int
 
 	cmd := &cobra.Command{
-		Use:   "create",
-		Short: "Create board",
+		Use:   "scope",
+		Short: "Create scope",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := actor.With(cmd.Context(), actor.System())
-
-			board, err := contract.ExecCreateBoard(ctx, app(), contract.CreateBoard{
+			scope, err := contract.ExecCreateScope(ctx, app(), contract.CreateScope{
 				Title:     title,
 				ProjectId: projectId,
 			})
@@ -40,17 +39,17 @@ func newCreateBoardCmd(app core.Resolve) *cobra.Command {
 			}
 
 			fmt.Printf(
-				"Board \"%s\" [id:%d]created.\n",
-				board.Title,
-				board.Id,
+				"Scope \"%s\" [id:%d]created.\n",
+				scope.Title,
+				scope.Id,
 			)
 
 			return nil
 		},
 	}
 
-	cmd.Flags().StringVar(&title, "title", "", "Board title")
-	cmd.Flags().IntVar(&projectId, "project-id", 0, "Board project id")
+	cmd.Flags().StringVar(&title, "title", "", "Scope title")
+	cmd.Flags().IntVar(&projectId, "project-id", 0, "Scope project id")
 
 	return cmd
 }

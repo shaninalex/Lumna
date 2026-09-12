@@ -14,6 +14,6 @@ type CreateScope struct {
 
 func (CreateScope) Permission() (action string, scope int) { return "", 0 }
 
-func ExecCreateBoard(ctx context.Context, a *core.App, cmd CreateScope) (CreateScopeView, error) {
+func ExecCreateScope(ctx context.Context, a *core.App, cmd CreateScope) (CreateScopeView, error) {
 	return bus.Execute[CreateScope, CreateScopeView](ctx, a.Commands, cmd)
 }

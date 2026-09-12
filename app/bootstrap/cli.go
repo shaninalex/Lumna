@@ -54,7 +54,7 @@ func NewCLI(assets Assets) (*cobra.Command, func()) {
 	resolve := core.Resolve(func() *core.App { return app.Core })
 
 	root.AddCommand(
-		// Composition. 2 very different application entrypoints.
+		// Composition. 2 very different application entrypoint.
 		serveCmd(resolve, func() *App { return app }),
 		migrateCmd(resolve),
 
@@ -62,7 +62,7 @@ func NewCLI(assets Assets) (*cobra.Command, func()) {
 		cli.NewIdentitiesRootCmd(resolve),
 		cli.NewWorkspaceRootCmd(resolve),
 		cli.NewProjectRootCmd(resolve),
-		cli.NewBoardRootCmd(resolve),
+		cli.NewScopeRootCmd(resolve),
 	)
 
 	cleanup := func() {
