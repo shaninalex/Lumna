@@ -16,5 +16,7 @@ test:
     - go version
 
   script:
+    - mkdir -p resources/assets
+    - touch resources/assets/placeholder
     - go mod tidy
     - go test -v -coverprofile cover.out ./app/...
