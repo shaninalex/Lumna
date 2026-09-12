@@ -10,12 +10,14 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/handlers"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/infra"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/infra/storage"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 )
 
 type Deps struct {
 	DB     *database.DB
 	Log    *slog.Logger
+	Clock  clock.Clock
 	Secret []byte
 
 	Mailer contract.Mailer // port, defined by other module
@@ -52,9 +54,9 @@ func New(d Deps) *Module {
 
 		reader:        infra.NewReader(identities),
 		authenticator: infra.NewAuthenticator(identities, credentials, hasher),
-		provisioner:   infra.NewProvisioner(identities),
+		provisioner:   infra.NewProvisioner(identities, d.Clock),
 
-		register:    handlers.NewRegister(identities, credentials, hasher, d.Mailer),
+		register:    handlers.NewRegister(identities, credentials, hasher, d.Mailer, d.Clock),
 		profileList: handlers.NewListProfiles(identities),
 		getProfile:  handlers.NewGetProfile(identities),
 	}

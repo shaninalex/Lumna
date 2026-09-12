@@ -17,7 +17,7 @@ func NewIdentityWorkspaceRepo(db *database.DB) *IdentityWorkspaceRepo {
 	return &IdentityWorkspaceRepo{db: db}
 }
 
-func (s IdentityWorkspaceRepo) Save(ctx context.Context, t *domain.IdentityWorkspace) error {
+func (s *IdentityWorkspaceRepo) Save(ctx context.Context, t *domain.IdentityWorkspace) error {
 	record := identityWorkspaceRecord{
 		IdentityID:  t.IdentityID,
 		WorkspaceID: t.WorkspaceID,
@@ -29,17 +29,17 @@ func (s IdentityWorkspaceRepo) Save(ctx context.Context, t *domain.IdentityWorks
 	return nil
 }
 
-func (s IdentityWorkspaceRepo) ByIdentityId(ctx context.Context, identityId int) ([]domain.IdentityWorkspace, error) {
+func (s *IdentityWorkspaceRepo) ByIdentityId(ctx context.Context, identityId int) ([]domain.IdentityWorkspace, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s IdentityWorkspaceRepo) ByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.IdentityWorkspace, error) {
+func (s *IdentityWorkspaceRepo) ByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.IdentityWorkspace, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s IdentityWorkspaceRepo) Delete(ctx context.Context, identityId, workspaceId int) (bool, error) {
+func (s *IdentityWorkspaceRepo) Delete(ctx context.Context, identityId, workspaceId int) (bool, error) {
 	//TODO implement me
 	panic("implement me")
 }

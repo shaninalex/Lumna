@@ -11,11 +11,11 @@ type Workspace struct {
 	UpdatedAt  *time.Time
 }
 
-func NewWorkspace(title, email string, active bool) *Workspace {
+func NewWorkspace(title, email string, active bool, now time.Time) *Workspace {
 	return &Workspace{
 		Title:      title,
 		OwnerEmail: email,
 		Active:     active,
-		CreatedAt:  time.Now(),
+		CreatedAt:  now,
 	}
 }

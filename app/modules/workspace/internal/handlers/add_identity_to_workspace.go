@@ -2,19 +2,21 @@ package handlers
 
 import (
 	"context"
-	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
 type AddIdentityToWorkspace struct {
-	repo domain.IdentityWorkspaceRepo
+	repo  domain.IdentityWorkspaceRepo
+	clock clock.Clock
 }
 
-func NewAddIdentityToWorkspace(repo domain.IdentityWorkspaceRepo) *AddIdentityToWorkspace {
+func NewAddIdentityToWorkspace(repo domain.IdentityWorkspaceRepo, clk clock.Clock) *AddIdentityToWorkspace {
 	return &AddIdentityToWorkspace{
-		repo: repo,
+		repo:  repo,
+		clock: clk,
 	}
 }
 
@@ -22,7 +24,7 @@ func (s *AddIdentityToWorkspace) Handle(ctx context.Context, cmd contract.AddIde
 	err := s.repo.Save(ctx, &domain.IdentityWorkspace{
 		IdentityID:  cmd.IdentityId,
 		WorkspaceID: cmd.WorkspaceId,
-		CreatedAt:   time.Now(),
+		CreatedAt:   s.clock.Now(),
 	})
 	if err != nil {
 		return false, err

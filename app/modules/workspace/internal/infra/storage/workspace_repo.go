@@ -17,9 +17,8 @@ var _ domain.WorkspaceRepo = (*WorkspaceRepo)(nil)
 
 func NewWorkspaceRepo(db *database.DB) *WorkspaceRepo { return &WorkspaceRepo{db: db} }
 
-func (s WorkspaceRepo) Save(ctx context.Context, t *domain.Workspace) error {
+func (s *WorkspaceRepo) Save(ctx context.Context, t *domain.Workspace) error {
 	record := workspaceRecord{
-		ID:         t.ID,
 		Title:      t.Title,
 		OwnerEmail: t.OwnerEmail,
 		Active:     t.Active,
@@ -33,7 +32,7 @@ func (s WorkspaceRepo) Save(ctx context.Context, t *domain.Workspace) error {
 	return nil
 }
 
-func (s WorkspaceRepo) ById(ctx context.Context, id int) (*domain.Workspace, error) {
+func (s *WorkspaceRepo) ById(ctx context.Context, id int) (*domain.Workspace, error) {
 	rec, err := gorm.G[workspaceRecord](s.db.From(ctx)).Where("id = ?", id).First(ctx)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, domain.ErrWorkspaceNotFound
@@ -45,7 +44,7 @@ func (s WorkspaceRepo) ById(ctx context.Context, id int) (*domain.Workspace, err
 	return &w, nil
 }
 
-func (s WorkspaceRepo) List(ctx context.Context) ([]domain.Workspace, error) {
+func (s *WorkspaceRepo) List(ctx context.Context) ([]domain.Workspace, error) {
 	rec, err := gorm.G[workspaceRecord](s.db.From(ctx)).Find(ctx)
 	if err != nil {
 		return nil, err

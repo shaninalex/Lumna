@@ -1,12 +1,12 @@
-package api
+package http
 
 import (
 	"github.com/gin-gonic/gin"
-	"gitlab.com/shaninalex/lumna/app/adapters/api/controllers/auth"
-	"gitlab.com/shaninalex/lumna/app/adapters/api/controllers/user"
-	"gitlab.com/shaninalex/lumna/app/adapters/api/controllers/workspace"
-	"gitlab.com/shaninalex/lumna/app/adapters/api/middlewares"
-	"gitlab.com/shaninalex/lumna/app/adapters/api/transport"
+	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/auth"
+	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/user"
+	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/workspace"
+	"gitlab.com/shaninalex/lumna/app/adapters/http/middlewares"
+	"gitlab.com/shaninalex/lumna/app/adapters/http/transport"
 	"gitlab.com/shaninalex/lumna/app/core"
 	authc "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 )

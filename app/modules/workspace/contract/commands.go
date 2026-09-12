@@ -30,3 +30,15 @@ func (AddIdentityToWorkspace) Permission() (action string, scope int) { return "
 func ExecAddIdentityToWorkspace(ctx context.Context, a *core.App, cmd AddIdentityToWorkspace) (bool, error) {
 	return bus.Execute[AddIdentityToWorkspace, bool](ctx, a.Commands, cmd)
 }
+
+type CreateProject struct {
+	Title       string
+	WorkspaceId int
+	OwnerId     int
+}
+
+func (CreateProject) Permission() (action string, scope int) { return "", 0 }
+
+func ExecCreateProject(ctx context.Context, a *core.App, cmd CreateProject) (ProjectView, error) {
+	return bus.Execute[CreateProject, ProjectView](ctx, a.Commands, cmd)
+}
