@@ -29,5 +29,5 @@ func RegisterApiRouter(resolve core.Resolve, verifier authc.Verifier, cfg Config
 	private := router.Group("/api/v1")
 	private.Use(middlewares.AuthMiddleware(verifier))
 	user.Register(resolve, private.Group("user"))
-	workspace.Register(resolve, private.Group("workspace"))
+	workspace.Register(resolve, private.Group("workspaces"))
 }

@@ -60,6 +60,7 @@ func NewCLI(assets Assets) (*cobra.Command, func()) {
 
 		// regular cli commands
 		cli.NewIdentitiesRootCmd(resolve),
+		cli.NewWorkspaceRootCmd(resolve),
 	)
 
 	cleanup := func() {

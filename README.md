@@ -9,7 +9,7 @@ hosted in your own vps with minimal setup and configuration.
 > is a dead end: I have minimal working functionality, yet there are already 
 > dozens of services and repositories that can—and do—import each other directly. 
 > A more flexible, modular architecture is needed to allow for smooth development. 
-> The previous version has been saved to the `archive` branch.
+> The previous version has been saved to the [archive](https://gitlab.com/shaninalex/lumna/-/tree/archive?ref_type=heads) branch.
 
 ### build
 
