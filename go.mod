@@ -1,6 +1,6 @@
 module gitlab.com/shaninalex/lumna
 
-go 1.25.11
+go 1.26.5
 
 require (
 	github.com/a-h/templ v0.3.1020
@@ -8,7 +8,6 @@ require (
 	github.com/go-playground/validator/v10 v10.30.1
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/golang-migrate/migrate/v4 v4.20.1
-	github.com/google/uuid v1.6.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
