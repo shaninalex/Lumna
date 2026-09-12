@@ -9,6 +9,8 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/auth"
 	authc "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/identity"
+	"gitlab.com/shaninalex/lumna/app/modules/tracker"
+	"gitlab.com/shaninalex/lumna/app/modules/workspace"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 )
@@ -20,8 +22,7 @@ const (
 )
 
 // Bridges are module-provided ports that an adapter needs directly, without
-// going through the bus. Only for work that is neither a command nor a query:
-// no transaction, no authorization, no persistence.
+// going through the bus. It's basically a "library call" without side effects
 type Bridges struct {
 	AuthVerifier authc.Verifier
 }
@@ -50,9 +51,14 @@ func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger) ([]core
 		Provisioner: identityModule.Provisioner(),
 	})
 
+	trackerModule := tracker.New(tracker.Deps{DB: db, Log: log})
+	workspaceModule := workspace.New(workspace.Deps{DB: db, Log: log})
+
 	modules := []core.Module{
 		identityModule,
 		authModule,
+		trackerModule,
+		workspaceModule,
 	}
 
 	bridges := Bridges{
