@@ -11,6 +11,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/identity"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 )
@@ -27,7 +28,7 @@ type Bridges struct {
 	AuthVerifier authc.Verifier
 }
 
-func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger) ([]core.Module, Bridges, error) {
+func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger, clk clock.Clock) ([]core.Module, Bridges, error) {
 	secret := []byte(cfg.AuthSecret())
 	if len(secret) == 0 {
 		return nil, Bridges{}, errors.New("bootstrap: secret_key is empty, cannot sign tokens")
@@ -36,12 +37,14 @@ func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger) ([]core
 	identityModule := identity.New(identity.Deps{
 		DB:     db,
 		Log:    log,
+		Clock:  clk,
 		Secret: secret,
 	})
 
 	authModule := auth.New(auth.Deps{
 		DB:         db,
 		Log:        log,
+		Clock:      clk,
 		Secret:     secret,
 		AccessTTL:  minutesOr(cfg.Int("auth.access_ttl"), defaultAccessTTL),
 		RefreshTTL: minutesOr(cfg.Int("auth.refresh_ttl"), defaultRefreshTTL),
@@ -52,7 +55,7 @@ func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger) ([]core
 	})
 
 	trackerModule := tracker.New(tracker.Deps{DB: db, Log: log})
-	workspaceModule := workspace.New(workspace.Deps{DB: db, Log: log})
+	workspaceModule := workspace.New(workspace.Deps{DB: db, Log: log, Clock: clk})
 
 	modules := []core.Module{
 		identityModule,

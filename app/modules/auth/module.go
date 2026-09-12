@@ -11,12 +11,14 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/handlers"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/infra"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/infra/storage"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 )
 
 type Deps struct {
 	DB     *database.DB
 	Log    *slog.Logger
+	Clock  clock.Clock
 	Secret []byte
 
 	AccessTTL  time.Duration
@@ -51,9 +53,9 @@ func New(d Deps) *Module {
 
 		verifier: infra.NewVerifier(tokens),
 
-		emailLogin:     handlers.NewEmailLogin(d.Identities, tokens, refresh),
-		refreshSession: handlers.NewRefreshSession(tokens, refresh),
-		logout:         handlers.NewLogout(tokens, refresh),
+		emailLogin:     handlers.NewEmailLogin(d.Identities, tokens, refresh, d.Clock),
+		refreshSession: handlers.NewRefreshSession(tokens, refresh, d.Clock),
+		logout:         handlers.NewLogout(tokens, refresh, d.Clock),
 	}
 }
 

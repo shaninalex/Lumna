@@ -8,12 +8,14 @@ import (
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/handlers"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/infra/storage"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 )
 
 type Deps struct {
-	DB  *database.DB
-	Log *slog.Logger
+	DB    *database.DB
+	Log   *slog.Logger
+	Clock clock.Clock
 }
 
 type Module struct {
@@ -41,9 +43,9 @@ func New(d Deps) *Module {
 
 		workspaceRepo:          workspaceRepo,
 		identityWorkspaceRepo:  identityWorkspaceRepo,
-		createWorkspace:        handlers.NewCreateWorkspace(workspaceRepo),
-		addIdentityToWorkspace: handlers.NewAddIdentityToWorkspace(identityWorkspaceRepo),
-		createProject:          handlers.NewCreateProject(projectRepo),
+		createWorkspace:        handlers.NewCreateWorkspace(workspaceRepo, d.Clock),
+		addIdentityToWorkspace: handlers.NewAddIdentityToWorkspace(identityWorkspaceRepo, d.Clock),
+		createProject:          handlers.NewCreateProject(projectRepo, d.Clock),
 	}
 }
 

@@ -3,19 +3,20 @@ package handlers
 import (
 	"context"
 	"errors"
-	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
 type Logout struct {
 	tokens  domain.Tokens
 	refresh domain.RefreshTokenRepo
+	clock   clock.Clock
 }
 
-func NewLogout(t domain.Tokens, r domain.RefreshTokenRepo) *Logout {
-	return &Logout{tokens: t, refresh: r}
+func NewLogout(t domain.Tokens, r domain.RefreshTokenRepo, clk clock.Clock) *Logout {
+	return &Logout{tokens: t, refresh: r, clock: clk}
 }
 
 // Handle — implements contract.Logout
@@ -33,7 +34,7 @@ func (u *Logout) Handle(ctx context.Context, cmd contract.Logout) (contract.Logo
 		return contract.LogoutView{}, err
 	}
 
-	if err := stored.Usable(time.Now()); err != nil {
+	if err := stored.Usable(u.clock.Now()); err != nil {
 		return contract.LogoutView{Revoked: false}, nil
 	}
 

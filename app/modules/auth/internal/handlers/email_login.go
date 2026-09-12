@@ -6,20 +6,23 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
 type EmailLogin struct {
 	identities contract.IdentityAuthenticator // port: implemented by another module
 	tokens     domain.Tokens
 	refresh    domain.RefreshTokenRepo
+	clock      clock.Clock
 }
 
 func NewEmailLogin(
 	i contract.IdentityAuthenticator,
 	t domain.Tokens,
 	r domain.RefreshTokenRepo,
+	clk clock.Clock,
 ) *EmailLogin {
-	return &EmailLogin{identities: i, tokens: t, refresh: r}
+	return &EmailLogin{identities: i, tokens: t, refresh: r, clock: clk}
 }
 
 // Handle — implements bus.RegisterCommand.
@@ -33,7 +36,7 @@ func (u *EmailLogin) Handle(ctx context.Context, cmd contract.EmailLogin) (contr
 		return zero, err
 	}
 
-	return issueSession(ctx, u.tokens, u.refresh, identityID, time.Now())
+	return issueSession(ctx, u.tokens, u.refresh, identityID, u.clock.Now())
 }
 
 // issueSession mints an access/refresh pair and stores the refresh half.

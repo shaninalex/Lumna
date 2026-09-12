@@ -10,6 +10,7 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 	pmw "gitlab.com/shaninalex/lumna/app/platform/middleware"
@@ -18,6 +19,7 @@ import (
 type App struct {
 	Core    *core.App
 	Log     *slog.Logger
+	Clock   clock.Clock
 	Bridges Bridges
 	modules []core.Module
 
@@ -43,9 +45,10 @@ type Assets struct {
 }
 
 func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
-	// ======= Platform (logger, db...) =======
+	// ======= Platform (logger, db, clock...) =======
 	log := slog.New(slog.NewTextHandler(os.Stderr, nil))
 	db := database.New(cfg)
+	clk := clock.System()
 
 	// ======= Core =======
 	write := []bus.Middleware{
@@ -71,7 +74,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
 	}
 
 	// ======= Modules =======
-	mods, bridges, err := buildModules(cfg, db, log)
+	mods, bridges, err := buildModules(cfg, db, log, clk)
 	if err != nil {
 		return nil, err
 	}
@@ -88,6 +91,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
 	return &App{
 		Core:    c,
 		Log:     log,
+		Clock:   clk,
 		Bridges: bridges,
 		modules: mods,
 	}, nil

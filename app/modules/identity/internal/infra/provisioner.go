@@ -3,9 +3,9 @@ package infra
 import (
 	"context"
 	"errors"
-	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
 // Provisioner implements contract.Provisioner: the port another module uses
@@ -18,10 +18,11 @@ import (
 // either module knowing about the other's transaction.
 type Provisioner struct {
 	identities domain.IdentityRepo
+	clock      clock.Clock
 }
 
-func NewProvisioner(i domain.IdentityRepo) *Provisioner {
-	return &Provisioner{identities: i}
+func NewProvisioner(i domain.IdentityRepo, clk clock.Clock) *Provisioner {
+	return &Provisioner{identities: i, clock: clk}
 }
 
 // EnsureIdentityByEmail returns the id of an existing identity, or creates one.
@@ -34,7 +35,7 @@ func (p *Provisioner) EnsureIdentityByEmail(ctx context.Context, email, fullName
 		return 0, err
 	}
 
-	ident, err = domain.NewIdentity(email, fullName, time.Now())
+	ident, err = domain.NewIdentity(email, fullName, p.clock.Now())
 	if err != nil {
 		return 0, err
 	}

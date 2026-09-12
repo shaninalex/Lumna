@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"context"
-	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
 type Register struct {
@@ -13,6 +13,7 @@ type Register struct {
 	creds      domain.CredentialRepo
 	hasher     domain.Hasher
 	mailer     contract.Mailer
+	clock      clock.Clock
 }
 
 func NewRegister(
@@ -20,8 +21,9 @@ func NewRegister(
 	c domain.CredentialRepo,
 	h domain.Hasher,
 	m contract.Mailer,
+	clk clock.Clock,
 ) *Register {
-	return &Register{i, c, h, m}
+	return &Register{i, c, h, m, clk}
 }
 
 // Handle - executes ExecRegister command
@@ -32,7 +34,7 @@ func (u *Register) Handle(ctx context.Context, cmd contract.Register) (contract.
 		return zero, domain.ErrEmailTaken
 	}
 
-	ident, err := domain.NewIdentity(cmd.Email, cmd.FullName, time.Now())
+	ident, err := domain.NewIdentity(cmd.Email, cmd.FullName, u.clock.Now())
 	if err != nil {
 		return zero, err
 	}

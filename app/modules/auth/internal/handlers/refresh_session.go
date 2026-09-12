@@ -2,19 +2,20 @@ package handlers
 
 import (
 	"context"
-	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
 type RefreshSession struct {
 	tokens  domain.Tokens
 	refresh domain.RefreshTokenRepo
+	clock   clock.Clock
 }
 
-func NewRefreshSession(t domain.Tokens, r domain.RefreshTokenRepo) *RefreshSession {
-	return &RefreshSession{tokens: t, refresh: r}
+func NewRefreshSession(t domain.Tokens, r domain.RefreshTokenRepo, clk clock.Clock) *RefreshSession {
+	return &RefreshSession{tokens: t, refresh: r, clock: clk}
 }
 
 // Handle — implements contract.RefreshSession.
@@ -31,7 +32,7 @@ func (u *RefreshSession) Handle(ctx context.Context, cmd contract.RefreshSession
 		return zero, err
 	}
 
-	now := time.Now()
+	now := u.clock.Now()
 	if err := stored.Usable(now); err != nil {
 		return zero, err
 	}
