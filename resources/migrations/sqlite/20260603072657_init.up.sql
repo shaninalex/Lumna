@@ -96,10 +96,12 @@ CREATE TABLE workspaces
     active      numeric,
     owner_email text     NULL,
     created_at  datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at  datetime NULL
+    updated_at  datetime NULL,
+
+    CONSTRAINT workspace_title_unique UNIQUE (owner_email, title)
 );
 
-CREATE TABLE identity_workspaces 
+CREATE TABLE identity_workspaces
 (
     identity_id     INTEGER NOT NULL,
     workspace_id    INTEGER NOT NULL,
@@ -154,7 +156,7 @@ CREATE TABLE projects
     FOREIGN KEY (owner_id) REFERENCES identities (id) ON DELETE SET NULL
 );
 
-CREATE TABLE boards 
+CREATE TABLE boards
 (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     title       TEXT    NOT NULL,
@@ -205,7 +207,7 @@ CREATE TABLE task_owners
     FOREIGN KEY (user_id) REFERENCES identities (id) ON DELETE CASCADE
 );
 
-CREATE TABLE task_assignees 
+CREATE TABLE task_assignees
 (
     task_id     INTEGER NOT NULL,
     user_id     INTEGER NOT NULL,
@@ -241,4 +243,4 @@ CREATE TABLE entity_events
     FOREIGN KEY (identity_id) REFERENCES identities (id) ON DELETE SET NULL
 );
 
-CREATE INDEX idx_board_tasks_layout ON board_tasks (board_id, column_id, position); 
+CREATE INDEX idx_board_tasks_layout ON board_tasks (board_id, column_id, position);
