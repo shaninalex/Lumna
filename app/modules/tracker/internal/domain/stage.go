@@ -14,7 +14,6 @@ const (
 )
 
 // Stage represents a specific step or phase in the work lifecycle within a Scope.
-// Examples: "Referencing", "Planning", "In Review", "Deployed".
 type Stage struct {
 	ID          int
 	ScopeID     int
@@ -22,8 +21,7 @@ type Stage struct {
 	Description string
 	Category    StageCategory
 
-	// Position defines the stage's order in the workflow (e.g., 1 -> Research, 2 -> Progress, 3 -> Done).
-	// float64 is used to facilitate reordering (Fractional Indexing / Lexorank).
+	// Position - within the workflow. Using float64 solves the issue of mass updates.
 	Position float64
 
 	// Work In Progress limit
