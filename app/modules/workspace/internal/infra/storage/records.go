@@ -38,7 +38,7 @@ func (identityWorkspaceRecord) TableName() string { return "identity_workspaces"
 
 type projectRecord struct {
 	ID          int        `gorm:"primaryKey;autoIncrement"`
-	Title       string     `gorm:"column:title;unique;not null"`
+	Title       string     `gorm:"column:title;not null"`
 	WorkspaceId int        `gorm:"column:workspace_id;not null"`
 	OwnerId     int        `gorm:"column:owner_id;not null"`
 	Meta        *string    `gorm:"column:meta"`

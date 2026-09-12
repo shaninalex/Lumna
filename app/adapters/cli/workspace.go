@@ -16,7 +16,38 @@ func NewWorkspaceRootCmd(app core.Resolve) *cobra.Command {
 	}
 
 	cmd.AddCommand(newCreateWorkspaceCmd(app))
+	cmd.AddCommand(newAddIdentityToWorkspaceCmd(app))
 
+	return cmd
+}
+
+func newAddIdentityToWorkspaceCmd(app core.Resolve) *cobra.Command {
+	var identityId, workspaceId int
+
+	cmd := &cobra.Command{
+		Use:   "add_member",
+		Short: "Create workspace",
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			ctx := actor.With(cmd.Context(), actor.System())
+			ok, err := contract.ExecAddIdentityToWorkspace(ctx, app(), contract.AddIdentityToWorkspace{
+				IdentityId:  identityId,
+				WorkspaceId: workspaceId,
+			})
+			if err != nil {
+				return err
+			}
+			if !ok {
+				return FailedToAddIdentityToWorkspaceError
+			}
+
+			fmt.Printf("Identity [%d] added to workspace [%d]\n", identityId, workspaceId)
+
+			return nil
+		},
+	}
+
+	cmd.Flags().IntVar(&identityId, "identity-id", 0, "Identity Id")
+	cmd.Flags().IntVar(&workspaceId, "workspace-id", 0, "Workspace Id")
 	return cmd
 }
 

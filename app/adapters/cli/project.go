@@ -44,9 +44,9 @@ func newCreateProjectCmd(app core.Resolve) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&title, "title", "", "Workspace title")
-	cmd.Flags().IntVar(&ownerId, "owner-id", 0, "Workspace Id belongs to")
-	cmd.Flags().IntVar(&workspaceId, "workspace-id", 0, "Workspace Id belongs to")
+	cmd.Flags().StringVar(&title, "title", "", "Project title")
+	cmd.Flags().IntVar(&ownerId, "owner-id", 0, "Project owner id")
+	cmd.Flags().IntVar(&workspaceId, "workspace-id", 0, "Project id belongs to")
 
 	return cmd
 }

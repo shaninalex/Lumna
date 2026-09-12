@@ -15,7 +15,7 @@ type APIResponse[T any] struct {
 	Errors []ApiError `json:"errors,omitempty"`
 }
 
-// NewAPIResponse - new api response.
+// NewAPIResponse - new http response.
 func NewAPIResponse[T any](data T) *APIResponse[T] {
 	return &APIResponse[T]{
 		Status: true,

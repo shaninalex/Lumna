@@ -24,7 +24,7 @@ export function apiInterceptor(
 
     return next(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
-            if (error.status === 401 && !authReq.url.includes('/api/v1/auth/refresh')) {
+            if (error.status === 401 && !authReq.url.includes('/http/v1/auth/refresh')) {
                 return handle401(authReq, next, http);
             }
 

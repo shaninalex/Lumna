@@ -18,7 +18,7 @@ func NewProjectRepo(db *database.DB) *ProjectRepo {
 	return &ProjectRepo{db: db}
 }
 
-func (s ProjectRepo) Save(ctx context.Context, t *domain.Project) error {
+func (s *ProjectRepo) Save(ctx context.Context, t *domain.Project) error {
 	record := projectRecord{
 		Title:       t.Title,
 		WorkspaceId: t.WorkspaceId,
@@ -34,7 +34,7 @@ func (s ProjectRepo) Save(ctx context.Context, t *domain.Project) error {
 	return nil
 }
 
-func (s ProjectRepo) ByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.Project, error) {
+func (s *ProjectRepo) ByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.Project, error) {
 	result, err := gorm.G[projectRecord](s.db.From(ctx)).Where("workspace_id = ?", workspaceId).Find(ctx)
 	if err != nil {
 		return nil, err

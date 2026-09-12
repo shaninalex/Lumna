@@ -10,8 +10,8 @@ import (
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/actor"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
-	wContract "gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 )
 
 func NewIdentitiesRootCmd(app core.Resolve) *cobra.Command {
@@ -33,7 +33,6 @@ var (
 func newCreateIdentityCmd(app core.Resolve) *cobra.Command {
 	var email, fullName, password string
 	var active bool
-	var workspaceId int
 
 	cmd := &cobra.Command{
 		Use:   "create",
@@ -46,23 +45,10 @@ func newCreateIdentityCmd(app core.Resolve) *cobra.Command {
 				Password: bus.Secret(password),
 			})
 			if err != nil {
-				return err
+				return errs.Conflict("WSP", "unable to add identity to workspace")
 			}
 
 			fmt.Printf("Identity created: %s [%d]\n", profile.Email, profile.ID)
-
-			ok, err := wContract.ExecAddIdentityToWorkspace(ctx, app(), wContract.AddIdentityToWorkspace{
-				IdentityId:  profile.ID,
-				WorkspaceId: workspaceId,
-			})
-			if err != nil {
-				return err
-			}
-			if !ok {
-				return FailedToAddIdentityToWorkspaceError
-			}
-
-			fmt.Printf("Identity [%d] added to workspace [%d]\n", profile.ID, workspaceId)
 
 			return nil
 		},
@@ -72,7 +58,6 @@ func newCreateIdentityCmd(app core.Resolve) *cobra.Command {
 	cmd.Flags().StringVar(&fullName, "full-name", "", "Identity full name")
 	cmd.Flags().StringVar(&password, "password", "", "Identity raw password")
 	cmd.Flags().BoolVar(&active, "active", false, "Identity is active")
-	cmd.Flags().IntVar(&workspaceId, "workspace-id", 0, "Workspace Id belongs to")
 
 	return cmd
 }
