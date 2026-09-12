@@ -2,8 +2,6 @@ package domain
 
 import (
 	"time"
-
-	"gitlab.com/shaninalex/lumna/app/lib/ptr"
 )
 
 type Provider string
@@ -26,7 +24,7 @@ func NewPasswordCredential(identityId int, hash, email string) *Credential {
 	return &Credential{
 		IdentityID:   identityId,
 		Provider:     string(EmailCredentialProvider),
-		Email:        ptr.P(email),
-		PasswordHash: ptr.P(hash),
+		Email:        &email,
+		PasswordHash: &hash,
 	}
 }
