@@ -16,7 +16,7 @@ import (
 
 func NewIdentitiesRootCmd(app core.Resolve) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "identities",
+		Use:   "identity",
 		Short: "Manage identities",
 	}
 
@@ -72,7 +72,7 @@ func newCreateIdentityCmd(app core.Resolve) *cobra.Command {
 	cmd.Flags().StringVar(&fullName, "full-name", "", "Identity full name")
 	cmd.Flags().StringVar(&password, "password", "", "Identity raw password")
 	cmd.Flags().BoolVar(&active, "active", false, "Identity is active")
-	cmd.Flags().IntVar(&workspaceId, "workspace-id", 10, "Workspace Id belongs to")
+	cmd.Flags().IntVar(&workspaceId, "workspace-id", 0, "Workspace Id belongs to")
 
 	return cmd
 }
@@ -84,7 +84,6 @@ func newIdentitiesListCmd(app core.Resolve) *cobra.Command {
 		Use:   "list",
 		Short: "List identities",
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			// The CLI acts on behalf of the system — there are no user permissions here.
 			ctx := actor.With(cmd.Context(), actor.System())
 
 			page, err := contract.AskListProfiles(ctx, app(), contract.ListProfiles{

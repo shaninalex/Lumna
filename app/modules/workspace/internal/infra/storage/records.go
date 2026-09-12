@@ -35,3 +35,27 @@ type identityWorkspaceRecord struct {
 }
 
 func (identityWorkspaceRecord) TableName() string { return "identity_workspaces" }
+
+type projectRecord struct {
+	ID          int        `gorm:"primaryKey;autoIncrement"`
+	Title       string     `gorm:"column:title;unique;not null"`
+	WorkspaceId int        `gorm:"column:workspace_id;not null"`
+	OwnerId     int        `gorm:"column:owner_id;not null"`
+	Meta        *string    `gorm:"column:meta"`
+	CreatedAt   time.Time  `gorm:"column:created_at;autoCreateTime"`
+	UpdatedAt   *time.Time `gorm:"column:updated_at;autoUpdateTime"`
+}
+
+func (projectRecord) TableName() string { return "projects" }
+
+func toDomainProject(project projectRecord) domain.Project {
+	return domain.Project{
+		ID:          project.ID,
+		Title:       project.Title,
+		WorkspaceId: project.WorkspaceId,
+		OwnerId:     project.OwnerId,
+		Meta:        project.Meta,
+		CreatedAt:   project.CreatedAt,
+		UpdatedAt:   project.UpdatedAt,
+	}
+}

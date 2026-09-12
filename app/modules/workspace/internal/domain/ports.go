@@ -14,3 +14,8 @@ type IdentityWorkspaceRepo interface {
 	ByWorkspaceId(ctx context.Context, workspaceId int) ([]IdentityWorkspace, error)
 	Delete(ctx context.Context, identityId, workspaceId int) (bool, error)
 }
+
+type ProjectRepo interface {
+	Save(ctx context.Context, t *Project) error
+	ByWorkspaceId(ctx context.Context, workspaceId int) ([]Project, error)
+}

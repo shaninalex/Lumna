@@ -19,7 +19,6 @@ func NewWorkspaceRepo(db *database.DB) *WorkspaceRepo { return &WorkspaceRepo{db
 
 func (s WorkspaceRepo) Save(ctx context.Context, t *domain.Workspace) error {
 	record := workspaceRecord{
-		ID:         t.ID,
 		Title:      t.Title,
 		OwnerEmail: t.OwnerEmail,
 		Active:     t.Active,
