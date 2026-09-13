@@ -8,8 +8,8 @@ import (
 )
 
 func Register(resolve core.Resolve, router *gin.RouterGroup) {
-	router.GET("/", handlerList(resolve))
-	router.POST("/", handlerCreate(resolve))
+	router.GET("", handlerList(resolve))
+	router.POST("", handlerCreate(resolve))
 }
 
 func handlerList(resolve core.Resolve) gin.HandlerFunc {

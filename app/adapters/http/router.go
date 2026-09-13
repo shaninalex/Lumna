@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/auth"
+	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/project"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/user"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/workspace"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/middlewares"
@@ -30,4 +31,5 @@ func RegisterApiRouter(resolve core.Resolve, verifier authc.Verifier, cfg Config
 	private.Use(middlewares.AuthMiddleware(verifier))
 	user.Register(resolve, private.Group("user"))
 	workspace.Register(resolve, private.Group("workspaces"))
+	project.Register(resolve, private.Group("projects"))
 }

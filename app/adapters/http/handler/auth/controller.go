@@ -3,7 +3,6 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/transport"
-	"gitlab.com/shaninalex/lumna/app/adapters/http/validators"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/contract"
@@ -17,12 +16,12 @@ func Register(resolve core.Resolve, cookies transport.CookieConfig, router *gin.
 
 func handleLogin(resolve core.Resolve, cookies transport.CookieConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		payload := PasswordCredentials{}
+		payload := passwordLoginDTO{}
 		if err := c.ShouldBindBodyWithJSON(&payload); err != nil {
 			transport.Invalid(c, err)
 			return
 		}
-		if err := validators.Validate(payload); err != nil {
+		if err := payload.Validate(); err != nil {
 			transport.Invalid(c, err)
 			return
 		}

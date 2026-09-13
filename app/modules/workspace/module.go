@@ -30,7 +30,10 @@ type Module struct {
 	createWorkspace        *handlers.CreateWorkspace
 	addIdentityToWorkspace *handlers.AddIdentityToWorkspace
 	createProject          *handlers.CreateProject
-	workspaceList          *handlers.WorkspaceList
+
+	// query handlers
+	workspaceList *handlers.WorkspaceList
+	projectList   *handlers.ProjectList
 }
 
 func (m *Module) Name() string { return "workspace" }
@@ -48,6 +51,7 @@ func New(d Deps) *Module {
 		addIdentityToWorkspace: handlers.NewAddIdentityToWorkspace(identityWorkspaceRepo, d.Clock),
 		createProject:          handlers.NewCreateProject(projectRepo, d.Clock),
 		workspaceList:          handlers.NewWorkspaceList(workspaceRepo),
+		projectList:            handlers.NewProjectList(projectRepo),
 	}
 }
 
@@ -57,5 +61,6 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.addIdentityToWorkspace.Handle),
 		bus.RegisterCommand(a.Commands, m.createProject.Handle),
 		bus.RegisterQuery(a.Queries, m.workspaceList.Handle),
+		bus.RegisterQuery(a.Queries, m.projectList.Handle),
 	)
 }
