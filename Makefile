@@ -14,10 +14,10 @@ run_frontend:
 
 init: migrate
 	go run app/main.go --config=./config/config.yaml workspace create --title=Lumna --owner-email=admin@admin.com
-	go run app/main.go --config=./config/config.yaml identity create --email=admin@admin.com --full-name="Alex Shanin" --password="test" --active=true
+	go run app/main.go --config=./config/config.yaml identity create --email=admin@admin.com --full-name="Alex Shanin" --password=test --active=true
 	go run app/main.go --config=./config/config.yaml workspace add_member --workspace-id=1 --identity-id=1
-	go run app/main.go --config=./config/config.yaml project create --title="Lumna" --workspace-id=1 --owner-id=1
-#	go run app/main.go --config=./config/config.yaml board create --title="Lumna" --project-id=1
+	go run app/main.go --config=./config/config.yaml project create --title=Lumna --workspace-id=1 --owner-id=1
+	go run app/main.go --config=./config/config.yaml scope create --name=Lumna --description="This is test board description"  --project-id=1
 #	go run app/main.go --config=./config/config.yaml column create --title="Todo" --board_id=1
 #	go run app/main.go --config=./config/config.yaml column create --title="In Progress" --board_id=1
 #	go run app/main.go --config=./config/config.yaml column create --title="Done" --board_id=1

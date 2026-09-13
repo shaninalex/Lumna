@@ -8,9 +8,7 @@ type Scope struct {
 	ProjectID   int
 	Name        string
 	Description string
-
-	Stages []Stage
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Stages      []Stage
+	CreatedAt   time.Time
+	UpdatedAt   *time.Time
 }

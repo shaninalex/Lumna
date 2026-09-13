@@ -8,12 +8,13 @@ import (
 )
 
 type CreateScope struct {
-	Name      string
-	ProjectId int
+	Name        string
+	Description string
+	ProjectId   int
 }
 
 func (CreateScope) Permission() (action string, scope int) { return "", 0 }
 
-func ExecCreateScope(ctx context.Context, a *core.App, cmd CreateScope) (CreateScopeView, error) {
-	return bus.Execute[CreateScope, CreateScopeView](ctx, a.Commands, cmd)
+func ExecCreateScope(ctx context.Context, a *core.App, cmd CreateScope) (ScopeView, error) {
+	return bus.Execute[CreateScope, ScopeView](ctx, a.Commands, cmd)
 }

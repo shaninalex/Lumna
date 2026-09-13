@@ -54,7 +54,7 @@ func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger, clk clo
 		Provisioner: identityModule.Provisioner(),
 	})
 
-	trackerModule := tracker.New(tracker.Deps{DB: db, Log: log})
+	trackerModule := tracker.New(tracker.Deps{DB: db, Log: log, Clock: clk})
 	workspaceModule := workspace.New(workspace.Deps{DB: db, Log: log, Clock: clk})
 
 	modules := []core.Module{

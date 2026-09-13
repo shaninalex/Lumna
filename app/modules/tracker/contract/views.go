@@ -1,6 +1,7 @@
 package contract
 
-type CreateScopeView struct {
-	Id   int
-	Name string
+type ScopeView struct {
+	Id          int
+	Name        string
+	Description string
 }
