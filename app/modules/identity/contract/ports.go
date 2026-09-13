@@ -6,11 +6,6 @@ import (
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 )
 
-type Reader interface {
-	DisplayNames(ctx context.Context, ids []int) (map[int]string, error)
-	Exists(ctx context.Context, id int) (bool, error)
-}
-
 // Authenticator verifies a password without letting the hash leave identity
 type Authenticator interface {
 	VerifyPassword(ctx context.Context, email string, password bus.Secret) (int, error)
