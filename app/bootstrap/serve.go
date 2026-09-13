@@ -39,6 +39,7 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 			}
 
 			web.RegisterDocsRoute(router)
+			web.RegisterSPA(router)
 			api.RegisterApiRouter(resolve, app().Bridges.AuthVerifier, api.Config{
 				CORSOrigins:   cfg.CORSOrigins(),
 				SecureCookies: cfg.SecureCookies(),
