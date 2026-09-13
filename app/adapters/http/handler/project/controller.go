@@ -6,11 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/transport"
 	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/actor"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 )
 
 func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET("", handleProjectList(resolve))
+	router.POST("", handleProjectCreate(resolve))
 }
 
 func handleProjectList(resolve core.Resolve) gin.HandlerFunc {
@@ -43,5 +45,40 @@ func handleProjectList(resolve core.Resolve) gin.HandlerFunc {
 		}
 
 		transport.Success(c, projects)
+	}
+}
+
+func handleProjectCreate(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var data projectCreateDTO
+		if err := c.ShouldBindJSON(&data); err != nil {
+			transport.Fail(c, err)
+			return
+		}
+		if err := data.Validate(); err != nil {
+			transport.Fail(c, err)
+			return
+		}
+
+		a, _ := actor.From(c.Request.Context())
+		project, err := contract.ExecCreateProject(c.Request.Context(), resolve(), contract.CreateProject{
+			Title:       data.Title,
+			OwnerId:     a.IdentityID,
+			WorkspaceId: data.WorkspaceId,
+		})
+		if err != nil {
+			transport.Fail(c, err)
+			return
+		}
+
+		transport.Success(c, projectDTO{
+			Id:          project.Id,
+			Title:       project.Title,
+			WorkspaceId: project.WorkspaceId,
+			OwnerId:     project.OwnerId,
+			Meta:        project.Meta,
+			CreatedAt:   project.CreatedAt,
+			UpdatedAt:   project.UpdatedAt,
+		})
 	}
 }
