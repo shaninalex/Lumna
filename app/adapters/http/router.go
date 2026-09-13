@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/auth"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/board"
+	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/column"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/project"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/user"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/workspace"
@@ -34,4 +35,5 @@ func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier, cfg Config
 	workspace.Register(resolve, private.Group("workspaces"))
 	project.Register(resolve, private.Group("projects"))
 	board.Register(resolve, private.Group("boards"))
+	column.Register(resolve, private.Group("columns"))
 }
