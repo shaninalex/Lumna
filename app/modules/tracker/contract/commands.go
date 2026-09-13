@@ -8,12 +8,28 @@ import (
 )
 
 type CreateScope struct {
-	Title     string
-	ProjectId int
+	Name        string
+	Description string
+	ProjectId   int
 }
 
 func (CreateScope) Permission() (action string, scope int) { return "", 0 }
 
-func ExecCreateScope(ctx context.Context, a *core.App, cmd CreateScope) (CreateScopeView, error) {
-	return bus.Execute[CreateScope, CreateScopeView](ctx, a.Commands, cmd)
+func ExecCreateScope(ctx context.Context, a *core.App, cmd CreateScope) (ScopeView, error) {
+	return bus.Execute[CreateScope, ScopeView](ctx, a.Commands, cmd)
+}
+
+type StageCreate struct {
+	ScopeID     int
+	Name        string
+	Description string
+	Category    string
+	Position    float64
+	WIPLimit    *int
+}
+
+func (StageCreate) Permission() (action string, scope int) { return "", 0 }
+
+func ExecCreateStage(ctx context.Context, a *core.App, cmd StageCreate) (StageView, error) {
+	return bus.Execute[StageCreate, StageView](ctx, a.Commands, cmd)
 }

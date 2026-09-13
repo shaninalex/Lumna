@@ -9,4 +9,5 @@ export interface WorkspaceModel {
 
 export interface WorkspaceCreateModel {
     title: string;
+    email: string;
 }

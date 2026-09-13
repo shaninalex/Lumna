@@ -30,7 +30,7 @@ type Module struct {
 	credentials *storage.CredentialRepo
 
 	// bridges — what this module exposes to other modules
-	reader        *infra.Reader
+	//reader        *infra.Reader
 	authenticator *infra.Authenticator
 	provisioner   *infra.Provisioner
 
@@ -52,7 +52,6 @@ func New(d Deps) *Module {
 		identities:  identities,
 		credentials: credentials,
 
-		reader:        infra.NewReader(identities),
 		authenticator: infra.NewAuthenticator(identities, credentials, hasher),
 		provisioner:   infra.NewProvisioner(identities, d.Clock),
 
@@ -63,11 +62,6 @@ func New(d Deps) *Module {
 }
 
 func (m *Module) Name() string { return "identity" }
-
-// Reader — bridge. Read-only projections for other modules.
-func (m *Module) Reader() contract.Reader {
-	return m.reader
-}
 
 // Authenticator — bridge. Password check without exposing the hash.
 func (m *Module) Authenticator() contract.Authenticator {

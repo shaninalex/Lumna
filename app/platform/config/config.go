@@ -16,6 +16,7 @@ type Interface interface {
 	SetupEnabled() bool
 	CORSOrigins() []string
 	SecureCookies() bool
+	EmbedSPA() bool
 }
 
 type Environment string
@@ -49,6 +50,9 @@ func (s *Config) CORSOrigins() []string { return s.v.GetStringSlice("serve.cors_
 
 // SecureCookies must be false only for plain-http local development.
 func (s *Config) SecureCookies() bool { return s.v.GetBool("serve.secure_cookies") }
+
+// EmbedSPA include route with embedded SPA build or not
+func (s *Config) EmbedSPA() bool { return s.v.GetBool("serve.embed_spa") }
 
 func ReadConfig(path string) *Config {
 	s := &Config{

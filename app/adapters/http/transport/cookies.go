@@ -13,7 +13,7 @@ const (
 
 	// The refresh token is only ever presented to the auth endpoints, so the
 	// browser has no reason to attach it to every other request.
-	refreshCookiePath = "/http/v1/auth"
+	refreshCookiePath = "/api/v1/auth"
 )
 
 // CookieConfig carries the deployment-dependent half of cookie handling.
