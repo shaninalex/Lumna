@@ -8,7 +8,7 @@ import (
 )
 
 type CreateScope struct {
-	Title     string
+	Name      string
 	ProjectId int
 }
 

@@ -21,7 +21,7 @@ func NewScopeRootCmd(app core.Resolve) *cobra.Command {
 }
 
 func newCreateScopeCmd(app core.Resolve) *cobra.Command {
-	var title string
+	var name string
 	var projectId int
 
 	cmd := &cobra.Command{
@@ -30,7 +30,7 @@ func newCreateScopeCmd(app core.Resolve) *cobra.Command {
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := actor.With(cmd.Context(), actor.System())
 			scope, err := contract.ExecCreateScope(ctx, app(), contract.CreateScope{
-				Title:     title,
+				Name:      name,
 				ProjectId: projectId,
 			})
 
@@ -40,7 +40,7 @@ func newCreateScopeCmd(app core.Resolve) *cobra.Command {
 
 			fmt.Printf(
 				"Scope \"%s\" [id:%d]created.\n",
-				scope.Title,
+				scope.Name,
 				scope.Id,
 			)
 
@@ -48,7 +48,7 @@ func newCreateScopeCmd(app core.Resolve) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&title, "title", "", "Scope title")
+	cmd.Flags().StringVar(&name, "name", "", "Scope name")
 	cmd.Flags().IntVar(&projectId, "project-id", 0, "Scope project id")
 
 	return cmd

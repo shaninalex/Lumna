@@ -4,7 +4,7 @@ import "time"
 
 type WorkItemType string
 
-var (
+const (
 	WorkItemTypeEpic    WorkItemType = "epic"
 	WorkItemTypeStory   WorkItemType = "story"
 	WorkItemTypeTask    WorkItemType = "task"
@@ -14,7 +14,7 @@ var (
 
 type Priority string
 
-var (
+const (
 	PriorityHigh    Priority = "high"
 	PriorityWarning Priority = "warning"
 	PriorityNormal  Priority = "normal"
@@ -45,8 +45,8 @@ type WorkItem struct {
 	Description string
 
 	// Work context and execution stage:
-	ScopeID int
-	StageID int
+	ScopeID *int
+	StageID *int
 
 	// Rank - Position within the stage. Using float64 solves the issue of mass updates.
 	Rank float64
