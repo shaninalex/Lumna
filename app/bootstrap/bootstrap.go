@@ -16,7 +16,7 @@ import (
 	pmw "gitlab.com/shaninalex/lumna/app/platform/middleware"
 )
 
-type App struct {
+type Instance struct {
 	Core    *core.App
 	Log     *slog.Logger
 	Clock   clock.Clock
@@ -27,7 +27,7 @@ type App struct {
 }
 
 // Close clear resources. Required for CLI
-func (a *App) Close(ctx context.Context) error {
+func (a *Instance) Close(ctx context.Context) error {
 	var errs []error
 	for i := len(a.closers) - 1; i >= 0; i-- { // backwards
 		if err := a.closers[i](ctx); err != nil {
@@ -44,7 +44,7 @@ type Assets struct {
 	Version    string
 }
 
-func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
+func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, error) {
 	// ======= Platform (logger, db, clock...) =======
 	log := slog.New(slog.NewTextHandler(os.Stderr, nil))
 	db := database.New(cfg)
@@ -54,7 +54,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
 	write := []bus.Middleware{
 		// pmw.Recover(log),
 		// pmw.RequestLog(log),
-		// pmw.Authorize(guard), // permisions BEFORE open transactions
+		// pmw.Authorize(guard), // permissions BEFORE open transactions
 		pmw.Transaction(db), // tx in ctx; commit/rollback
 		// pmw.Metrics(),
 	}
@@ -88,7 +88,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*App, error) {
 	c.Commands.Seal()
 	c.Queries.Seal()
 
-	return &App{
+	return &Instance{
 		Core:    c,
 		Log:     log,
 		Clock:   clk,

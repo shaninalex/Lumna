@@ -6,6 +6,9 @@ type ScopeView struct {
 	Id          int
 	Name        string
 	Description string
+	ProjectId   int
+	CreatedAt   time.Time
+	UpdatedAt   *time.Time
 }
 
 type StageView struct {

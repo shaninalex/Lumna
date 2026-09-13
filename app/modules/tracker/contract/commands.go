@@ -19,7 +19,7 @@ func ExecCreateScope(ctx context.Context, a *core.App, cmd CreateScope) (ScopeVi
 	return bus.Execute[CreateScope, ScopeView](ctx, a.Commands, cmd)
 }
 
-type CreateStage struct {
+type StageCreate struct {
 	ScopeID     int
 	Name        string
 	Description string
@@ -28,8 +28,8 @@ type CreateStage struct {
 	WIPLimit    *int
 }
 
-func (CreateStage) Permission() (action string, scope int) { return "", 0 }
+func (StageCreate) Permission() (action string, scope int) { return "", 0 }
 
-func ExecCreateStage(ctx context.Context, a *core.App, cmd CreateStage) (StageView, error) {
-	return bus.Execute[CreateStage, StageView](ctx, a.Commands, cmd)
+func ExecCreateStage(ctx context.Context, a *core.App, cmd StageCreate) (StageView, error) {
+	return bus.Execute[StageCreate, StageView](ctx, a.Commands, cmd)
 }

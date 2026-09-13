@@ -7,12 +7,16 @@ import (
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 )
 
-type WorkspaceList struct{}
+type CreateProject struct {
+	Title       string
+	WorkspaceId int
+	OwnerId     int
+}
 
-func (WorkspaceList) Permission() (action string, scope int) { return "", 0 }
+func (CreateProject) Permission() (action string, scope int) { return "", 0 }
 
-func AskWorkspaceList(ctx context.Context, a *core.App, q WorkspaceList) ([]WorkspaceView, error) {
-	return bus.Ask[WorkspaceList, []WorkspaceView](ctx, a.Queries, q)
+func ExecCreateProject(ctx context.Context, a *core.App, cmd CreateProject) (ProjectView, error) {
+	return bus.Execute[CreateProject, ProjectView](ctx, a.Commands, cmd)
 }
 
 // CreateWorkspace — Creates workspace

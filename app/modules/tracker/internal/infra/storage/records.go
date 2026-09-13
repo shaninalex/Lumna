@@ -4,14 +4,14 @@ import "time"
 
 type stageRecord struct {
 	ID          int `gorm:"primaryKey;autoIncrement"`
-	ScopeID     int `gorm:"foreignKey:scope_id"`
+	ScopeID     int
 	Name        string
 	Description *string
 	Category    string
 	Position    float64
 	WipLimit    *int `gorm:"column:wip_limit"`
 
-	Scope scopeRecord
+	Scope scopeRecord `gorm:"foreignKey:ScopeID;references:ID"`
 	//WorkItems []workItemRecord
 
 	CreatedAt time.Time  `gorm:"autoCreateTime"`
@@ -26,7 +26,7 @@ type scopeRecord struct {
 	Name        string
 	Description *string
 
-	Stages []stageRecord `gorm:"many2many:stages"`
+	Stages []stageRecord `gorm:"foreignKey:ScopeID;references:ID"`
 
 	CreatedAt time.Time  `gorm:"autoCreateTime"`
 	UpdatedAt *time.Time `gorm:"autoUpdateTime"`

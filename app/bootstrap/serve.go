@@ -22,7 +22,7 @@ import (
 // appRef resolves the application after PersistentPreRunE has built it.
 // serve is composition, not an adapter, so it is allowed to see the whole App
 // and hand module bridges to the adapters that need them.
-type appRef func() *App
+type appRef func() *Instance
 
 func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 	cmd := &cobra.Command{
@@ -37,10 +37,12 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 			if cfg.SetupEnabled() {
 				web.RegisterSetupRoute(resolve, router)
 			}
+			if cfg.EmbedSPA() {
+				web.RegisterSPA(router)
+			}
 
 			web.RegisterDocsRoute(router)
-			web.RegisterSPA(router)
-			api.RegisterApiRouter(resolve, app().Bridges.AuthVerifier, api.Config{
+			api.RegisterApiRoutes(resolve, app().Bridges.AuthVerifier, api.Config{
 				CORSOrigins:   cfg.CORSOrigins(),
 				SecureCookies: cfg.SecureCookies(),
 			}, router)

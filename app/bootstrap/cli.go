@@ -34,7 +34,7 @@ func RunCLI(assets Assets) int {
 }
 
 func NewCLI(assets Assets) (*cobra.Command, func()) {
-	var app *App
+	var app *Instance
 
 	root := &cobra.Command{
 		Use:           "lumna",
@@ -55,7 +55,7 @@ func NewCLI(assets Assets) (*cobra.Command, func()) {
 
 	root.AddCommand(
 		// Composition. 2 very different application entrypoint.
-		serveCmd(resolve, func() *App { return app }),
+		serveCmd(resolve, func() *Instance { return app }),
 		migrateCmd(resolve),
 
 		// regular cli commands

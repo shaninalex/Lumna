@@ -22,7 +22,8 @@ type projectCreateDTO struct {
 }
 
 func (a projectCreateDTO) Validate() error {
-	return validation.ValidateStruct(&a,
+	return validation.ValidateStruct(
+		&a,
 		validation.Field(&a.Title, validation.Required, validation.Length(3, 50)),
 		validation.Field(&a.WorkspaceId, validation.Required),
 	)

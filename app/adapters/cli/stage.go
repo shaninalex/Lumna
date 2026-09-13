@@ -32,7 +32,7 @@ func newCreateStageCmd(app core.Resolve) *cobra.Command {
 		Short: "Create stage",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := actor.With(cmd.Context(), actor.System())
-			params := contract.CreateStage{
+			params := contract.StageCreate{
 				ScopeID:     scopeID,
 				Name:        name,
 				Description: description,

@@ -47,7 +47,7 @@ function handle401(
         isRefreshing = true;
         refreshSubject.next(null);
 
-        return http.get('/api/v1/auth/refresh', { withCredentials: true }).pipe(
+        return http.post('/api/v1/auth/refresh', null, { withCredentials: true }).pipe(
             switchMap(() => {
                 isRefreshing = false;
                 refreshSubject.next(true);

@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/auth"
+	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/board"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/project"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/user"
 	"gitlab.com/shaninalex/lumna/app/adapters/http/handler/workspace"
@@ -19,8 +20,8 @@ type Config struct {
 	SecureCookies bool
 }
 
-// RegisterApiRouter mounts the API.
-func RegisterApiRouter(resolve core.Resolve, verifier authc.Verifier, cfg Config, router *gin.Engine) {
+// RegisterApiRoutes mounts the API.
+func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier, cfg Config, router *gin.Engine) {
 	cookies := transport.CookieConfig{Secure: cfg.SecureCookies}
 	router.Use(middlewares.CORSMiddleware(cfg.CORSOrigins))
 
@@ -32,4 +33,5 @@ func RegisterApiRouter(resolve core.Resolve, verifier authc.Verifier, cfg Config
 	user.Register(resolve, private.Group("user"))
 	workspace.Register(resolve, private.Group("workspaces"))
 	project.Register(resolve, private.Group("projects"))
+	board.Register(resolve, private.Group("boards"))
 }

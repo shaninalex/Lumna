@@ -11,11 +11,11 @@ import (
 )
 
 func Register(resolve core.Resolve, router *gin.RouterGroup) {
-	router.GET("", handleProjectList(resolve))
-	router.POST("", handleProjectCreate(resolve))
+	router.GET("", handleList(resolve))
+	router.POST("", handleCreate(resolve))
 }
 
-func handleProjectList(resolve core.Resolve) gin.HandlerFunc {
+func handleList(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := strconv.Atoi(c.Query("workspace_id"))
 		if err != nil {
@@ -48,7 +48,7 @@ func handleProjectList(resolve core.Resolve) gin.HandlerFunc {
 	}
 }
 
-func handleProjectCreate(resolve core.Resolve) gin.HandlerFunc {
+func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data projectCreateDTO
 		if err := c.ShouldBindJSON(&data); err != nil {

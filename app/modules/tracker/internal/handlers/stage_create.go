@@ -5,19 +5,22 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
-type CreateStage struct {
-	repo domain.StageRepo
+type StateCreate struct {
+	clock clock.Clock
+	repo  domain.StageRepo
 }
 
-func NewCreateStage(repo domain.StageRepo) *CreateStage {
-	return &CreateStage{
-		repo: repo,
+func NewCreateStage(repo domain.StageRepo, clock clock.Clock) *StateCreate {
+	return &StateCreate{
+		clock: clock,
+		repo:  repo,
 	}
 }
 
-func (s *CreateStage) Handle(ctx context.Context, cmd contract.CreateStage) (contract.StageView, error) {
+func (s *StateCreate) Handle(ctx context.Context, cmd contract.StageCreate) (contract.StageView, error) {
 	var result contract.StageView
 	stage := domain.Stage{
 		ScopeID:     cmd.ScopeID,
@@ -26,6 +29,7 @@ func (s *CreateStage) Handle(ctx context.Context, cmd contract.CreateStage) (con
 		Category:    domain.StageCategory(cmd.Category),
 		Position:    cmd.Position,
 		WIPLimit:    cmd.WIPLimit,
+		CreatedAt:   s.clock.Now(),
 	}
 	if err := s.repo.Save(ctx, &stage); err != nil {
 		return result, err
