@@ -33,3 +33,18 @@ func (StageCreate) Permission() (action string, scope int) { return "", 0 }
 func ExecCreateStage(ctx context.Context, a *core.App, cmd StageCreate) (StageView, error) {
 	return bus.Execute[StageCreate, StageView](ctx, a.Commands, cmd)
 }
+
+type WorkItemCreate struct {
+	Title       string
+	Description string
+	ProjectId   int
+	Position    int
+	StageId     *int
+	ScopeId     *int
+}
+
+func (WorkItemCreate) Permission() (action string, scope int) { return "", 0 }
+
+func ExecWorkItemCreate(ctx context.Context, a *core.App, cmd WorkItemCreate) (WorkItemView, error) {
+	return bus.Execute[WorkItemCreate, WorkItemView](ctx, a.Commands, cmd)
+}

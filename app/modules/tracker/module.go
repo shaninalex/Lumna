@@ -27,8 +27,9 @@ type Module struct {
 	stageRepo domain.StageRepo
 
 	// commands
-	createScope *handlers.ScopeCreate
-	createStage *handlers.StateCreate
+	createScope    *handlers.ScopeCreate
+	createStage    *handlers.StateCreate
+	createWorkItem *handlers.WorkItemCreate
 
 	// queries
 	scopeList *handlers.ScopeList
@@ -42,12 +43,13 @@ func New(d Deps) *Module {
 	return &Module{
 		deps: d,
 
-		scopeRepo:   scopeRepo,
-		stageRepo:   stageRepo,
-		createScope: handlers.NewCreateScope(scopeRepo, d.Clock),
-		createStage: handlers.NewCreateStage(stageRepo, d.Clock),
-		scopeList:   handlers.NewScopeList(scopeRepo),
-		stageList:   handlers.NewStageList(stageRepo),
+		scopeRepo:      scopeRepo,
+		stageRepo:      stageRepo,
+		createScope:    handlers.NewCreateScope(scopeRepo, d.Clock),
+		createStage:    handlers.NewCreateStage(stageRepo, d.Clock),
+		createWorkItem: handlers.NewWorkItemCreate(),
+		scopeList:      handlers.NewScopeList(scopeRepo),
+		stageList:      handlers.NewStageList(stageRepo),
 	}
 }
 
@@ -57,6 +59,7 @@ func (m *Module) Register(a *core.App) error {
 	return errors.Join(
 		bus.RegisterCommand(a.Commands, m.createScope.Handle),
 		bus.RegisterCommand(a.Commands, m.createStage.Handle),
+		bus.RegisterCommand(a.Commands, m.createWorkItem.Handle),
 		bus.RegisterQuery(a.Queries, m.scopeList.Handle),
 		bus.RegisterQuery(a.Queries, m.stageList.Handle),
 	)
