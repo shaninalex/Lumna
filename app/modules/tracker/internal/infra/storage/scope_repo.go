@@ -53,13 +53,11 @@ func (s ScopeRepo) Get(ctx context.Context, projectId int) ([]domain.Scope, erro
 				ScopeID:     stage.ScopeID,
 				Name:        stage.Name,
 				Description: *stage.Description,
+				Category:    domain.StageCategory(stage.Category),
 				Position:    stage.Position,
-				WIPLimit:    stage.WIPLimit,
+				WIPLimit:    stage.WipLimit,
 				CreatedAt:   stage.CreatedAt,
 				UpdatedAt:   *stage.UpdatedAt,
-			}
-			if stage.Category != nil {
-				st.Category = domain.StageCategory(*stage.Category)
 			}
 			stages = append(stages, st)
 		}

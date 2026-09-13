@@ -7,9 +7,9 @@ type stageRecord struct {
 	ScopeID     int `gorm:"foreignKey:scope_id"`
 	Name        string
 	Description *string
-	Category    *string
+	Category    string
 	Position    float64
-	WIPLimit    *int
+	WipLimit    *int `gorm:"column:wip_limit"`
 
 	Scope scopeRecord
 	//WorkItems []workItemRecord
