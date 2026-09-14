@@ -9,7 +9,7 @@ import (
 type taskDTO struct {
 	ID           int            `json:"id"`
 	Title        string         `json:"title"`
-	Body         string         `json:"body"`
+	Body         *string        `json:"body"`
 	Completed    bool           `json:"completed"`
 	Meta         string         `json:"meta"`
 	ProjectId    int            `json:"project_id"`
@@ -17,7 +17,7 @@ type taskDTO struct {
 	OwnerId      int            `json:"owner_id"`
 	AssigneesIDs []int          `json:"assignees_ids"`
 	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    time.Time      `json:"updated_at"`
+	UpdatedAt    *time.Time     `json:"updated_at"`
 }
 
 type BoardTaskDto struct {
@@ -49,10 +49,10 @@ func toDTO(w contract.WorkItemView) taskDTO {
 }
 
 type taskCreateDTO struct {
-	Title     string `json:"title"` // required
-	Body      string `json:"body"`
-	ProjectId int    `json:"project_id"`
-	Position  int    `json:"position"` // > 0
-	ColumnId  int    `json:"column_id"`
-	BoardId   int    `json:"board_id"`
+	Title     string  `json:"title"` // required
+	Body      string  `json:"body"`
+	ProjectId int     `json:"project_id"`
+	Position  float64 `json:"position"` // > 0
+	ColumnId  int     `json:"column_id"`
+	BoardId   int     `json:"board_id"`
 }

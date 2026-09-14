@@ -36,9 +36,9 @@ func ExecCreateStage(ctx context.Context, a *core.App, cmd StageCreate) (StageVi
 
 type WorkItemCreate struct {
 	Title       string
-	Description string
+	Description *string
 	ProjectId   int
-	Position    int
+	Position    float64
 	StageId     *int
 	ScopeId     *int
 }

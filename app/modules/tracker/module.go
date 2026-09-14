@@ -23,8 +23,9 @@ type Module struct {
 	deps Deps
 
 	// repositories
-	scopeRepo domain.ScopeRepo
-	stageRepo domain.StageRepo
+	scopeRepo    domain.ScopeRepo
+	stageRepo    domain.StageRepo
+	workItemRepo domain.WorkingItemRepo
 
 	// commands
 	createScope    *handlers.ScopeCreate
@@ -39,15 +40,17 @@ type Module struct {
 func New(d Deps) *Module {
 	scopeRepo := storage.NewScopeRepo(d.DB)
 	stageRepo := storage.NewStageRepo(d.DB)
+	workItemRepo := storage.NewWorkingItemRepo(d.DB)
 
 	return &Module{
 		deps: d,
 
 		scopeRepo:      scopeRepo,
 		stageRepo:      stageRepo,
+		workItemRepo:   workItemRepo,
 		createScope:    handlers.NewCreateScope(scopeRepo, d.Clock),
 		createStage:    handlers.NewCreateStage(stageRepo, d.Clock),
-		createWorkItem: handlers.NewWorkItemCreate(),
+		createWorkItem: handlers.NewWorkItemCreate(workItemRepo, d.Clock),
 		scopeList:      handlers.NewScopeList(scopeRepo),
 		stageList:      handlers.NewStageList(stageRepo),
 	}

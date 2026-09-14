@@ -2,27 +2,46 @@ package handlers
 
 import (
 	"context"
-	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
+	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
-type WorkItemCreate struct{}
+type WorkItemCreate struct {
+	repo  domain.WorkingItemRepo
+	clock clock.Clock
+}
 
-func NewWorkItemCreate() *WorkItemCreate {
-	return &WorkItemCreate{}
+func NewWorkItemCreate(repo domain.WorkingItemRepo, clock clock.Clock) *WorkItemCreate {
+	return &WorkItemCreate{
+		repo:  repo,
+		clock: clock,
+	}
 }
 
 func (s *WorkItemCreate) Handle(ctx context.Context, cmd contract.WorkItemCreate) (contract.WorkItemView, error) {
-	return contract.WorkItemView{
-		Id:          0,
+	w := domain.WorkItem{
 		Title:       cmd.Title,
 		Description: cmd.Description,
-		ProjectId:   cmd.ProjectId,
-		StageId:     cmd.StageId,
-		ScopeId:     cmd.ScopeId,
-		Rank:        0.0,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+		ProjectID:   cmd.ProjectId,
+		Rank:        cmd.Position,
+		StageID:     cmd.StageId,
+		ScopeID:     cmd.ScopeId,
+	}
+	if err := s.repo.Save(ctx, &w); err != nil {
+		return contract.WorkItemView{}, err
+	}
+
+	return contract.WorkItemView{
+		Id:          w.ID,
+		Title:       w.Title,
+		Description: w.Description,
+		ProjectId:   w.ProjectID,
+		StageId:     w.StageID,
+		ScopeId:     w.ScopeID,
+		Rank:        w.Rank,
+		CreatedAt:   w.CreatedAt,
+		UpdatedAt:   w.UpdatedAt,
 	}, nil
 }

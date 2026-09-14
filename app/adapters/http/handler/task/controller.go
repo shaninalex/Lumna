@@ -20,11 +20,11 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 		}
 		result, err := contract.ExecWorkItemCreate(c.Request.Context(), resolve(), contract.WorkItemCreate{
 			Title:       data.Title,
-			Description: data.Body,
+			Description: &data.Body,
 			ProjectId:   data.ProjectId,
 			Position:    data.Position,
-			StageId:     data.ColumnId,
-			ScopeId:     data.BoardId,
+			StageId:     &data.ColumnId,
+			ScopeId:     &data.BoardId,
 		})
 		if err != nil {
 			transport.Fail(c, err)
