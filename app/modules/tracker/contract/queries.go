@@ -26,3 +26,13 @@ func (StageList) Permission() (action string, scope int) { return "", 0 }
 func AskStageList(ctx context.Context, a *core.App, q StageList) ([]StageView, error) {
 	return bus.Ask[StageList, []StageView](ctx, a.Queries, q)
 }
+
+type WorkItemList struct {
+	ScopeId int
+}
+
+func (WorkItemList) Permission() (action string, scope int) { return "", 0 }
+
+func AskWorkItemList(ctx context.Context, a *core.App, q WorkItemList) ([]WorkItemView, error) {
+	return bus.Ask[WorkItemList, []WorkItemView](ctx, a.Queries, q)
+}

@@ -13,7 +13,7 @@ import type { TaskModel } from '@entities/task/model';
 
                     <small class="text-muted"> #FEAT-212 </small>
                 </div> -->
-                <h6 class="mb-2">{{ task.title }} [{{ task.id }}]</h6>
+                <h6 class="mb-2">{{ task.title }}</h6>
                 <p class="small text-muted mb-3">Add Google and GitHub authentication.</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <small class="text-muted d-inline-flex align-items-center lh-1 gap-1"> 

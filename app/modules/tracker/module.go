@@ -23,31 +23,38 @@ type Module struct {
 	deps Deps
 
 	// repositories
-	scopeRepo domain.ScopeRepo
-	stageRepo domain.StageRepo
+	scopeRepo    domain.ScopeRepo
+	stageRepo    domain.StageRepo
+	workItemRepo domain.WorkingItemRepo
 
 	// commands
-	createScope *handlers.ScopeCreate
-	createStage *handlers.StateCreate
+	createScope    *handlers.ScopeCreate
+	createStage    *handlers.StateCreate
+	createWorkItem *handlers.WorkItemCreate
 
 	// queries
-	scopeList *handlers.ScopeList
-	stageList *handlers.StageList
+	scopeList    *handlers.ScopeList
+	stageList    *handlers.StageList
+	workItemList *handlers.WorkItemList
 }
 
 func New(d Deps) *Module {
 	scopeRepo := storage.NewScopeRepo(d.DB)
 	stageRepo := storage.NewStageRepo(d.DB)
+	workItemRepo := storage.NewWorkingItemRepo(d.DB)
 
 	return &Module{
 		deps: d,
 
-		scopeRepo:   scopeRepo,
-		stageRepo:   stageRepo,
-		createScope: handlers.NewCreateScope(scopeRepo, d.Clock),
-		createStage: handlers.NewCreateStage(stageRepo, d.Clock),
-		scopeList:   handlers.NewScopeList(scopeRepo),
-		stageList:   handlers.NewStageList(stageRepo),
+		scopeRepo:      scopeRepo,
+		stageRepo:      stageRepo,
+		workItemRepo:   workItemRepo,
+		createScope:    handlers.NewCreateScope(scopeRepo, d.Clock),
+		createStage:    handlers.NewCreateStage(stageRepo, d.Clock),
+		createWorkItem: handlers.NewWorkItemCreate(workItemRepo, d.Clock),
+		scopeList:      handlers.NewScopeList(scopeRepo),
+		stageList:      handlers.NewStageList(stageRepo),
+		workItemList:   handlers.NewWorkItemList(workItemRepo, d.Clock),
 	}
 }
 
@@ -57,7 +64,9 @@ func (m *Module) Register(a *core.App) error {
 	return errors.Join(
 		bus.RegisterCommand(a.Commands, m.createScope.Handle),
 		bus.RegisterCommand(a.Commands, m.createStage.Handle),
+		bus.RegisterCommand(a.Commands, m.createWorkItem.Handle),
 		bus.RegisterQuery(a.Queries, m.scopeList.Handle),
 		bus.RegisterQuery(a.Queries, m.stageList.Handle),
+		bus.RegisterQuery(a.Queries, m.workItemList.Handle),
 	)
 }

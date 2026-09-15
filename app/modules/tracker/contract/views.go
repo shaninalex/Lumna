@@ -22,3 +22,15 @@ type StageView struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
+
+type WorkItemView struct {
+	Id          int
+	Title       string
+	Description *string
+	ProjectId   int
+	StageId     *int
+	ScopeId     *int
+	Rank        float64
+	CreatedAt   time.Time
+	UpdatedAt   *time.Time
+}

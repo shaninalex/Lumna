@@ -42,7 +42,7 @@ type WorkItem struct {
 
 	ParentID    *int
 	Title       string
-	Description string
+	Description *string
 
 	// Work context and execution stage:
 	ScopeID *int
@@ -57,5 +57,5 @@ type WorkItem struct {
 	Estimate    *Estimate
 
 	CreatedAt time.Time
-	UpdatedAt time.Time
+	UpdatedAt *time.Time
 }
