@@ -33,8 +33,9 @@ type Module struct {
 	createWorkItem *handlers.WorkItemCreate
 
 	// queries
-	scopeList *handlers.ScopeList
-	stageList *handlers.StageList
+	scopeList    *handlers.ScopeList
+	stageList    *handlers.StageList
+	workItemList *handlers.WorkItemList
 }
 
 func New(d Deps) *Module {
@@ -53,6 +54,7 @@ func New(d Deps) *Module {
 		createWorkItem: handlers.NewWorkItemCreate(workItemRepo, d.Clock),
 		scopeList:      handlers.NewScopeList(scopeRepo),
 		stageList:      handlers.NewStageList(stageRepo),
+		workItemList:   handlers.NewWorkItemList(workItemRepo, d.Clock),
 	}
 }
 
@@ -65,5 +67,6 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.createWorkItem.Handle),
 		bus.RegisterQuery(a.Queries, m.scopeList.Handle),
 		bus.RegisterQuery(a.Queries, m.stageList.Handle),
+		bus.RegisterQuery(a.Queries, m.workItemList.Handle),
 	)
 }
