@@ -42,7 +42,7 @@ func (s *WorkingItemRepo) Save(ctx context.Context, wi *domain.WorkItem) error {
 	return nil
 }
 
-func (s *WorkingItemRepo) Get(ctx context.Context, scopeId int) ([]domain.WorkItem, error) {
+func (s *WorkingItemRepo) List(ctx context.Context, scopeId int) ([]domain.WorkItem, error) {
 	records, err := gorm.G[workItemRecord](s.db.From(ctx)).
 		Where("scope_id = ?", scopeId).
 		Find(ctx)
@@ -68,4 +68,26 @@ func (s *WorkingItemRepo) Get(ctx context.Context, scopeId int) ([]domain.WorkIt
 	}
 
 	return workItems, nil
+}
+
+func (s *WorkingItemRepo) Get(ctx context.Context, itemId int) (*domain.WorkItem, error) {
+	record, err := gorm.G[workItemRecord](s.db.From(ctx)).
+		Where("id = ?", itemId).
+		First(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &domain.WorkItem{
+		ID:          record.ID,
+		ProjectID:   record.ProjectID,
+		Type:        domain.WorkItemType(record.Type),
+		ParentID:    record.ParentID,
+		Title:       record.Title,
+		Description: record.Description,
+		ScopeID:     record.ScopeID,
+		StageID:     record.StageID,
+		Rank:        record.Rank,
+		CreatedAt:   record.CreatedAt,
+		UpdatedAt:   record.UpdatedAt,
+	}, nil
 }
