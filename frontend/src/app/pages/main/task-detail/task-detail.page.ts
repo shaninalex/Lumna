@@ -1,18 +1,30 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
+import { Router } from '@angular/router';
 import { TaskDetailViewView } from '@features';
-import { MainLayout } from '@core/layout';
+import { AppRoutes } from '@core';
+import { ModalLayout } from '@core/layout';
 
 @Component({
     selector: 'lu-task-detail-page',
-    imports: [MainLayout, TaskDetailViewView],
+    imports: [TaskDetailViewView, ModalLayout],
     template: `
-        <lu-main-layout>
-            <div class="container-fluid">
-                <lu-task-detail-view [taskId]="taskId()" />
+        <lu-modal-layout (closed)="close()">
+            <div class="card">
+                <div class="card-body">
+                    <lu-task-detail-view [taskId]="taskId()"/>
+                </div>
             </div>
-        </lu-main-layout>
+        </lu-modal-layout>
     `,
 })
 export class TaskDetailPage {
     taskId = input.required({ transform: (id: string) => Number(id) });
+
+    private readonly router = inject(Router);
+
+    private readonly appRoutes = inject(AppRoutes);
+
+    close(): void {
+        this.router.navigateByUrl(this.appRoutes.closeModal());
+    }
 }

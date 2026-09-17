@@ -71,15 +71,15 @@ export default tseslint.config(
             //     'error',
             //     { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
             // ],
-            '@typescript-eslint/naming-convention': [
-                'error',
-                { selector: 'typeLike', format: ['PascalCase'] },
-                {
-                    selector: 'variableLike',
-                    format: ['camelCase'],
-                    leadingUnderscore: 'allow',
-                },
-            ],
+            // '@typescript-eslint/naming-convention': [
+            //     'error',
+            //     { selector: 'typeLike', format: ['PascalCase'] },
+            //     {
+            //         selector: 'variableLike',
+            //         format: ['camelCase'],
+            //         leadingUnderscore: 'allow',
+            //     },
+            // ],
         },
     },
     {

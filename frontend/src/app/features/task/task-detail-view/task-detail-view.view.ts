@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AppRoutes } from '@core';
 import { selectTasks } from '@entities/task';
 import { Store } from '@ngrx/store';
 import { TimeAgoPipe } from '@shared/utils';
@@ -13,8 +12,9 @@ import { TimeAgoPipe } from '@shared/utils';
 })
 export class TaskDetailViewView {
     private store = inject(Store);
-
-    readonly appRouter = inject(AppRoutes);
     taskId = input.required<number>();
-    task = computed(() => this.store.selectSignal(selectTasks.byId(this.taskId()))());
+
+    task = computed(
+        () => this.store.selectSignal(selectTasks.byId(this.taskId()))() // <= bad. Make it readable.
+    );
 }

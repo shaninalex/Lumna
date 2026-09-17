@@ -11,13 +11,12 @@ import { WorkspaceApi, workspaceFeature } from '@entities/workspace';
 import { ProjectApi, projectFeature } from '@entities/project';
 import { UserApi, userFeature } from '@entities/user';
 import { TaskApi, taskFeature } from '@entities/task';
-import { columnFeature, ColumnApi } from '@entities/column';
+import { ColumnApi, columnFeature } from '@entities/column';
 import { BoardApi, boardFeature } from '@entities/board';
 import { KanbanApi } from '@features/board/kanban-board/api';
 
 @NgModule({
-    declarations: [
-    ],
+    declarations: [],
     imports: [
         CommonModule,
         RouterModule.forChild(routes),
@@ -33,7 +32,7 @@ import { KanbanApi } from '@features/board/kanban-board/api';
         KanbanApi,
 
         provideEffects(mainEffects),
-        
+
         provideState(workspaceFeature),
         provideState(projectFeature),
         provideState(userFeature),
@@ -42,4 +41,5 @@ import { KanbanApi } from '@features/board/kanban-board/api';
         provideState(columnFeature),
     ],
 })
-export class MainModule {}
+export class MainModule {
+}
