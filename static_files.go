@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-//go:embed all:resources/assets
+//go:embed all:resources/frontend_build
 //go:embed all:resources/migrations
 //go:embed all:resources/openapi
 var resourcesFS embed.FS

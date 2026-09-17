@@ -14,10 +14,6 @@ export const selectColumns = {
     byId: (id: number) => createSelector(selectAll, (list) => list.find((a) => a.id === id)),
     byListId: (listId: number) =>
         createSelector(selectAll, (list) => list.filter((a) => a.board_id === listId)),
-    byIds: (ids: number[]) => createSelector(
-        selectAll,
-        (list) => list.filter((a) => ids.includes(a.id)),
-    ),
     loading: createSelector(feature, (state) => state?.loading ?? false),
     error: createSelector(feature, (state) => state?.errors ?? []),
 };

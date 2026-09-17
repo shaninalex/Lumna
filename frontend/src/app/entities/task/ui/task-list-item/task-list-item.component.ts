@@ -1,25 +1,25 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import type { TaskModel } from '@entities/task/model';
 import { AppRoutes } from '@core';
-import { standardTimeFormat } from '@shared/utils'
+import { standardTimeFormat } from '@shared/utils';
 import { Store } from '@ngrx/store';
-import {ColumnModel, selectColumns } from '@entities/column';
-import { Observable } from 'rxjs';
+import { ColumnModel, selectColumns } from '@entities/column';
+import { filter, Observable } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { BoardModel, selectBoard } from '@entities/board';
 
 @Component({
     selector: 'lu-task-list-item',
     imports: [RouterLink, DatePipe, AsyncPipe],
     template: `
-        <a [routerLink]="[...appRoutes.task(task.id)]" class="d-flex justify-content-between align-items-start text-decoration-none">
+        <a
+            [routerLink]="[...appRoutes.task(task.id)]"
+            class="d-flex justify-content-between align-items-start text-decoration-none"
+        >
             <div class="flex-grow-1">
                 <div class="d-flex align-items-center gap-2 mb-1">
-                    @if (columns$ | async; as columns) {
-                        @for (column of columns; track column.id) {
-                            <span class="badge text-bg-primary">{{ column.title }}</span>
-                        }
+                    @if (column$ | async; as column) {
+                        <span class="badge text-bg-primary">{{ column.title }}</span>
                     }
                 </div>
                 <h6 class="mb-1 text-body">
@@ -33,18 +33,20 @@ import { BoardModel, selectBoard } from '@entities/board';
         </a>
     `,
     host: {
-        class: "list-group-item list-group-item-action",
-    }
+        class: 'list-group-item list-group-item-action',
+    },
 })
 export class TaskListItemComponent implements OnInit {
     private store = inject(Store);
     @Input() task: TaskModel;
-    readonly appRoutes = inject(AppRoutes)
+    readonly appRoutes = inject(AppRoutes);
 
     standardTime = standardTimeFormat;
-    columns$: Observable<ColumnModel[]>;
+    column$: Observable<ColumnModel>;
 
     ngOnInit() {
-        this.columns$ = this.store.select(selectColumns.byIds(this.task.boards.map(t => t.column_id)))
+        this.column$ = this.store.select(selectColumns.byId(this.task.column_id)).pipe(
+            filter(c => c !== undefined),
+        );
     }
 }
