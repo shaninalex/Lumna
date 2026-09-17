@@ -16,7 +16,7 @@ import type { TaskModel } from '@entities/task/model';
                 <h6 class="mb-2">{{ task.title }}</h6>
                 <p class="small text-muted mb-3">Add Google and GitHub authentication.</p>
                 <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted d-inline-flex align-items-center lh-1 gap-1"> 
+                    <small class="text-muted d-inline-flex align-items-center lh-1 gap-1">
                         <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
                         Alex
                     </small>
