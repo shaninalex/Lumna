@@ -33,10 +33,12 @@ type Module struct {
 	createWorkItem *handlers.WorkItemCreate
 
 	// queries
-	scopeList    *handlers.ScopeList
-	stageList    *handlers.StageList
-	workItemList *handlers.WorkItemList
-	workItemMove *handlers.WorkItemMove
+	scopeList        *handlers.ScopeList
+	stageList        *handlers.StageList
+	workItemList     *handlers.WorkItemList
+	workItemMove     *handlers.WorkItemMove
+	workItemTransfer *handlers.WorkItemTransfer
+	stageMove        *handlers.StageMove
 }
 
 func New(d Deps) *Module {
@@ -47,16 +49,18 @@ func New(d Deps) *Module {
 	return &Module{
 		deps: d,
 
-		scopeRepo:      scopeRepo,
-		stageRepo:      stageRepo,
-		workItemRepo:   workItemRepo,
-		createScope:    handlers.NewCreateScope(scopeRepo, d.Clock),
-		createStage:    handlers.NewCreateStage(stageRepo, d.Clock),
-		createWorkItem: handlers.NewWorkItemCreate(workItemRepo, d.Clock),
-		scopeList:      handlers.NewScopeList(scopeRepo),
-		stageList:      handlers.NewStageList(stageRepo),
-		workItemList:   handlers.NewWorkItemList(workItemRepo, d.Clock),
-		workItemMove:   handlers.NewWorkItemMove(workItemRepo, d.Clock),
+		scopeRepo:        scopeRepo,
+		stageRepo:        stageRepo,
+		workItemRepo:     workItemRepo,
+		createScope:      handlers.NewCreateScope(scopeRepo, d.Clock),
+		createStage:      handlers.NewCreateStage(stageRepo, d.Clock),
+		createWorkItem:   handlers.NewWorkItemCreate(workItemRepo, d.Clock),
+		scopeList:        handlers.NewScopeList(scopeRepo),
+		stageList:        handlers.NewStageList(stageRepo),
+		workItemList:     handlers.NewWorkItemList(workItemRepo, d.Clock),
+		workItemMove:     handlers.NewWorkItemMove(workItemRepo, d.Clock),
+		workItemTransfer: handlers.NewWorkItemTransfer(workItemRepo, stageRepo, d.Clock),
+		stageMove:        handlers.NewStageMove(stageRepo, d.Clock),
 	}
 }
 
@@ -68,6 +72,8 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.createStage.Handle),
 		bus.RegisterCommand(a.Commands, m.createWorkItem.Handle),
 		bus.RegisterCommand(a.Commands, m.workItemMove.Handle),
+		bus.RegisterCommand(a.Commands, m.workItemTransfer.Handle),
+		bus.RegisterCommand(a.Commands, m.stageMove.Handle),
 		bus.RegisterQuery(a.Queries, m.scopeList.Handle),
 		bus.RegisterQuery(a.Queries, m.stageList.Handle),
 		bus.RegisterQuery(a.Queries, m.workItemList.Handle),

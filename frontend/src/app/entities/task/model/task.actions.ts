@@ -11,5 +11,6 @@ export const actionTask = createActionGroup({
         create: props<{ data: TaskCreateModel }>(),
         'create failed': props<{ errors: Error[] }>(),
         'create success': props<{ task: TaskModel }>(),
+        'set task': props<{ task: TaskModel }>(),
     },
 });

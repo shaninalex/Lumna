@@ -5,25 +5,21 @@ export type KanbanColumn = ColumnModel & { tasks: KanbanCard[] };
 
 export type KanbanCard = TaskModel & { column: number; position: number };
 
-export interface RearangeTasks {
-    task_id: number;
-    rank: number;
-}
-
-export interface KanbanMoveTask extends RearangeTasks {
+export interface KanbanMoveTask {
+    task_id: number
+    position: number
     board_id: number
 }
 
 export interface KanbanTransferTask {
-    board_id: number;
-    from: RearangeTasks;
-    to: RearangeTasks;
+    task_id: number
+    board_id: number
+    column_id: number
+    position: number
 }
 
 export interface KanbanMoveColumn {
-    id: number;
-    previous_index: number;
-    current_index: number;
-    board_id: number;
-    columns_order: number[];
+    board_id: number
+    column_id: number
+    position: number
 }

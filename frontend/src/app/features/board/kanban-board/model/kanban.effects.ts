@@ -18,7 +18,7 @@ export class KanbanEffects {
             ofType(actionKanban.dropColumn),
             exhaustMap((action) =>
                 this.kanbanApi.SetColumns(action.event).pipe(
-                    map((columns) => actionsColumns.loadByBoardIdSuccess({ columns })),
+                    map((column) => actionsColumns.loadByBoardIdSuccess({ columns: [column] })),
                     catchError((err: HttpErrorResponse) =>
                         of(actionsColumns.reorderFailed({ errors: fromErrorResponse(err) })),
                     ),
@@ -31,8 +31,8 @@ export class KanbanEffects {
         this.actions$.pipe(
             ofType(actionKanban.moveTask),
             exhaustMap((action) =>
-                this.kanbanApi.MoveTask(action.event).pipe(
-                    map((tasks) => actionTask.getListSuccess({ tasks })),
+                this.kanbanApi.TaskAction("move_task", action.event).pipe(
+                    map((task) => actionTask.setTask({ task })),
                     catchError((err: HttpErrorResponse) =>
                         of(actionTask.getListFailed({ errors: fromErrorResponse(err) })),
                     ),
@@ -42,12 +42,12 @@ export class KanbanEffects {
     );
 
 
-    onTaskTrasferEffect$ = createEffect(() =>
+    onTaskTransferEffect$ = createEffect(() =>
         this.actions$.pipe(
             ofType(actionKanban.transferTask),
             exhaustMap((action) =>
-                this.kanbanApi.TransferTask(action.event).pipe(
-                    map((tasks) => actionTask.getListSuccess({ tasks })),
+                this.kanbanApi.TaskAction("change_stage", action.event).pipe(
+                    map((task) => actionTask.setTask({ task })),
                     catchError((err: HttpErrorResponse) =>
                         of(actionTask.getListFailed({ errors: fromErrorResponse(err) })),
                     ),

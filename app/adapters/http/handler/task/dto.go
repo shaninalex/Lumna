@@ -1,6 +1,7 @@
 package task
 
 import (
+	"encoding/json"
 	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
@@ -61,8 +62,66 @@ type taskCreateDTO struct {
 	BoardId   int     `json:"board_id"`
 }
 
-type taskMoveDTO struct {
-	TaskId  int     `json:"task_id"`
-	BoardId int     `json:"board_id"`
-	Rank    float64 `json:"rank"`
+type columnDTO struct {
+	Id        int        `json:"id"`
+	Title     string     `json:"title"`
+	Meta      columnMeta `json:"meta"`
+	BoardId   int        `json:"board_id"`
+	Position  float64    `json:"position"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt *time.Time `json:"updated_at"`
+}
+
+type columnMeta struct {
+	Color    string `json:"color"`
+	Icon     string `json:"icon"`
+	Expanded bool   `json:"expanded"`
+}
+
+func toColumnDTO(s contract.StageView) columnDTO {
+	return columnDTO{
+		Id:      s.Id,
+		Title:   s.Name,
+		BoardId: s.ScopeId,
+		Meta: columnMeta{
+			Color:    "default",
+			Icon:     "default",
+			Expanded: true,
+		},
+		Position:  s.Position,
+		CreatedAt: s.CreatedAt,
+		UpdatedAt: &s.UpdatedAt,
+	}
+}
+
+type boardAction string
+
+var (
+	boardActionMoveColumn  boardAction = "move_column"
+	boardActionMoveTask    boardAction = "move_task"
+	boardActionChangeStage boardAction = "change_stage"
+)
+
+type boardActionMoveTaskDTO struct {
+	BoardId  int     `json:"board_id"`
+	TaskId   int     `json:"task_id"`
+	Position float64 `json:"position"`
+}
+
+type boardActionMoveColumnDTO struct {
+	BoardId  int     `json:"board_id"`
+	ColumnId int     `json:"column_id"`
+	Position float64 `json:"position"`
+}
+
+type boardActionTransferTaskDTO struct {
+	TaskId   int     `json:"task_id"`
+	BoardId  int     `json:"board_id"`
+	ColumnId int     `json:"column_id"`
+	Position float64 `json:"position"`
+}
+
+type boardActionPayload struct {
+	Action boardAction     `json:"action"`
+	Data   json.RawMessage `json:"data"`
 }

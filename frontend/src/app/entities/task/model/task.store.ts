@@ -6,6 +6,7 @@ import { actionTask } from "./task.actions";
 
 export type TaskState = EntityState<TaskModel>
 export const taskAdapter = createEntityAdapter<TaskModel>({
+    // NOTE: each task can be in multiple boards, so global sorter is unusable
     // sortComparer: (a, b) => a.order - b.order,
 });
 const initialState = taskAdapter.getInitialState();
@@ -17,5 +18,8 @@ export const taskReducer = createReducer(
     ),
     on(actionTask.createSuccess, (state, { task }) =>
         taskAdapter.addOne(task, state)
+    ),
+    on(actionTask.setTask, (state, { task }) =>
+        taskAdapter.upsertOne(task, state)
     )
 );
