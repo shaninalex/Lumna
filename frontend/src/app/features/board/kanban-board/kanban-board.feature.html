@@ -2,7 +2,12 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="mb-1">{{ board.title }}</h2>
-            <p class="text-muted mb-0">24 cards · Updated {{ board.updated_at | timeAgo }}</p>
+            <p class="text-muted mb-0">
+                24 cards
+                @if (board.updated_at) {
+                    · Updated {{ board.updated_at | timeAgo }}
+                }
+            </p>
         </div>
 
         <div class="d-flex gap-2">
@@ -30,7 +35,7 @@
                 @for (c of columns; track c.id) {
                     <div cdkDrag [cdkDragData]="c" class="card board-column">
                         <div class="card-header justify-content-between d-flex">
-                            <h4 class="mb-0">{{ c.title }}</h4>                            
+                            <h4 class="mb-0">{{ c.title }}</h4>
 
                             <button cdkDragHandle class="btn btn-sm">
                                 <span class="icon">
