@@ -62,3 +62,31 @@ func (WorkItemMove) Permission() (action string, scope int) { return "", 0 }
 func ExecWorkItemMove(ctx context.Context, a *core.App, cmd WorkItemMove) (WorkItemView, error) {
 	return bus.Execute[WorkItemMove, WorkItemView](ctx, a.Commands, cmd)
 }
+
+// WorkItemTransfer - moves an item into another stage of the same scope,
+// placing it at Rank within that stage.
+type WorkItemTransfer struct {
+	Rank       float64 `json:"rank"`
+	ScopeId    int     `json:"board_id"`
+	StageId    int     `json:"column_id"`
+	WorkItemId int     `json:"task_id"`
+}
+
+func (WorkItemTransfer) Permission() (action string, scope int) { return "", 0 }
+
+func ExecWorkItemTransfer(ctx context.Context, a *core.App, cmd WorkItemTransfer) (WorkItemView, error) {
+	return bus.Execute[WorkItemTransfer, WorkItemView](ctx, a.Commands, cmd)
+}
+
+// StageMove - reorders a stage within its scope.
+type StageMove struct {
+	Position float64 `json:"position"`
+	ScopeId  int     `json:"board_id"`
+	StageId  int     `json:"column_id"`
+}
+
+func (StageMove) Permission() (action string, scope int) { return "", 0 }
+
+func ExecStageMove(ctx context.Context, a *core.App, cmd StageMove) (StageView, error) {
+	return bus.Execute[StageMove, StageView](ctx, a.Commands, cmd)
+}

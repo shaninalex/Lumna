@@ -30,7 +30,7 @@ export class KanbanService implements OnDestroy {
                         const boardId = this.boardId();
                         const kolumns: KanbanColumn[] = [];
                         columns.forEach((col) => {
-                            const kolumn: KanbanColumn = { ...col, tasks: [] };
+                            const kolumn: KanbanColumn = {...col, tasks: []};
                             tasks.forEach((t) => {
                                 const boardIndex = t.boards.findIndex(
                                     (b) => b.column_id === col.id && b.board_id === boardId,
@@ -57,21 +57,19 @@ export class KanbanService implements OnDestroy {
         this.sub.unsubscribe();
     }
 
+    // Moving columns
     public dropColumn(event: CdkDragDrop<KanbanColumn[]>, boardId: number): void {
         const data = [...this.data.getValue()];
         moveItemInArray(data, event.previousIndex, event.currentIndex);
         this.data.next(data);
-        this.store.dispatch(
-            actionKanban.dropColumn({
-                event: {
-                    id: event.item.data.id,
-                    previous_index: event.previousIndex,
-                    current_index: event.currentIndex,
-                    board_id: boardId,
-                    columns_order: data.map((c) => c.id),
-                },
-            }),
-        );
+        const position = this.calculatePosition(data, event.currentIndex);
+        this.store.dispatch(actionKanban.dropColumn({
+            event: {
+                board_id: boardId,
+                column_id: event.item.data.id,
+                position: position,
+            }
+        }));
     }
 
     public moveTask(event: CdkDragDrop<KanbanCard[]>, column: KanbanColumn, boardId: number): void {
@@ -85,54 +83,37 @@ export class KanbanService implements OnDestroy {
         let position: number;
 
         if (prev === undefined && next === undefined) {
-            // Only item in the column
             position = 1;
         } else if (prev === undefined) {
-            // Moved to the beginning
             position = next! / 2;
         } else if (next === undefined) {
-            // Moved to the end
             position = prev + 1;
         } else {
-            // Moved between two items
             position = (prev + next) / 2;
         }
-        this.store.dispatch(
-            actionKanban.moveTask({
-                event: {
-                    board_id: boardId,
-                    task_id: event.item.data.id,
-                    rank: position,
-                },
-            }),
-        );
+        this.store.dispatch(actionKanban.moveTask({
+            event: {
+                board_id: boardId,
+                task_id: event.item.data.id,
+                position: position,
+            },
+        }));
     }
 
+    // moving tasks between columns
     public transferTask(event: CdkDragDrop<KanbanCard[]>, column: KanbanColumn, boardId: number): void {
         const card: KanbanCard = event.item.data;
-        const fromColumnId = card.column;
-        transferArrayItem(
-            event.previousContainer.data,
-            event.container.data,
-            event.previousIndex,
-            event.currentIndex,
-        );
+        transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex,);
         card.column = column.id;
-        // this.store.dispatch(
-        //     actionKanban.transferTask({
-        //         event: {
-        //             board_id: boardId,
-        //             from: {
-        //                 column_id: fromColumnId,
-        //                 tasks: event.previousContainer.data.map((t) => t.id),
-        //             },
-        //             to: {
-        //                 column_id: column.id,
-        //                 tasks: event.container.data.map((t) => t.id),
-        //             },
-        //         },
-        //     }),
-        // );
+        const position = this.calculatePosition(event.container.data, event.currentIndex);
+        this.store.dispatch(actionKanban.transferTask({
+            event: {
+                task_id: card.id,
+                board_id: boardId,
+                column_id: column.id,
+                position: position,
+            }
+        }));
     }
 
     public setBoardId(boardId: number) {
@@ -145,5 +126,24 @@ export class KanbanService implements OnDestroy {
 
     public getColumnsLength(): number {
         return this.data.getValue().length;
+    }
+
+    private calculatePosition<T extends { position: number }>(items: T[], index: number): number {
+        const prev = items[index - 1]?.position;
+        const next = items[index + 1]?.position;
+
+        if (prev === undefined && next === undefined) {
+            return 1;
+        }
+
+        if (prev === undefined) {
+            return next! / 2;
+        }
+
+        if (next === undefined) {
+            return prev + 1;
+        }
+
+        return (prev + next) / 2;
     }
 }

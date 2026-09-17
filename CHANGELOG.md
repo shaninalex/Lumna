@@ -1,3 +1,50 @@
+## 0.37.0 (2026-09-17)
+
+### Feat
+
+- **api**: all other existed board actions
+- **api**: move items in column
+- **api**: tasks list by board id
+- **board**: load work items
+- **module**: tracker - work items list query
+- **api**: save work item
+- **api**: create work item (placeholder)
+- **api**: columns
+- **api**: scopes and stages
+- **web**: embedded frontend route
+- **api**: create project
+- **api**: list projects
+- **api**: list/create workspaces
+- **cli**: create stage command
+- **cli**: create scope command
+- **migration**: sql migration for tracker module
+- **module**: update tracker domain
+- **module**: tracker domain entities
+- **app**: implement system clock
+- **cli**: create workspace
+- **api**: fix url, empty array response
+- **cli**: workspace create and add member command
+- **module**: workspace
+- **adapters**: api - login, user
+- **adapters**: api - login, user
+- **modules**: auth
+- register web routes
+- migrations, setup page, setup submit
+
+### Fix
+
+- **cli**: forgot to update entity names
+- rename according new architecture principles + small issues
+- impl actors, app middlewares, db transactions, minor issues
+- use only int
+- minor kanban board functionality bugs
+
+### Refactor
+
+- **architecture**: save process
+- **architecture**: begin
+- kanban service
+
 ## 0.36.0 (2026-09-05)
 
 ### Feat
