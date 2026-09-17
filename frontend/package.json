@@ -4,7 +4,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "build": "mkdir -p ../resources/frontend_build && ng build --configuration production --output-path ../resources/frontend_build",
+        "build": "mkdir -p ../resources/frontend_build/dist && ng build --configuration production --output-path ../resources/frontend_build/dist",
         "watch": "ng build --watch --configuration development",
         "test": "ng test",
         "lint": "eslint src",

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"io/fs"
 	"net/http"
 	"strings"
@@ -16,8 +17,9 @@ func RegisterSPA(router *gin.Engine) {
 	}
 
 	// Angular build is under browser/ in the embedded FS
-	browserFS, err := fs.Sub(static, "browser")
+	browserFS, err := fs.Sub(static, "dist/browser")
 	if err != nil {
+		fmt.Println("Register SPA:", err)
 		return
 	}
 
