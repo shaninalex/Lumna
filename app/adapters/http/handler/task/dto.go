@@ -60,3 +60,9 @@ type taskCreateDTO struct {
 	ColumnId  int     `json:"column_id"`
 	BoardId   int     `json:"board_id"`
 }
+
+type taskMoveDTO struct {
+	TaskId  int     `json:"task_id"`
+	BoardId int     `json:"board_id"`
+	Rank    float64 `json:"rank"`
+}

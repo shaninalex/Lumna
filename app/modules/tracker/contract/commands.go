@@ -48,3 +48,17 @@ func (WorkItemCreate) Permission() (action string, scope int) { return "", 0 }
 func ExecWorkItemCreate(ctx context.Context, a *core.App, cmd WorkItemCreate) (WorkItemView, error) {
 	return bus.Execute[WorkItemCreate, WorkItemView](ctx, a.Commands, cmd)
 }
+
+// WorkItemMove - a post request data described moving item in a single column
+// TODO: rename properties and tags
+type WorkItemMove struct {
+	Rank       float64 `json:"rank"`
+	ScopeId    int     `json:"board_id"`
+	WorkItemId int     `json:"task_id"`
+}
+
+func (WorkItemMove) Permission() (action string, scope int) { return "", 0 }
+
+func ExecWorkItemMove(ctx context.Context, a *core.App, cmd WorkItemMove) (WorkItemView, error) {
+	return bus.Execute[WorkItemMove, WorkItemView](ctx, a.Commands, cmd)
+}

@@ -21,7 +21,7 @@ func NewWorkItemList(repo domain.WorkingItemRepo, clock clock.Clock) *WorkItemLi
 }
 
 func (s *WorkItemList) Handle(ctx context.Context, cmd contract.WorkItemList) ([]contract.WorkItemView, error) {
-	results, err := s.repo.Get(ctx, cmd.ScopeId)
+	results, err := s.repo.List(ctx, cmd.ScopeId)
 	if err != nil {
 		return nil, err
 	}

@@ -14,5 +14,6 @@ type StageRepo interface {
 
 type WorkingItemRepo interface {
 	Save(ctx context.Context, wi *WorkItem) error
-	Get(ctx context.Context, scopeId int) ([]WorkItem, error)
+	List(ctx context.Context, scopeId int) ([]WorkItem, error)
+	Get(ctx context.Context, itemId int) (*WorkItem, error)
 }

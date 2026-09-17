@@ -43,7 +43,6 @@ export class KanbanService implements OnDestroy {
                                     });
                                 }
                             });
-
                             kolumn.tasks.sort((a, b) => a.position - b.position);
                             kolumns.push(kolumn);
                         });
@@ -77,12 +76,33 @@ export class KanbanService implements OnDestroy {
 
     public moveTask(event: CdkDragDrop<KanbanCard[]>, column: KanbanColumn, boardId: number): void {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        const items = event.container.data;
+        const index = event.currentIndex;
+
+        const prev = items[index - 1]?.position;
+        const next = items[index + 1]?.position;
+
+        let position: number;
+
+        if (prev === undefined && next === undefined) {
+            // Only item in the column
+            position = 1;
+        } else if (prev === undefined) {
+            // Moved to the beginning
+            position = next! / 2;
+        } else if (next === undefined) {
+            // Moved to the end
+            position = prev + 1;
+        } else {
+            // Moved between two items
+            position = (prev + next) / 2;
+        }
         this.store.dispatch(
             actionKanban.moveTask({
                 event: {
                     board_id: boardId,
-                    column_id: column.id,
-                    tasks: event.container.data.map((t) => t.id),
+                    task_id: event.item.data.id,
+                    rank: position,
                 },
             }),
         );
@@ -98,21 +118,21 @@ export class KanbanService implements OnDestroy {
             event.currentIndex,
         );
         card.column = column.id;
-        this.store.dispatch(
-            actionKanban.transferTask({
-                event: {
-                    board_id: boardId,
-                    from: {
-                        column_id: fromColumnId,
-                        tasks: event.previousContainer.data.map((t) => t.id),
-                    },
-                    to: {
-                        column_id: column.id,
-                        tasks: event.container.data.map((t) => t.id),
-                    },
-                },
-            }),
-        );
+        // this.store.dispatch(
+        //     actionKanban.transferTask({
+        //         event: {
+        //             board_id: boardId,
+        //             from: {
+        //                 column_id: fromColumnId,
+        //                 tasks: event.previousContainer.data.map((t) => t.id),
+        //             },
+        //             to: {
+        //                 column_id: column.id,
+        //                 tasks: event.container.data.map((t) => t.id),
+        //             },
+        //         },
+        //     }),
+        // );
     }
 
     public setBoardId(boardId: number) {

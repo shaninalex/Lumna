@@ -12,6 +12,7 @@ import (
 func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET("", handleList(resolve))
 	router.POST("", handleCreate(resolve))
+	router.POST("move", moveTask(resolve))
 }
 
 func handleList(resolve core.Resolve) gin.HandlerFunc {
@@ -53,6 +54,26 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 			Position:    data.Position,
 			StageId:     &data.ColumnId,
 			ScopeId:     &data.BoardId,
+		})
+		if err != nil {
+			transport.Fail(c, err)
+			return
+		}
+		transport.Success(c, toDTO(result))
+	}
+}
+
+func moveTask(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var data taskMoveDTO
+		if err := c.ShouldBindJSON(&data); err != nil {
+			transport.Fail(c, err)
+			return
+		}
+		result, err := contract.ExecWorkItemMove(c.Request.Context(), resolve(), contract.WorkItemMove{
+			WorkItemId: data.TaskId,
+			Rank:       data.Rank,
+			ScopeId:    data.BoardId,
 		})
 		if err != nil {
 			transport.Fail(c, err)
