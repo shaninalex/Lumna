@@ -61,26 +61,3 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 		transport.Success(c, toDTO(result))
 	}
 }
-
-func handleList(resolve core.Resolve) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Query("board_id"))
-		if err != nil {
-			transport.Fail(c, err)
-			return
-		}
-		result, err := contract.AskWorkItemList(c.Request.Context(), resolve(), contract.WorkItemList{
-			ScopeId: id,
-		})
-		if err != nil {
-			transport.Fail(c, err)
-			return
-		}
-
-		tasks := make([]taskDTO, len(result))
-		for i, item := range result {
-			tasks[i] = toDTO(item)
-		}
-		transport.Success(c, tasks)
-	}
-}
