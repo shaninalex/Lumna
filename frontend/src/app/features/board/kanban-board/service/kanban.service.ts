@@ -27,22 +27,10 @@ export class KanbanService implements OnDestroy {
             combineLatest([this.columns$, this.tasks$])
                 .pipe(
                     tap(([columns, tasks]) => {
-                        const boardId = this.boardId();
                         const kolumns: KanbanColumn[] = [];
                         columns.forEach((col) => {
                             const kolumn: KanbanColumn = {...col, tasks: []};
-                            tasks.forEach((t) => {
-                                const boardIndex = t.boards.findIndex(
-                                    (b) => b.column_id === col.id && b.board_id === boardId,
-                                );
-                                if (boardIndex >= 0) {
-                                    kolumn.tasks.push({
-                                        ...t,
-                                        column: col.id,
-                                        position: t.boards[boardIndex].position,
-                                    });
-                                }
-                            });
+                            tasks.forEach((t) => kolumn.tasks.push(t));
                             kolumn.tasks.sort((a, b) => a.position - b.position);
                             kolumns.push(kolumn);
                         });
@@ -104,7 +92,7 @@ export class KanbanService implements OnDestroy {
     public transferTask(event: CdkDragDrop<KanbanCard[]>, column: KanbanColumn, boardId: number): void {
         const card: KanbanCard = event.item.data;
         transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex,);
-        card.column = column.id;
+        card.column_id = column.id;
         const position = this.calculatePosition(event.container.data, event.currentIndex);
         this.store.dispatch(actionKanban.transferTask({
             event: {
