@@ -10,6 +10,7 @@ export interface TaskModel {
     position: number;
     owner_id: number;
     assignees_ids: number[];
+    due_to?: Date;
     created_at: Date;
     updated_at: Date;
     task_events: EntityEvent[];
@@ -32,6 +33,7 @@ export interface TaskCreateModel {
     position: number;
     column_id: number;
     board_id: number;
+    due_to?: Date;
 }
 
 export interface TaskListQueryModel {

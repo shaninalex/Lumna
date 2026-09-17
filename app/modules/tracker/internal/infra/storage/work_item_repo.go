@@ -33,6 +33,7 @@ func (s *WorkingItemRepo) Save(ctx context.Context, wi *domain.WorkItem) error {
 		Rank:        wi.Rank,
 		CreatedAt:   wi.CreatedAt,
 		UpdatedAt:   wi.UpdatedAt,
+		DueTo:       wi.DueTo,
 	}
 	if err := s.db.From(ctx).Save(&record).Error; err != nil {
 		return err
@@ -62,6 +63,7 @@ func (s *WorkingItemRepo) List(ctx context.Context, scopeId int) ([]domain.WorkI
 			ScopeID:     record.ScopeID,
 			StageID:     record.StageID,
 			Rank:        record.Rank,
+			DueTo:       record.DueTo,
 			CreatedAt:   record.CreatedAt,
 			UpdatedAt:   record.UpdatedAt,
 		}
@@ -87,6 +89,7 @@ func (s *WorkingItemRepo) Get(ctx context.Context, itemId int) (*domain.WorkItem
 		ScopeID:     record.ScopeID,
 		StageID:     record.StageID,
 		Rank:        record.Rank,
+		DueTo:       record.DueTo,
 		CreatedAt:   record.CreatedAt,
 		UpdatedAt:   record.UpdatedAt,
 	}, nil

@@ -2,6 +2,7 @@ package contract
 
 import (
 	"context"
+	"time"
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
@@ -41,6 +42,7 @@ type WorkItemCreate struct {
 	Position    float64
 	StageId     *int
 	ScopeId     *int
+	DueTo       *time.Time
 }
 
 func (WorkItemCreate) Permission() (action string, scope int) { return "", 0 }

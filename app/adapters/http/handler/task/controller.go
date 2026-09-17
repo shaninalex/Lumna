@@ -56,6 +56,7 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 			Position:    data.Position,
 			StageId:     &data.ColumnId,
 			ScopeId:     &data.BoardId,
+			DueTo:       data.DueTo,
 		})
 		if err != nil {
 			transport.Fail(c, err)

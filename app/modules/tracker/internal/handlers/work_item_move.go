@@ -41,6 +41,7 @@ func (s *WorkItemMove) Handle(ctx context.Context, cmd contract.WorkItemMove) (c
 		StageId:     r.StageID,
 		ScopeId:     r.ScopeID,
 		Rank:        r.Rank,
+		DueTo:       r.DueTo,
 		CreatedAt:   r.CreatedAt,
 		UpdatedAt:   r.UpdatedAt,
 	}, nil

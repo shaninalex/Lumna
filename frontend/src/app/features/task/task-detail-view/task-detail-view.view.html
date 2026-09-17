@@ -124,6 +124,12 @@
                     <span class="text-muted">Reporter</span>
                     <strong>Kate</strong>
                 </div>
+                @if (t.due_to) {
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Due to</span>
+                        <span>{{ t.due_to | date }}</span>
+                    </div>
+                }
                 <div class="list-group-item d-flex justify-content-between">
                     <span class="text-muted">Created</span>
                     <span>{{ t.created_at | date }}</span>

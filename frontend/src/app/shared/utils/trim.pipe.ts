@@ -10,6 +10,6 @@ export class TrimPipe implements PipeTransform {
             return value;
         }
 
-        return value.substring(0, len);
+        return value.substring(0, len) + '...';
     }
 }
