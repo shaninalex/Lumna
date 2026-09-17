@@ -1,18 +1,19 @@
 import type { Routes } from '@angular/router';
-import { 
-    WorkspacesPage, 
-    WorkspaceCreateComponent, 
-    WorkspaceEntryPage, 
-    InboxPage, 
-    BoardsPage, 
-    BacklogPage, 
-    ProjectsPage, 
+import {
+    WorkspacesPage,
+    WorkspaceCreateComponent,
+    WorkspaceEntryPage,
+    InboxPage,
+    BoardsPage,
+    BacklogPage,
+    ProjectsPage,
     ProjectsCreatePage,
     TaskCreatePage,
     TaskDetailPage,
     BoardCreatePage,
     BoardDetailPage,
 } from '@pages';
+import { MODAL_OUTLET, PROJECT_ROUTE_PATH } from '@core';
 import { authGuard } from './auth.guard';
 import { activeProjectGuard } from './project.guard';
 import { activeWorkspaceGuard } from './workspace.guard';
@@ -41,7 +42,7 @@ export const routes: Routes = [
                         component: WorkspaceEntryPage,
                     },
                     {
-                        path: 'p/:projectId',
+                        path: PROJECT_ROUTE_PATH,
                         canActivate: [activeProjectGuard],
                         children: [
                             {
@@ -71,6 +72,7 @@ export const routes: Routes = [
                             {
                                 path: 'task/:taskId',
                                 component: TaskDetailPage,
+                                outlet: MODAL_OUTLET,
                                 canMatch: [paramMatches("taskId", paramMatchesDigitsOnly)]
                             },
                             {
