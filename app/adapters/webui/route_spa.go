@@ -10,7 +10,7 @@ import (
 )
 
 func RegisterSPA(router *gin.Engine) {
-	static := lumna.StaticFS("resources/assets")
+	static := lumna.StaticFS("resources/frontend_build")
 	if static == nil {
 		return
 	}
