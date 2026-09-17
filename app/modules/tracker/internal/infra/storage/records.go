@@ -52,6 +52,7 @@ type workItemRecord struct {
 	//	Parent   *workItemRecord  `gorm:"foreignKey:ParentID;references:ID"`
 	//	Children []workItemRecord `gorm:"foreignKey:ParentID;references:ID"`
 
+	DueTo     *time.Time `gorm:"due_to"`
 	CreatedAt time.Time  `gorm:"autoCreateTime"`
 	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
 }

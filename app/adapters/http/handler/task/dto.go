@@ -20,6 +20,7 @@ type taskDTO struct {
 	Position     float64    `json:"position"`
 	OwnerId      int        `json:"owner_id"`
 	AssigneesIDs []int      `json:"assignees_ids"`
+	DueTo        *time.Time `json:"due_to"`
 	CreatedAt    time.Time  `json:"created_at"`
 	UpdatedAt    *time.Time `json:"updated_at"`
 }
@@ -43,6 +44,7 @@ func toDTO(w contract.WorkItemView) taskDTO {
 		Position:     w.Rank,
 		OwnerId:      0,
 		AssigneesIDs: []int{},
+		DueTo:        w.DueTo,
 		CreatedAt:    w.CreatedAt,
 		UpdatedAt:    w.UpdatedAt,
 	}
@@ -51,12 +53,13 @@ func toDTO(w contract.WorkItemView) taskDTO {
 }
 
 type taskCreateDTO struct {
-	Title     string  `json:"title"`
-	Body      string  `json:"body"`
-	ProjectId int     `json:"project_id"`
-	Position  float64 `json:"position"`
-	ColumnId  int     `json:"column_id"`
-	BoardId   int     `json:"board_id"`
+	Title     string     `json:"title"`
+	Body      string     `json:"body"`
+	ProjectId int        `json:"project_id"`
+	Position  float64    `json:"position"`
+	ColumnId  int        `json:"column_id"`
+	BoardId   int        `json:"board_id"`
+	DueTo     *time.Time `json:"due_to"`
 }
 
 func (a taskCreateDTO) Validate() error {

@@ -56,6 +56,7 @@ type WorkItem struct {
 	SprintID    *int
 	Estimate    *Estimate
 
+	DueTo     *time.Time
 	CreatedAt time.Time
 	UpdatedAt *time.Time
 }

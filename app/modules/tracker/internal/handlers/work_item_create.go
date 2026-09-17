@@ -28,6 +28,7 @@ func (s *WorkItemCreate) Handle(ctx context.Context, cmd contract.WorkItemCreate
 		Rank:        cmd.Position,
 		StageID:     cmd.StageId,
 		ScopeID:     cmd.ScopeId,
+		DueTo:       cmd.DueTo,
 	}
 	if err := s.repo.Save(ctx, &w); err != nil {
 		return contract.WorkItemView{}, err
@@ -41,6 +42,7 @@ func (s *WorkItemCreate) Handle(ctx context.Context, cmd contract.WorkItemCreate
 		StageId:     w.StageID,
 		ScopeId:     w.ScopeID,
 		Rank:        w.Rank,
+		DueTo:       w.DueTo,
 		CreatedAt:   w.CreatedAt,
 		UpdatedAt:   w.UpdatedAt,
 	}, nil
