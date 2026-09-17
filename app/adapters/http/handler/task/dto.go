@@ -27,25 +27,29 @@ type BoardTaskDto struct {
 }
 
 func toDTO(w contract.WorkItemView) taskDTO {
-	return taskDTO{
-		ID:        w.Id,
-		Title:     w.Title,
-		Body:      w.Description,
-		Completed: false,
-		Meta:      "",
-		ProjectId: w.ProjectId,
-		Boards: []BoardTaskDto{
-			{
-				BoardId:  w.Id,
-				ColumnId: w.Id,
-				Position: w.Rank,
-			},
-		},
+	task := taskDTO{
+		ID:           w.Id,
+		Title:        w.Title,
+		Body:         w.Description,
+		Completed:    false,
+		Meta:         "",
+		ProjectId:    w.ProjectId,
+		Boards:       []BoardTaskDto{},
 		OwnerId:      0,
 		AssigneesIDs: []int{},
 		CreatedAt:    w.CreatedAt,
 		UpdatedAt:    w.UpdatedAt,
 	}
+
+	if w.ScopeId != nil && w.StageId != nil {
+		task.Boards = append(task.Boards, BoardTaskDto{
+			BoardId:  *w.ScopeId,
+			ColumnId: *w.StageId,
+			Position: w.Rank,
+		})
+	}
+
+	return task
 }
 
 type taskCreateDTO struct {
