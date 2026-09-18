@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { TaskModel } from '@entities/task/model';
 import { TrimPipe } from '@shared/utils';
