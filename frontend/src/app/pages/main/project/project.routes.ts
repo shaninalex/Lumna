@@ -1,8 +1,6 @@
 import type { Routes } from '@angular/router';
 import { ProjectListPage } from './project-list'
 import { ProjectCreatePage } from './project-create'
-
-import { MODAL_OUTLET, PROJECT_ROUTE_PATH } from '@core';
 import { paramMatches, paramMatchesDigitsOnly } from '@shared/utils';
 import { WorkspaceEntryPage } from './workspace-entry'
 import { activeProjectGuard } from "../project.guard";
@@ -21,7 +19,7 @@ export const routes: Routes = [
         component: WorkspaceEntryPage,
     },
     {
-        path: PROJECT_ROUTE_PATH,
+        path: 'p/:projectId',
         canActivate: [activeProjectGuard],
         children: [
             {
@@ -39,20 +37,21 @@ export const routes: Routes = [
             {
                 path: 'board/:boardId',
                 component: BoardDetailPage,
+                children: [
+                    {
+                        path: 'task/create',
+                        component: TaskCreatePage,
+                    },
+                    {
+                        path: 'task/:taskId',
+                        component: TaskDetailPage,
+                        canMatch: [paramMatches("taskId", paramMatchesDigitsOnly)]
+                    },
+                ]
             },
             {
                 path: 'backlog',
                 component: BacklogPage,
-            },
-            {
-                path: 'task/create',
-                component: TaskCreatePage,
-            },
-            {
-                path: 'task/:taskId',
-                component: TaskDetailPage,
-                outlet: MODAL_OUTLET,
-                canMatch: [paramMatches("taskId", paramMatchesDigitsOnly)]
             },
             {
                 path: '',

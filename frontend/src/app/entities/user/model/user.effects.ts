@@ -7,14 +7,14 @@ import { actionUser } from './user.actions';
 export class UserEffects {
     private actions$ = inject(Actions);
 
-    set_user$ = createEffect(() =>
-        this.actions$.pipe(
-            ofType(actionUser.set),
-            // dispatch event to reconnect websocket for example
-            tap((action) => console.log(`user ${action.user.full_name} added to store`)),
-        ),
-        { dispatch: false },
-    );
+    // set_user$ = createEffect(() =>
+    //     this.actions$.pipe(
+    //         ofType(actionUser.set),
+    //         // dispatch event to reconnect websocket for example
+    //         tap((action) => console.log(`user ${action.user.full_name} added to store`)),
+    //     ),
+    //     { dispatch: false },
+    // );
 
     clear_user$ = createEffect(() =>
         this.actions$.pipe(

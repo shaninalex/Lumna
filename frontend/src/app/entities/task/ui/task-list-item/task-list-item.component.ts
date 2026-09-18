@@ -13,7 +13,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
     imports: [RouterLink, DatePipe, AsyncPipe],
     template: `
         <a
-            [routerLink]="appRoutes.task(task.id)"
+            [routerLink]="appRoutes.task(task.board_id, task.id)"
             class="d-flex justify-content-between align-items-start text-decoration-none"
         >
             <div class="flex-grow-1">

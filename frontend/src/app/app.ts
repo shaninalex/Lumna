@@ -7,7 +7,6 @@ import packageJson from "@root/package.json";
     imports: [RouterOutlet],
     template: `
         <router-outlet />
-        <router-outlet name="modal"></router-outlet>
         <div class="app-version">
             v{{ version }}
         </div>

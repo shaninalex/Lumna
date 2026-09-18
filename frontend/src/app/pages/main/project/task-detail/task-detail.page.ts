@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TaskDetailViewView } from '@features';
 import { AppRoutes } from '@core';
 import { ModalLayout } from '@core/layout';
@@ -9,22 +9,21 @@ import { ModalLayout } from '@core/layout';
     imports: [TaskDetailViewView, ModalLayout],
     template: `
         <lu-modal-layout (closed)="close()">
-            <div class="card">
-                <div class="card-body">
-                    <lu-task-detail-view [taskId]="taskId()"/>
-                </div>
-            </div>
+            <lu-task-detail-view [taskId]="taskId()"/>
         </lu-modal-layout>
     `,
 })
 export class TaskDetailPage {
-    taskId = input.required({ transform: (id: string) => Number(id) });
-
     private readonly router = inject(Router);
-
+    private readonly activatedRoute = inject(ActivatedRoute);
     private readonly appRoutes = inject(AppRoutes);
 
+    taskId = input.required({transform: (id: string) => Number(id)});
+
     close(): void {
-        this.router.navigateByUrl(this.appRoutes.closeModal());
+        const params = this.activatedRoute.parent?.snapshot.params;
+        if (params && params['boardId'] !== undefined) {
+            this.router.navigate(this.appRoutes.board(Number(params['boardId'])))
+        }
     }
 }
