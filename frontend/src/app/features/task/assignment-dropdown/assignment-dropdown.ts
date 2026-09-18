@@ -27,7 +27,7 @@ import { AsyncPipe } from '@angular/common';
                         (click)="assign(task.id, user.id)"
                     >
                         <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
-                        Assign Yourself
+                        {{ user.full_name }}
                     </button>
                 }
                 <!-- TODO: users list -->
