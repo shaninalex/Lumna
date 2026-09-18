@@ -92,3 +92,16 @@ func (StageMove) Permission() (action string, scope int) { return "", 0 }
 func ExecStageMove(ctx context.Context, a *core.App, cmd StageMove) (StageView, error) {
 	return bus.Execute[StageMove, StageView](ctx, a.Commands, cmd)
 }
+
+// WorkItemUpdate - update task fields, related to it's content, not position or state
+type WorkItemUpdate struct {
+	WorkItemId  int
+	Title       string
+	Description *string
+}
+
+func (WorkItemUpdate) Permission() (action string, scope int) { return "", 0 }
+
+func ExecWorkItemUpdate(ctx context.Context, a *core.App, cmd WorkItemUpdate) (WorkItemView, error) {
+	return bus.Execute[WorkItemUpdate, WorkItemView](ctx, a.Commands, cmd)
+}

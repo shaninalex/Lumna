@@ -3,7 +3,7 @@ import type { Observable } from "rxjs";
 import { map } from "rxjs";
 import type { APIResponse } from "@shared/models";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import type { TaskCreateModel, TaskListQueryModel, TaskModel } from "../model/task.model";
+import type { TaskCreateModel, TaskEditModel, TaskListQueryModel, TaskModel } from "../model/task.model";
 
 @Injectable()
 export class TaskApi {
@@ -25,6 +25,14 @@ export class TaskApi {
             .post<
                 APIResponse<TaskModel>
             >(`/api/v1/tasks`, data, { withCredentials: true })
+            .pipe(map((response) => response.data));
+    }
+
+    update(data: TaskEditModel): Observable<TaskModel> {
+        return this.http
+            .patch<
+                APIResponse<TaskModel>
+            >(`/api/v1/tasks/${data.task_id}`, data, { withCredentials: true })
             .pipe(map((response) => response.data));
     }
 }

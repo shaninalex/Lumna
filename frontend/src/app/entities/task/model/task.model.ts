@@ -39,3 +39,9 @@ export interface TaskCreateModel {
 export interface TaskListQueryModel {
     board_id: number;
 }
+
+export interface TaskEditModel {
+    task_id: number;
+    title: string;
+    body: string;
+}

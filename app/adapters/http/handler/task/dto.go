@@ -31,7 +31,7 @@ type BoardTaskDto struct {
 	Position float64 `json:"position"`
 }
 
-func toDTO(w contract.WorkItemView) taskDTO {
+func toTaskDTO(w contract.WorkItemView) taskDTO {
 	task := taskDTO{
 		ID:           w.Id,
 		Title:        w.Title,
@@ -130,4 +130,18 @@ type boardActionTransferTaskDTO struct {
 type boardActionPayload struct {
 	Action boardAction     `json:"action"`
 	Data   json.RawMessage `json:"data"`
+}
+
+type taskUpdateDTO struct {
+	TaskId int    `json:"task_id"`
+	Title  string `json:"title"`
+	Body   string `json:"body"`
+}
+
+func (a taskUpdateDTO) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.TaskId, validation.Required),
+		validation.Field(&a.TaskId, validation.Min(1)), // task id should not be 0
+		validation.Field(&a.Title, validation.Required),
+	)
 }

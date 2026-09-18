@@ -28,17 +28,18 @@ type Module struct {
 	workItemRepo domain.WorkingItemRepo
 
 	// commands
-	createScope    *handlers.ScopeCreate
-	createStage    *handlers.StateCreate
-	createWorkItem *handlers.WorkItemCreate
-
-	// queries
-	scopeList        *handlers.ScopeList
-	stageList        *handlers.StageList
-	workItemList     *handlers.WorkItemList
+	createScope      *handlers.ScopeCreate
+	createStage      *handlers.StateCreate
+	createWorkItem   *handlers.WorkItemCreate
 	workItemMove     *handlers.WorkItemMove
 	workItemTransfer *handlers.WorkItemTransfer
+	workItemUpdate   *handlers.WorkItemUpdate
 	stageMove        *handlers.StageMove
+
+	// queries
+	scopeList    *handlers.ScopeList
+	stageList    *handlers.StageList
+	workItemList *handlers.WorkItemList
 }
 
 func New(d Deps) *Module {
@@ -60,6 +61,7 @@ func New(d Deps) *Module {
 		workItemList:     handlers.NewWorkItemList(workItemRepo, d.Clock),
 		workItemMove:     handlers.NewWorkItemMove(workItemRepo, d.Clock),
 		workItemTransfer: handlers.NewWorkItemTransfer(workItemRepo, stageRepo, d.Clock),
+		workItemUpdate:   handlers.NewWorkItemUpdate(workItemRepo, d.Clock),
 		stageMove:        handlers.NewStageMove(stageRepo, d.Clock),
 	}
 }
@@ -73,6 +75,7 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.createWorkItem.Handle),
 		bus.RegisterCommand(a.Commands, m.workItemMove.Handle),
 		bus.RegisterCommand(a.Commands, m.workItemTransfer.Handle),
+		bus.RegisterCommand(a.Commands, m.workItemUpdate.Handle),
 		bus.RegisterCommand(a.Commands, m.stageMove.Handle),
 		bus.RegisterQuery(a.Queries, m.scopeList.Handle),
 		bus.RegisterQuery(a.Queries, m.stageList.Handle),

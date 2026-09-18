@@ -47,4 +47,18 @@ export class TaskEffects {
             )
         )
     );
+
+    task_update$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(actionTask.updateTask),
+            switchMap((action) =>
+                this.api.update(action.data).pipe(
+                    switchMap((task) => of(actionTask.setTask({ task }))),
+                    catchError((err: HttpErrorResponse) =>
+                        of(actionTask.updateFailed({ errors: fromErrorResponse(err) }))
+                    )
+                )
+            )
+        )
+    )
 }
