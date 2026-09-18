@@ -3,7 +3,7 @@ import type { TaskModel } from '@entities/task';
 
 export type KanbanColumn = ColumnModel & { tasks: KanbanCard[] };
 
-export type KanbanCard = TaskModel & { column: number; position: number };
+export type KanbanCard = TaskModel; // & { column: number; position: number };
 
 export interface KanbanMoveTask {
     task_id: number

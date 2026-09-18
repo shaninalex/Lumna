@@ -13,13 +13,13 @@ import {NgClass} from '@angular/common';
     template: `
         <div class="dashboard" [ngClass]="{ 'sidebar-closed': hideSidebar }">
             <div class="dashboard-header">
-                <lu-header />
+                <lu-header/>
             </div>
             <div class="dashboard-sidebar">
-                <lu-sidebar />
+                <lu-sidebar/>
             </div>
             <div class="dashboard-content">
-                <ng-content />
+                <ng-content/>
             </div>
         </div>
     `,

@@ -4,21 +4,25 @@ import (
 	"encoding/json"
 	"time"
 
+	validation "github.com/go-ozzo/ozzo-validation"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
 )
 
 type taskDTO struct {
-	ID           int            `json:"id"`
-	Title        string         `json:"title"`
-	Body         *string        `json:"body"`
-	Completed    bool           `json:"completed"`
-	Meta         string         `json:"meta"`
-	ProjectId    int            `json:"project_id"`
-	Boards       []BoardTaskDto `json:"boards"`
-	OwnerId      int            `json:"owner_id"`
-	AssigneesIDs []int          `json:"assignees_ids"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    *time.Time     `json:"updated_at"`
+	ID        int        `json:"id"`
+	Title     string     `json:"title"`
+	Body      *string    `json:"body"`
+	Completed bool       `json:"completed"`
+	Meta      string     `json:"meta"`
+	ProjectId int        `json:"project_id"`
+	BoardId   *int       `json:"board_id"`
+	ColumnId  *int       `json:"column_id"`
+	Position  float64    `json:"position"`
+	OwnerId   int        `json:"owner_id"`
+	Assignees []int      `json:"assignees"`
+	DueTo     *time.Time `json:"due_to"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt *time.Time `json:"updated_at"`
 }
 
 type BoardTaskDto struct {
@@ -27,39 +31,41 @@ type BoardTaskDto struct {
 	Position float64 `json:"position"`
 }
 
-func toDTO(w contract.WorkItemView) taskDTO {
+func toTaskDTO(w contract.WorkItemView) taskDTO {
 	task := taskDTO{
-		ID:           w.Id,
-		Title:        w.Title,
-		Body:         w.Description,
-		Completed:    false,
-		Meta:         "",
-		ProjectId:    w.ProjectId,
-		Boards:       []BoardTaskDto{},
-		OwnerId:      0,
-		AssigneesIDs: []int{},
-		CreatedAt:    w.CreatedAt,
-		UpdatedAt:    w.UpdatedAt,
-	}
-
-	if w.ScopeId != nil && w.StageId != nil {
-		task.Boards = append(task.Boards, BoardTaskDto{
-			BoardId:  *w.ScopeId,
-			ColumnId: *w.StageId,
-			Position: w.Rank,
-		})
+		ID:        w.Id,
+		Title:     w.Title,
+		Body:      w.Description,
+		Completed: false,
+		Meta:      "",
+		ProjectId: w.ProjectId,
+		BoardId:   w.ScopeId,
+		ColumnId:  w.StageId,
+		Position:  w.Rank,
+		OwnerId:   0,
+		Assignees: w.Assignees,
+		DueTo:     w.DueTo,
+		CreatedAt: w.CreatedAt,
+		UpdatedAt: w.UpdatedAt,
 	}
 
 	return task
 }
 
 type taskCreateDTO struct {
-	Title     string  `json:"title"` // required
-	Body      string  `json:"body"`
-	ProjectId int     `json:"project_id"`
-	Position  float64 `json:"position"` // > 0
-	ColumnId  int     `json:"column_id"`
-	BoardId   int     `json:"board_id"`
+	Title     string     `json:"title"`
+	Body      string     `json:"body"`
+	ProjectId int        `json:"project_id"`
+	Position  float64    `json:"position"`
+	ColumnId  int        `json:"column_id"`
+	BoardId   int        `json:"board_id"`
+	DueTo     *time.Time `json:"due_to"`
+}
+
+func (a taskCreateDTO) Verify() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Title, validation.Required),
+	)
 }
 
 type columnDTO struct {
@@ -124,4 +130,30 @@ type boardActionTransferTaskDTO struct {
 type boardActionPayload struct {
 	Action boardAction     `json:"action"`
 	Data   json.RawMessage `json:"data"`
+}
+
+type taskUpdateDTO struct {
+	TaskId int    `json:"task_id"`
+	Title  string `json:"title"`
+	Body   string `json:"body"`
+}
+
+func (a taskUpdateDTO) Verify() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.TaskId, validation.Required),
+		validation.Field(&a.TaskId, validation.Min(1)), // task id should not be 0
+		validation.Field(&a.Title, validation.Required),
+	)
+}
+
+type taskAssignmentDTO struct {
+	TaskId     int `json:"task_id"`
+	IdentityId int `json:"identity_id"`
+}
+
+func (a taskAssignmentDTO) Verify() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.TaskId, validation.Required),
+		validation.Field(&a.IdentityId, validation.Required),
+	)
 }

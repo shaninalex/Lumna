@@ -11,18 +11,18 @@ import { AppRoutes } from '@core';
 import { GlobalLayout } from '@core/layout';
 
 @Component({
-    selector: 'lu-projects-page',
+    selector: 'lu-project-list-page',
     imports: [GlobalLayout, RouterLink, AsyncPipe, ProjectCardComponent],
-    templateUrl: './projects.page.html',
+    templateUrl: './project-list-page.component.html',
 })
-export class ProjectsPage implements OnInit {
+export class ProjectListPage implements OnInit {
     private ui = inject(UiService);
     private store = inject(Store);
     readonly appRoutes = inject(AppRoutes);
 
     workspace$ = this.store.select(selectWorkspaces.currentWorkspace).pipe(
         filter(workspace => workspace !== null),
-        switchMap((workspace) => 
+        switchMap((workspace) =>
             this.store.select(selectProjects.byWorkspaceId(workspace.id)).pipe(
                 map((projects) => ({workspace, projects}))
             )

@@ -56,7 +56,9 @@ func (s *WorkItemTransfer) Handle(ctx context.Context, cmd contract.WorkItemTran
 		StageId:     r.StageID,
 		ScopeId:     r.ScopeID,
 		Rank:        r.Rank,
+		DueTo:       r.DueTo,
 		CreatedAt:   r.CreatedAt,
 		UpdatedAt:   r.UpdatedAt,
+		Assignees:   r.AssigneeIDs,
 	}, nil
 }

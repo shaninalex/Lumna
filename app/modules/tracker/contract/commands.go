@@ -2,6 +2,7 @@ package contract
 
 import (
 	"context"
+	"time"
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
@@ -41,6 +42,7 @@ type WorkItemCreate struct {
 	Position    float64
 	StageId     *int
 	ScopeId     *int
+	DueTo       *time.Time
 }
 
 func (WorkItemCreate) Permission() (action string, scope int) { return "", 0 }
@@ -89,4 +91,29 @@ func (StageMove) Permission() (action string, scope int) { return "", 0 }
 
 func ExecStageMove(ctx context.Context, a *core.App, cmd StageMove) (StageView, error) {
 	return bus.Execute[StageMove, StageView](ctx, a.Commands, cmd)
+}
+
+// WorkItemUpdate - update task fields, related to it's content, not position or state
+type WorkItemUpdate struct {
+	WorkItemId  int
+	Title       string
+	Description *string
+}
+
+func (WorkItemUpdate) Permission() (action string, scope int) { return "", 0 }
+
+func ExecWorkItemUpdate(ctx context.Context, a *core.App, cmd WorkItemUpdate) (WorkItemView, error) {
+	return bus.Execute[WorkItemUpdate, WorkItemView](ctx, a.Commands, cmd)
+}
+
+// WorkItemAssign - assign work item on a member
+type WorkItemAssign struct {
+	IdentityId int
+	WorkItemId int
+}
+
+func (WorkItemAssign) Permission() (action string, scope int) { return "", 0 }
+
+func ExecWorkItemAssign(ctx context.Context, a *core.App, cmd WorkItemAssign) (bool, error) {
+	return bus.Execute[WorkItemAssign, bool](ctx, a.Commands, cmd)
 }

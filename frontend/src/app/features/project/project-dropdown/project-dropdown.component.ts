@@ -4,8 +4,6 @@ import { Component, inject } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { Store } from '@ngrx/store';
 import { filter, switchMap, map } from 'rxjs';
-
-import { TrimPipe } from '@shared/utils';
 import { selectWorkspaces } from '@entities/workspace';
 import { ProjectListItemComponent, selectProjects } from '@entities/project';
 
@@ -16,7 +14,6 @@ import { ProjectListItemComponent, selectProjects } from '@entities/project';
         CdkMenuItem,
         CdkMenuTrigger,
         AsyncPipe,
-        TrimPipe,
         ProjectListItemComponent,
         RouterLink,
     ],

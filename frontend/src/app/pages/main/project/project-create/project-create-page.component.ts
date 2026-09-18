@@ -3,7 +3,7 @@ import { ProjectCreateFeature } from '@features/project';
 import { GlobalLayout } from '@core/layout';
 
 @Component({
-    selector: 'lu-projects-create-page',
+    selector: 'lu-project-create-page',
     imports: [GlobalLayout, ProjectCreateFeature],
     template: `
         <lu-global-layout>
@@ -17,4 +17,4 @@ import { GlobalLayout } from '@core/layout';
         </lu-global-layout>
     `,
 })
-export class ProjectsCreatePage {}
+export class ProjectCreatePage {}

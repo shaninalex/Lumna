@@ -3,6 +3,7 @@ import { selectProjects } from '@entities/project';
 import { selectWorkspaces } from '@entities/workspace';
 import { Store } from '@ngrx/store';
 
+
 @Injectable()
 export class AppRoutes {
     private readonly store = inject(Store);
@@ -39,12 +40,7 @@ export class AppRoutes {
         return [...this.projectRoute(), 'task', 'create'];
     }
 
-    task(id: number): unknown[] {
-        return [...this.projectRoute(), 'task', id];
+    task(boardId: number, taskId: number): unknown[] {
+        return [...this.board(boardId), 'task', taskId];
     }
-
-    editTask(id: string): unknown[] {
-        return [...this.projectRoute(), 'task', id, 'edit'];
-    }
-
 }

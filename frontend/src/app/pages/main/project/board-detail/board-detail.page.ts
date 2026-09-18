@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, type Observable } from 'rxjs';
 import { KanbanBoardFeature } from "@features";
@@ -8,7 +8,7 @@ import { MainLayout } from '@core/layout';
 
 @Component({
     selector: 'lu-board-detail-page',
-    imports: [MainLayout, AsyncPipe, KanbanBoardFeature],
+    imports: [MainLayout, AsyncPipe, KanbanBoardFeature, RouterOutlet],
     template: `
         <lu-main-layout>
             @if (boardId$ | async; as boardId) {
@@ -16,6 +16,7 @@ import { MainLayout } from '@core/layout';
                     <lu-kanban-board-feature [boardId]="boardId" />
                 </div>
             }
+            <router-outlet />
         </lu-main-layout>
     `,
 })

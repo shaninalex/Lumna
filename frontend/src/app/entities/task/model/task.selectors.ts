@@ -11,11 +11,12 @@ export const selectTasks = {
     all: selectAll,
     entities: createSelector(feature, entitySelectors.selectEntities),
     total: createSelector(feature, entitySelectors.selectTotal),
-    byId: (id: number) => createSelector(selectAll, (list) => list.find((a) => a.id === id)),
+    byId: (id: number) =>
+        createSelector(selectAll, (list) => list.find((a) => a.id === id)),
     byProject: (projectId: number) =>
         createSelector(selectAll, (list) => list.filter((a) => a.project_id === projectId)),
     countByProjectId: (projectId: number) =>
         createSelector(selectAll, (list) => list.filter((a) => a.project_id === projectId).length),
     byBoardId: (boardId: number) =>
-        createSelector(selectAll, (tasks) => tasks.filter((tasks) => tasks.boards.find((b) => b.board_id === boardId))),
+        createSelector(selectAll, (tasks) => tasks.filter((tasks) => tasks.board_id === boardId)),
 };

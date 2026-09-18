@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"io/fs"
 	"net/http"
 	"strings"
@@ -10,14 +11,15 @@ import (
 )
 
 func RegisterSPA(router *gin.Engine) {
-	static := lumna.StaticFS("resources/assets")
+	static := lumna.StaticFS("resources/frontend_build")
 	if static == nil {
 		return
 	}
 
 	// Angular build is under browser/ in the embedded FS
-	browserFS, err := fs.Sub(static, "browser")
+	browserFS, err := fs.Sub(static, "dist/browser")
 	if err != nil {
+		fmt.Println("Register SPA:", err)
 		return
 	}
 

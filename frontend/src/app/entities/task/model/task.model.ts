@@ -5,9 +5,12 @@ export interface TaskModel {
     completed: boolean;
     meta: string;
     project_id: number;
-    boards: TaskBoard[];
+    board_id: number;
+    column_id: number;
+    position: number;
     owner_id: number;
-    assignees_ids: number[];
+    assignees: number[];
+    due_to?: Date;
     created_at: Date;
     updated_at: Date;
     task_events: EntityEvent[];
@@ -23,12 +26,6 @@ export interface EntityEvent {
     created_at: Date;
 }
 
-export interface TaskBoard {
-    board_id: number;
-    column_id: number;
-    position: number;
-}
-
 export interface TaskCreateModel {
     title: string;
     body: string;
@@ -36,8 +33,20 @@ export interface TaskCreateModel {
     position: number;
     column_id: number;
     board_id: number;
+    due_to?: Date;
 }
 
 export interface TaskListQueryModel {
     board_id: number;
+}
+
+export interface TaskEditModel {
+    task_id: number;
+    title: string;
+    body: string;
+}
+
+export interface TaskAssignModel {
+    task_id: number;
+    identity_id: number;
 }

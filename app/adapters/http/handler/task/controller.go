@@ -15,6 +15,8 @@ func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET("", handleList(resolve))
 	router.POST("", handleCreate(resolve))
 	router.POST("move", handleBoardAction(resolve))
+	router.PATCH(":task_id", handleTaskUpdate(resolve))
+	router.PATCH(":task_id/assign", handleTaskAssignment(resolve))
 }
 
 func handleList(resolve core.Resolve) gin.HandlerFunc {
@@ -24,7 +26,6 @@ func handleList(resolve core.Resolve) gin.HandlerFunc {
 			transport.Fail(c, err)
 			return
 		}
-
 		results, err := contract.AskWorkItemList(c.Request.Context(), resolve(), contract.WorkItemList{
 			ScopeId: id,
 		})
@@ -35,7 +36,7 @@ func handleList(resolve core.Resolve) gin.HandlerFunc {
 
 		tasks := make([]taskDTO, len(results))
 		for i, task := range results {
-			tasks[i] = toDTO(task)
+			tasks[i] = toTaskDTO(task)
 		}
 
 		transport.Success(c, tasks)
@@ -44,11 +45,7 @@ func handleList(resolve core.Resolve) gin.HandlerFunc {
 
 func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var data taskCreateDTO
-		if err := c.ShouldBindJSON(&data); err != nil {
-			transport.Fail(c, err)
-			return
-		}
+		data := transport.BindPayload(c, taskCreateDTO{})
 		result, err := contract.ExecWorkItemCreate(c.Request.Context(), resolve(), contract.WorkItemCreate{
 			Title:       data.Title,
 			Description: &data.Body,
@@ -56,12 +53,13 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 			Position:    data.Position,
 			StageId:     &data.ColumnId,
 			ScopeId:     &data.BoardId,
+			DueTo:       data.DueTo,
 		})
 		if err != nil {
 			transport.Fail(c, err)
 			return
 		}
-		transport.Success(c, toDTO(result))
+		transport.Success(c, toTaskDTO(result))
 	}
 }
 
@@ -118,7 +116,7 @@ func actionMoveWorkItem(c *gin.Context, resolve core.Resolve, action boardAction
 		transport.Fail(c, err)
 		return
 	}
-	transport.Success(c, toDTO(result))
+	transport.Success(c, toTaskDTO(result))
 }
 
 func actionTransferWorkItem(c *gin.Context, resolve core.Resolve, action boardActionTransferTaskDTO) {
@@ -132,7 +130,7 @@ func actionTransferWorkItem(c *gin.Context, resolve core.Resolve, action boardAc
 		transport.Fail(c, err)
 		return
 	}
-	transport.Success(c, toDTO(result))
+	transport.Success(c, toTaskDTO(result))
 }
 
 func actionMoveColumn(c *gin.Context, resolve core.Resolve, action boardActionMoveColumnDTO) {
@@ -146,4 +144,35 @@ func actionMoveColumn(c *gin.Context, resolve core.Resolve, action boardActionMo
 		return
 	}
 	transport.Success(c, toColumnDTO(result))
+}
+
+func handleTaskUpdate(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		data := transport.BindPayload(c, taskUpdateDTO{})
+		result, err := contract.ExecWorkItemUpdate(c.Request.Context(), resolve(), contract.WorkItemUpdate{
+			WorkItemId:  data.TaskId,
+			Title:       data.Title,
+			Description: &data.Body,
+		})
+		if err != nil {
+			transport.Fail(c, err)
+			return
+		}
+		transport.Success(c, toTaskDTO(result))
+	}
+}
+
+func handleTaskAssignment(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		data := transport.BindPayload(c, taskAssignmentDTO{})
+		_, err := contract.ExecWorkItemAssign(c.Request.Context(), resolve(), contract.WorkItemAssign{
+			WorkItemId: data.TaskId,
+			IdentityId: data.IdentityId,
+		})
+		if err != nil {
+			transport.Fail(c, err)
+			return
+		}
+		transport.Success(c, data)
+	}
 }

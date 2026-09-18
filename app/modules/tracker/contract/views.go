@@ -31,6 +31,8 @@ type WorkItemView struct {
 	StageId     *int
 	ScopeId     *int
 	Rank        float64
+	DueTo       *time.Time
 	CreatedAt   time.Time
 	UpdatedAt   *time.Time
+	Assignees   []int
 }
