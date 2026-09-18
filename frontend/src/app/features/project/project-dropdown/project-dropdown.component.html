@@ -7,7 +7,7 @@
     @if (project$ | async; as project) {
         @if (project) {
             <div class="project-icon">
-                {{ project.title | trim: 1 }}
+                {{ project.title[0] }}
             </div>
             {{ project.title }}
         }
@@ -27,7 +27,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <div class="project-icon project-icon--lg">
-                            {{ project.title | trim: 1 }}
+                            {{ project.title[0]}}
                         </div>
                         {{ project.title }}
                     </div>

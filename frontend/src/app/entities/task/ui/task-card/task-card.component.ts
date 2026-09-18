@@ -1,15 +1,15 @@
 import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { TaskModel } from '@entities/task/model';
-import { AppRoutes } from '@core';
 import { TrimPipe } from '@shared/utils';
 import { DatePipe } from '@angular/common';
+import { AppRoutes } from '@core';
 
 @Component({
     selector: 'lu-task-card',
     imports: [RouterLink, TrimPipe, DatePipe],
     template: `
-        <a [routerLink]="routeService.task(task.id)" class="card text-decoration-none text-body">
+        <a [routerLink]="routeService.task(task.board_id, task.id)" class="card text-decoration-none text-body">
             <div class="card-body">
                 <!--
                     <div class="d-flex justify-content-between mb-2">
