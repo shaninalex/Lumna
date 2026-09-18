@@ -1,5 +1,5 @@
 import { createActionGroup, props } from '@ngrx/store';
-import type { TaskCreateModel, TaskEditModel, TaskListQueryModel, TaskModel } from './task.model';
+import { TaskAssignModel, TaskCreateModel, TaskEditModel, TaskListQueryModel, TaskModel } from './task.model';
 import type { Error } from '@shared/models';
 
 export const actionTask = createActionGroup({
@@ -14,5 +14,8 @@ export const actionTask = createActionGroup({
         'set task': props<{ task: TaskModel }>(),
         'update task': props<{ data: TaskEditModel }>(),
         'update failed': props<{ errors: Error[] }>(),
+        'assign task': props<{ action: TaskAssignModel }>(),
+        'assign task success': props<{ action: TaskAssignModel }>(),
+        'assign task failed': props<{ errors: Error[] }>(),
     },
 });

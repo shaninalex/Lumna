@@ -34,6 +34,14 @@ type scopeRecord struct {
 
 func (scopeRecord) TableName() string { return "scopes" }
 
+type workItemAssignRecord struct {
+	IdentityID int `gorm:"primaryKey"`
+	WorkItemID int `gorm:"primaryKey"`
+	//WorkItem workItemRecord `gorm:"foreignKey:WorkItemID;references:ID"`
+}
+
+func (workItemAssignRecord) TableName() string { return "work_items_assignees" }
+
 type workItemRecord struct {
 	ID          int `gorm:"primaryKey;autoIncrement"`
 	ProjectID   int
@@ -48,7 +56,7 @@ type workItemRecord struct {
 	//	Priority    *string
 	//	SprintID    *int
 	//	Estimate    *string
-	//	Assignees []workItemAssigneeRecord `gorm:"foreignKey:WorkItemID;references:ID"`
+	Assignees []workItemAssignRecord `gorm:"foreignKey:WorkItemID;references:ID"`
 	//	Parent   *workItemRecord  `gorm:"foreignKey:ParentID;references:ID"`
 	//	Children []workItemRecord `gorm:"foreignKey:ParentID;references:ID"`
 

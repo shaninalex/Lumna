@@ -9,7 +9,7 @@ export interface TaskModel {
     column_id: number;
     position: number;
     owner_id: number;
-    assignees_ids: number[];
+    assignees: number[];
     due_to?: Date;
     created_at: Date;
     updated_at: Date;
@@ -44,4 +44,9 @@ export interface TaskEditModel {
     task_id: number;
     title: string;
     body: string;
+}
+
+export interface TaskAssignModel {
+    task_id: number;
+    identity_id: number;
 }

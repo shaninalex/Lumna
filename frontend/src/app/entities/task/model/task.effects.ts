@@ -17,7 +17,7 @@ export class TaskEffects {
             ofType(actionTask.getList),
             switchMap((action) =>
                 this.api.list(action.query).pipe(
-                    switchMap((tasks) => of(actionTask.getListSuccess({ tasks }))),
+                    switchMap((tasks) => of(actionTask.getListSuccess({tasks}))),
                     catchError((err: HttpErrorResponse) =>
                         of(
                             actionTask.getListFailed({
@@ -35,7 +35,7 @@ export class TaskEffects {
             ofType(actionTask.create),
             switchMap((action) =>
                 this.api.create(action.data).pipe(
-                    switchMap((task) => of(actionTask.createSuccess({ task }))),
+                    switchMap((task) => of(actionTask.createSuccess({task}))),
                     catchError((err: HttpErrorResponse) =>
                         of(
                             actionTask.createFailed({
@@ -53,9 +53,23 @@ export class TaskEffects {
             ofType(actionTask.updateTask),
             switchMap((action) =>
                 this.api.update(action.data).pipe(
-                    switchMap((task) => of(actionTask.setTask({ task }))),
+                    switchMap((task) => of(actionTask.setTask({task}))),
                     catchError((err: HttpErrorResponse) =>
-                        of(actionTask.updateFailed({ errors: fromErrorResponse(err) }))
+                        of(actionTask.updateFailed({errors: fromErrorResponse(err)}))
+                    )
+                )
+            )
+        )
+    )
+
+    task_assign$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(actionTask.assignTask),
+            switchMap((action) =>
+                this.api.assign(action.action).pipe(
+                    switchMap((result) => of(actionTask.assignTaskSuccess({action: result}))),
+                    catchError((err: HttpErrorResponse) =>
+                        of(actionTask.assignTaskFailed({errors: fromErrorResponse(err)}))
                     )
                 )
             )

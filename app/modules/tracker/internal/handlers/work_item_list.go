@@ -39,6 +39,7 @@ func (s *WorkItemList) Handle(ctx context.Context, cmd contract.WorkItemList) ([
 			DueTo:       r.DueTo,
 			CreatedAt:   r.CreatedAt,
 			UpdatedAt:   r.UpdatedAt,
+			Assignees:   r.AssigneeIDs,
 		}
 	}
 

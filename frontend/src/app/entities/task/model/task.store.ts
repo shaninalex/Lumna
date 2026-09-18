@@ -13,13 +13,27 @@ const initialState = taskAdapter.getInitialState();
 
 export const taskReducer = createReducer(
     initialState,
-    on(actionTask.getListSuccess, (state, { tasks }) =>
+    on(actionTask.getListSuccess, (state, {tasks}) =>
         taskAdapter.upsertMany(tasks, state)
     ),
-    on(actionTask.createSuccess, (state, { task }) =>
+    on(actionTask.createSuccess, (state, {task}) =>
         taskAdapter.addOne(task, state)
     ),
-    on(actionTask.setTask, (state, { task }) =>
+    on(actionTask.setTask, (state, {task}) =>
         taskAdapter.upsertOne(task, state)
-    )
+    ),
+    on(actionTask.assignTaskSuccess, (state, {action}) => {
+        const _t = state.entities[action.task_id]
+        if (!_t) {
+            return state
+        }
+        const assignees = [..._t.assignees]
+        const idx = assignees.indexOf(action.identity_id)
+        if (idx > -1) {
+            assignees.splice(idx, 1);
+        } else {
+            assignees.push(action.identity_id);
+        }
+        return taskAdapter.updateOne({id: action.task_id, changes: {assignees}}, state)
+    })
 );
