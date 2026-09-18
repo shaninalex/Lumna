@@ -2,7 +2,7 @@ import { Component, inject, Input } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { Store } from '@ngrx/store';
 import { actionTask } from '@entities/task/model/task.actions';
-import { TaskModel } from '@entities/task';
+import { TaskModel } from '@entities/task/model';
 import { selectUser } from '@entities/user';
 import { filter } from 'rxjs';
 import { AsyncPipe } from '@angular/common';

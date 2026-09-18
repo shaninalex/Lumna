@@ -4,7 +4,7 @@ import type { TaskModel } from '@entities/task/model';
 import { TrimPipe } from '@shared/utils';
 import { DatePipe } from '@angular/common';
 import { AppRoutes } from '@core';
-import { AssignmentDropdown } from '@features/task/assignment-dropdown/assignment-dropdown';
+import { AssignmentDropdown } from '../assignment-dropdown';
 
 @Component({
     selector: 'lu-task-card',
