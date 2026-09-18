@@ -1,3 +1,19 @@
+## 0.37.1 (2026-09-18)
+
+### Fix
+
+- **ui**: assign task to user Closes #6
+- **ui**: assign task to user #5
+- **ui**: edit task #5
+- **ui**: simplify routing #8
+- **ui**: small task card improvements #4
+- **ui**: more structural routes and page folders #7
+- **ui**: task detail modal
+- **ui**: frontend build output directory
+- **ui**: build and minor changes
+- **ui**: task multi board feature
+- **ui**: task backlog page
+
 ## 0.37.0 (2026-09-17)
 
 ### Feat
