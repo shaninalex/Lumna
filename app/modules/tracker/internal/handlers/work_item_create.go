@@ -45,5 +45,6 @@ func (s *WorkItemCreate) Handle(ctx context.Context, cmd contract.WorkItemCreate
 		DueTo:       w.DueTo,
 		CreatedAt:   w.CreatedAt,
 		UpdatedAt:   w.UpdatedAt,
+		Assignees:   w.AssigneeIDs,
 	}, nil
 }

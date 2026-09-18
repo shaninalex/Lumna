@@ -44,5 +44,6 @@ func (s *WorkItemMove) Handle(ctx context.Context, cmd contract.WorkItemMove) (c
 		DueTo:       r.DueTo,
 		CreatedAt:   r.CreatedAt,
 		UpdatedAt:   r.UpdatedAt,
+		Assignees:   r.AssigneeIDs,
 	}, nil
 }

@@ -105,3 +105,15 @@ func (WorkItemUpdate) Permission() (action string, scope int) { return "", 0 }
 func ExecWorkItemUpdate(ctx context.Context, a *core.App, cmd WorkItemUpdate) (WorkItemView, error) {
 	return bus.Execute[WorkItemUpdate, WorkItemView](ctx, a.Commands, cmd)
 }
+
+// WorkItemAssign - assign work item on a member
+type WorkItemAssign struct {
+	IdentityId int
+	WorkItemId int
+}
+
+func (WorkItemAssign) Permission() (action string, scope int) { return "", 0 }
+
+func ExecWorkItemAssign(ctx context.Context, a *core.App, cmd WorkItemAssign) (bool, error) {
+	return bus.Execute[WorkItemAssign, bool](ctx, a.Commands, cmd)
+}

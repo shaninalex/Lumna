@@ -34,4 +34,5 @@ type WorkItemView struct {
 	DueTo       *time.Time
 	CreatedAt   time.Time
 	UpdatedAt   *time.Time
+	Assignees   []int
 }
