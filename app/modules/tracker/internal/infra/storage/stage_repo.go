@@ -41,7 +41,10 @@ func (s *StageRepo) Save(ctx context.Context, stage *domain.Stage) error {
 }
 
 func (s *StageRepo) GetById(ctx context.Context, stageId int) (*domain.Stage, error) {
-	record, err := gorm.G[stageRecord](s.db.From(ctx)).Where("id = ?", stageId).First(ctx)
+	record, err := gorm.G[stageRecord](s.db.From(ctx)).
+		Preload("WorkItems", nil).
+		Where("id = ?", stageId).
+		First(ctx)
 	if err != nil {
 		return nil, err
 	}

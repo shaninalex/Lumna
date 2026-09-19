@@ -20,25 +20,30 @@ func NewStageDelete(itemsRepo domain.WorkingItemRepo, stageRepo domain.StageRepo
 	}
 }
 
-func (s *StageDelete) Handle(ctx context.Context, cmd contract.StageDelete) (bool, error) {
+func (s *StageDelete) Handle(ctx context.Context, cmd contract.StageDelete) (contract.StageDeleteView, error) {
+	response := contract.StageDeleteView{
+		StageId: cmd.StageId,
+	}
+
 	if cmd.WithTasks {
 		stage, err := s.stageRepo.GetById(ctx, cmd.StageId)
 		if err != nil {
-			return false, err
+			return contract.StageDeleteView{}, err
 		}
 		ids := lib.Map(stage.WorkItems, func(item domain.WorkItem) int {
 			return item.ID
 		})
-		_, err = s.itemsRepo.BatchDelete(ctx, ids)
-		if err != nil {
-			return false, err
+		if len(ids) != 0 {
+			if _, err = s.itemsRepo.BatchDelete(ctx, ids); err != nil {
+				return contract.StageDeleteView{}, err
+			}
+			response.DeletedTasks = ids
 		}
 	}
 
-	_, err := s.stageRepo.Delete(ctx, cmd.StageId)
-	if err != nil {
-		return false, err
+	if _, err := s.stageRepo.Delete(ctx, cmd.StageId); err != nil {
+		return contract.StageDeleteView{}, err
 	}
 
-	return false, nil
+	return response, nil
 }

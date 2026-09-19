@@ -136,6 +136,6 @@ type StageDelete struct {
 
 func (StageDelete) Permission() (action string, scope int) { return "", 0 }
 
-func ExecStageDelete(ctx context.Context, a *core.App, cmd StageDelete) (bool, error) {
-	return bus.Execute[StageDelete, bool](ctx, a.Commands, cmd)
+func ExecStageDelete(ctx context.Context, a *core.App, cmd StageDelete) (StageDeleteView, error) {
+	return bus.Execute[StageDelete, StageDeleteView](ctx, a.Commands, cmd)
 }

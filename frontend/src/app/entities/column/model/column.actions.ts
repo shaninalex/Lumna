@@ -1,5 +1,5 @@
 import { createActionGroup, props } from '@ngrx/store';
-import type { ColumnPayloadModel, ColumnModel } from './column.model';
+import { ColumnPayloadModel, ColumnModel, ColumnDeleteModel, ColumnDeleteResponseModel } from './column.model';
 import type { Error } from '@shared/models';
 
 export const actionsColumns = createActionGroup({
@@ -12,5 +12,8 @@ export const actionsColumns = createActionGroup({
         'create success': props<{ column: ColumnModel }>(),
         'create failed': props<{ errors: Error[] }>(),
         'reorder failed': props<{ errors: Error[] }>(),
+        'delete stage': props<{ data: ColumnDeleteModel }>(),
+        'delete stage success': props<{ data: ColumnDeleteResponseModel }>(),
+        'delete stage failed': props<{ errors: Error[] }>(),
     },
 });

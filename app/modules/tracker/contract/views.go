@@ -23,6 +23,11 @@ type StageView struct {
 	UpdatedAt   time.Time
 }
 
+type StageDeleteView struct {
+	StageId      int
+	DeletedTasks []int
+}
+
 type WorkItemView struct {
 	Id          int
 	Title       string

@@ -1,9 +1,9 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import type { ColumnState } from './column.store';
-import { statusAdapter } from './column.store';
+import { stageAdapter } from './column.store';
 
 const feature = createFeatureSelector<ColumnState>('column');
-const entitySelectors = statusAdapter.getSelectors();
+const entitySelectors = stageAdapter.getSelectors();
 
 const selectAll = createSelector(feature, entitySelectors.selectAll);
 

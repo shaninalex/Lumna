@@ -20,3 +20,13 @@ export interface ColumnMeta {
     icon: string;
     expanded: boolean;
 }
+
+export interface ColumnDeleteModel {
+    id: number;
+    withTasks: boolean;
+}
+
+export interface ColumnDeleteResponseModel {
+    id: number;
+    tasks: number[];
+}

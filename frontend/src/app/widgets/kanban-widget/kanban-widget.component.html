@@ -36,13 +36,17 @@
                 @for (c of columns; track c.id) {
                     <div cdkDrag [cdkDragData]="c" class="card board-column">
                         <div class="card-header justify-content-between d-flex">
-                            <h4 class="mb-0">{{ c.title }}</h4>
+                            <h4 class="mb-0 flex-grow-1">{{ c.title }}</h4>
 
                             <button cdkDragHandle class="btn btn-sm">
                                 <span class="icon">
                                     <i class="fa-regular fa-hand"></i>
                                 </span>
                             </button>
+
+                            <lu-column-menu-dropdown [stageId]="c.id">
+                                <lu-column-delete-prompt columnMenuSlot class="list-group-item list-group-item-action p-0 text-danger" [stageId]="c.id" />
+                            </lu-column-menu-dropdown>
                         </div>
 
                         <div class="card-header">

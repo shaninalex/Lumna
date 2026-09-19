@@ -83,12 +83,12 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 }
 
 type stageDeleteQuery struct {
-	WithTasks bool `form:"with_tasks"`
+	WithTasks *bool `form:"with_tasks,omitempty"`
 }
 
 func handleDelete(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		stageId, err := strconv.Atoi(c.Param("task_id"))
+		stageId, err := strconv.Atoi(c.Param("stage_id"))
 		if err != nil {
 			transport.Fail(c, err)
 			return
@@ -100,15 +100,22 @@ func handleDelete(resolve core.Resolve) gin.HandlerFunc {
 			return
 		}
 
-		_, err = contract.ExecStageDelete(c.Request.Context(), resolve(), contract.StageDelete{
-			StageId:   stageId,
-			WithTasks: query.WithTasks,
-		})
+		data := contract.StageDelete{StageId: stageId, WithTasks: false}
+		if query.WithTasks != nil {
+			if *query.WithTasks == true {
+				data.WithTasks = true
+			}
+		}
+
+		commandResponse, err := contract.ExecStageDelete(c.Request.Context(), resolve(), data)
 		if err != nil {
 			transport.Fail(c, err)
 			return
 		}
 
-		transport.Success(c, nil, "Stage deleted")
+		transport.Success(c, columnDeleteResponseDto{
+			Id:           commandResponse.StageId,
+			DeletedTasks: commandResponse.DeletedTasks,
+		}, "Stage deleted")
 	}
 }

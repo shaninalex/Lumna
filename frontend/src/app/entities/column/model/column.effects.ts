@@ -47,4 +47,23 @@ export class ColumnEffects {
             )
         )
     );
+
+    column_delete$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(actionsColumns.deleteStage),
+            switchMap((action) =>
+                this.api.delete(action.data).pipe(
+                    switchMap((data) => of(actionsColumns.deleteStageSuccess({ data }))),
+                    // TODO: call tasks batch delete if data.tasks not empty!
+                    catchError((err: HttpErrorResponse) =>
+                        of(
+                            actionsColumns.createFailed({
+                                errors: fromErrorResponse(err)
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    )
 }
