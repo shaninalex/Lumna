@@ -60,3 +60,15 @@ type WorkItem struct {
 	CreatedAt time.Time
 	UpdatedAt *time.Time
 }
+
+func (w *WorkItem) ChangeRank(rank float64, t time.Time) {
+	w.Rank = rank
+	w.UpdatedAt = &t
+}
+
+func (w *WorkItem) ChangeStage(scopeId, stageId int, rank float64, t time.Time) {
+	w.ScopeID = &scopeId
+	w.StageID = &stageId
+	w.Rank = rank
+	w.UpdatedAt = &t
+}

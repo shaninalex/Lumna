@@ -38,27 +38,11 @@ func (s *WorkItemTransfer) Handle(ctx context.Context, cmd contract.WorkItemTran
 		return contract.WorkItemView{}, err
 	}
 
-	r.ScopeID = &cmd.ScopeId
-	r.StageID = &cmd.StageId
-	r.Rank = cmd.Rank
-	updTime := s.clock.Now()
-	r.UpdatedAt = &updTime
+	r.ChangeStage(cmd.ScopeId, cmd.StageId, cmd.Rank, s.clock.Now())
 
 	if err := s.items.Save(ctx, r); err != nil {
 		return contract.WorkItemView{}, err
 	}
 
-	return contract.WorkItemView{
-		Id:          r.ID,
-		Title:       r.Title,
-		Description: r.Description,
-		ProjectId:   r.ProjectID,
-		StageId:     r.StageID,
-		ScopeId:     r.ScopeID,
-		Rank:        r.Rank,
-		DueTo:       r.DueTo,
-		CreatedAt:   r.CreatedAt,
-		UpdatedAt:   r.UpdatedAt,
-		Assignees:   r.AssigneeIDs,
-	}, nil
+	return toWorkItemView(r), nil
 }

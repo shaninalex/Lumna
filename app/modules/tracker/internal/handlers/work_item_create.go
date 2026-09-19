@@ -34,17 +34,5 @@ func (s *WorkItemCreate) Handle(ctx context.Context, cmd contract.WorkItemCreate
 		return contract.WorkItemView{}, err
 	}
 
-	return contract.WorkItemView{
-		Id:          w.ID,
-		Title:       w.Title,
-		Description: w.Description,
-		ProjectId:   w.ProjectID,
-		StageId:     w.StageID,
-		ScopeId:     w.ScopeID,
-		Rank:        w.Rank,
-		DueTo:       w.DueTo,
-		CreatedAt:   w.CreatedAt,
-		UpdatedAt:   w.UpdatedAt,
-		Assignees:   w.AssigneeIDs,
-	}, nil
+	return toWorkItemView(&w), nil
 }

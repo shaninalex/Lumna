@@ -43,5 +43,5 @@ func (s *WorkItemList) Handle(ctx context.Context, cmd contract.WorkItemList) ([
 		}
 	}
 
-	return workItems, nil
+	return toWorkItemViews(results), nil
 }

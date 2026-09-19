@@ -21,29 +21,15 @@ func NewWorkItemMove(repo domain.WorkingItemRepo, clock clock.Clock) *WorkItemMo
 }
 
 func (s *WorkItemMove) Handle(ctx context.Context, cmd contract.WorkItemMove) (contract.WorkItemView, error) {
-	r, err := s.repo.Get(ctx, cmd.WorkItemId)
+	w, err := s.repo.Get(ctx, cmd.WorkItemId)
 	if err != nil {
 		return contract.WorkItemView{}, err
 	}
 
-	r.Rank = cmd.Rank
-	updTime := s.clock.Now()
-	r.UpdatedAt = &updTime
+	w.ChangeRank(cmd.Rank, s.clock.Now())
 
-	if err := s.repo.Save(ctx, r); err != nil {
+	if err := s.repo.Save(ctx, w); err != nil {
 		return contract.WorkItemView{}, err
 	}
-	return contract.WorkItemView{
-		Id:          r.ID,
-		Title:       r.Title,
-		Description: r.Description,
-		ProjectId:   r.ProjectID,
-		StageId:     r.StageID,
-		ScopeId:     r.ScopeID,
-		Rank:        r.Rank,
-		DueTo:       r.DueTo,
-		CreatedAt:   r.CreatedAt,
-		UpdatedAt:   r.UpdatedAt,
-		Assignees:   r.AssigneeIDs,
-	}, nil
+	return toWorkItemView(w), nil
 }
