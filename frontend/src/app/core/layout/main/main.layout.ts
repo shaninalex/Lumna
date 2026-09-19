@@ -1,9 +1,9 @@
-import {Component, DestroyRef, inject} from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { SidebarComponent, HeaderComponent } from '@widgets';
-import {Actions, ofType} from '@ngrx/effects';
-import {actionToggleSidebar} from '@core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {NgClass} from '@angular/common';
+import { Actions, ofType } from '@ngrx/effects';
+import { actionToggleSidebar } from '@core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'lu-main-layout',

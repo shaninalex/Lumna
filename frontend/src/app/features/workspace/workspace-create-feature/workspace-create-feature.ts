@@ -1,11 +1,11 @@
-import {Component, DestroyRef, inject, signal} from "@angular/core";
-import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {email, form, FormField, required} from "@angular/forms/signals";
-import {actionWorkspace, type WorkspaceCreateModel} from "@entities/workspace";
-import {Actions, ofType} from "@ngrx/effects";
-import {Store} from "@ngrx/store";
-import {selectUser} from '@entities/user';
-import {filter} from 'rxjs';
+import { Component, DestroyRef, inject, signal } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { email, form, FormField, required } from "@angular/forms/signals";
+import { actionWorkspace, type WorkspaceCreateModel } from "@entities/workspace";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { selectUser } from '@entities/user';
+import { filter } from 'rxjs';
 
 
 @Component({
@@ -22,7 +22,6 @@ import {filter} from 'rxjs';
                 <label for="workspace_email" class="form-label">Workspaces email Owner</label>
                 <input type="email" class="form-control" id="workspace_email" [formField]="wspForm.email">
             </div>
-
             <div>
                 <button class="btn btn-primary" type="submit">Create</button>
             </div>
