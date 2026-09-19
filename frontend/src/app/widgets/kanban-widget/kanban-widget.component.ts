@@ -94,4 +94,8 @@ export class KanbanBoardWidget implements OnInit {
     public columnsAmount(): number {
         return this.kanban.getColumnsLength();
     }
+
+    public cardsAmount(): number {
+        return this.kanban.cardsCount;
+    }
 }

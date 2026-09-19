@@ -41,6 +41,12 @@ export class KanbanService implements OnDestroy {
         );
     }
 
+    public get cardsCount(): number {
+        let tasks = 0;
+        this.data.getValue().forEach((value) => tasks += value.tasks.length)
+        return tasks
+    }
+
     ngOnDestroy(): void {
         this.sub.unsubscribe();
     }

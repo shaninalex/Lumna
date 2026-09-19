@@ -3,7 +3,7 @@
         <div>
             <h2 class="mb-1">{{ board.title }}</h2>
             <p class="text-muted mb-0">
-                24 cards
+                {{ cardsAmount() }} cards
                 @if (board.updated_at) {
                     · Updated {{ board.updated_at | timeAgo }}
                 }
@@ -28,7 +28,8 @@
         </div>
     </div>
 
-    <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumn($event)" class="d-flex gap-3 pb-2">
+    <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropColumn($event)"
+         class="d-flex gap-3 pb-2">
         <!-- Column -->
         <div cdkDropListGroup class="d-flex gap-3">
             @if (kolumns$ | async; as columns) {
@@ -54,13 +55,13 @@
 
                         <!-- Tasks -->
                         <div class="p-3 d-flex flex-column gap-2" cdkDropList
-                            [cdkDropListData]="c.tasks"
-                            (cdkDropListDropped)="dropTask($event, c)"
+                             [cdkDropListData]="c.tasks"
+                             (cdkDropListDropped)="dropTask($event, c)"
                         >
                             @for (task of c.tasks; track task.id) {
                                 <div cdkDrag [cdkDragData]="task">
                                     <lu-task-card [task]="task">
-                                        <lu-assignment-dropdown assignmentSlot [task]="task" />
+                                        <lu-assignment-dropdown assignmentSlot [task]="task"/>
                                     </lu-task-card>
                                 </div>
                             }
@@ -69,7 +70,7 @@
                 }
             }
 
-            <lu-new-column-form [board_id]="boardId()" [position]="columnsAmount()" />
+            <lu-new-column-form [board_id]="boardId()" [position]="columnsAmount()"/>
         </div>
     </div>
 }
