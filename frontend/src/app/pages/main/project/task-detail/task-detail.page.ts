@@ -1,8 +1,8 @@
 import { Component, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TaskDetailViewView } from '@features';
 import { AppRoutes } from '@core';
 import { ModalLayout } from '@core/layout';
+import { TaskDetailViewView } from '@entities/task';
 
 @Component({
     selector: 'lu-task-detail-page',

@@ -1,14 +1,15 @@
 import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import type { TaskModel } from '@entities/task/model';
 import { TrimPipe } from '@shared/utils';
 import { DatePipe } from '@angular/common';
 import { AppRoutes } from '@core';
-import { AssignmentDropdown } from '../assignment-dropdown';
+
+import { TaskModel } from '../../model';
+
 
 @Component({
     selector: 'lu-task-card',
-    imports: [RouterLink, TrimPipe, DatePipe, AssignmentDropdown],
+    imports: [RouterLink, TrimPipe, DatePipe],
     template: `
         <div class="card text-decoration-none text-body">
             <div class="card-body">
@@ -30,7 +31,9 @@ import { AssignmentDropdown } from '../assignment-dropdown';
                 }
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-2 align-items-start">
-                        <lu-assignment-dropdown [task]="task" />
+                        <!-- Slot for feature actions (assignment, status change, etc.) -->
+                        <ng-content select="[assignmentSlot]" />
+
                         @if (task.due_to) {
                             <span class="badge rounded-pill text-bg-secondary">
                                 <i class="fa-regular fa-calendar"></i>

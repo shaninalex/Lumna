@@ -3,12 +3,12 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, type Observable } from 'rxjs';
-import { KanbanBoardFeature } from "@features";
 import { MainLayout } from '@core/layout';
+import { KanbanBoardWidget } from '@root/src/app/widgets';
 
 @Component({
     selector: 'lu-board-detail-page',
-    imports: [MainLayout, AsyncPipe, KanbanBoardFeature, RouterOutlet],
+    imports: [MainLayout, AsyncPipe, KanbanBoardWidget, RouterOutlet],
     template: `
         <lu-main-layout>
             @if (boardId$ | async; as boardId) {

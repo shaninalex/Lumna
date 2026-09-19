@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, of } from "rxjs";
-import { TaskApi } from "@entities/task/api";
+import { TaskApi } from "../api";
 import { switchMap } from "rxjs/operators";
 import type { HttpErrorResponse } from "@angular/common/http";
 import { fromErrorResponse } from "@shared/models";

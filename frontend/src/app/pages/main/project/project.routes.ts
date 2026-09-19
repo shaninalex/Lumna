@@ -8,7 +8,6 @@ import { InboxPage } from "./inbox";
 import { BoardsPage } from './boards';
 import { BoardCreatePage } from './board-create';
 import { BoardDetailPage } from './board-detail';
-import { BacklogPage } from './backlog';
 import { TaskCreatePage } from './task-create';
 import { TaskDetailPage } from './task-detail';
 
@@ -48,10 +47,6 @@ export const routes: Routes = [
                         canMatch: [paramMatches("taskId", paramMatchesDigitsOnly)]
                     },
                 ]
-            },
-            {
-                path: 'backlog',
-                component: BacklogPage,
             },
             {
                 path: '',

@@ -12,7 +12,7 @@ import { AsyncPipe } from '@angular/common';
     imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe],
     template: `
         <div class="text-muted d-inline-flex align-items-center lh-1" [cdkMenuTriggerFor]="assignmentMenu">
-            @if (task.assignees.length > 0) {
+            @if (task.assignees === null || task.assignees.length > 0) {
                 <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
             } @else {
                 <i class="fa-regular fa-circle-user"></i>
@@ -27,7 +27,7 @@ import { AsyncPipe } from '@angular/common';
                         (click)="assign(task.id, user.id)"
                     >
                         <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
-                        {{ user.full_name }}
+                        Assign yourself
                     </button>
                 }
                 <!-- TODO: users list -->

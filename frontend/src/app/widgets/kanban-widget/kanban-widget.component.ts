@@ -4,11 +4,12 @@ import { Component, DestroyRef, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { actionsColumns, NewColumnFormComponent } from '@entities/column';
+import { actionsColumns } from '@entities/column';
 import { filter, tap, type Observable } from 'rxjs';
 import { TimeAgoPipe } from '@shared/utils';
 import { selectBoard, type BoardModel } from '@entities/board';
-import { TaskCardComponent, actionTask, TaskInlineForm } from '@entities/task';
+import { TaskCardComponent, actionTask } from '@entities/task';
+
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import {
     CdkDrag,
@@ -18,6 +19,10 @@ import {
 } from '@angular/cdk/drag-drop';
 import type { KanbanCard, KanbanColumn } from './model/kanban.models';
 import { KanbanService } from './service';
+import { AppRoutes } from '@core';
+import { RouterLink } from '@angular/router';
+import { AssignmentDropdown, TaskInlineForm } from '@features/task';
+import { NewColumnFormComponent } from '@features/stages';
 
 @Component({
     selector: 'lu-kanban-board-feature',
@@ -31,16 +36,19 @@ import { KanbanService } from './service';
         TimeAgoPipe,
         TaskCardComponent,
         TaskInlineForm,
+        RouterLink,
+        AssignmentDropdown,
     ],
-    templateUrl: './kanban-board.feature.html',
-    styleUrl: './kanban-board.feature.css',
+    templateUrl: './kanban-widget.component.html',
+    styleUrl: './kanban-widget.component.css',
     providers: [KanbanService],
 })
-export class KanbanBoardFeature implements OnInit {
+export class KanbanBoardWidget implements OnInit {
     private store = inject(Store);
     private actions$ = inject(Actions);
     private destroyRef = inject(DestroyRef);
     private kanban = inject(KanbanService);
+    readonly appRoutes = inject(AppRoutes);
 
     boardId = input.required<number>();
     board$: Observable<BoardModel>;

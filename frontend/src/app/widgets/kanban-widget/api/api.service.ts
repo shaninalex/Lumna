@@ -4,7 +4,7 @@ import { ColumnModel } from '@entities/column';
 import { TaskModel } from '@entities/task';
 import { APIResponse } from '@shared/models';
 import { map, Observable } from 'rxjs';
-import type { KanbanMoveColumn, KanbanMoveTask, KanbanTransferTask } from '@features/board/kanban-board/model';
+import type { KanbanMoveColumn, KanbanMoveTask, KanbanTransferTask } from '../model';
 
 interface BoardAction {
     action: "move_column" | "move_task" | "change_stage";

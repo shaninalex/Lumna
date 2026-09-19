@@ -17,16 +17,26 @@ const layerZones = [
         from: [
             './src/app/entities',
             './src/app/features',
+            './src/app/widgets',
             './src/app/pages',
             './src/app/modules',
         ],
     },
     {
         target: './src/app/entities',
-        from: ['./src/app/features', './src/app/pages', './src/app/modules'],
+        from: [
+            './src/app/features',
+            './src/app/widgets',
+            './src/app/pages',
+            './src/app/modules',
+        ],
     },
     {
         target: './src/app/features',
+        from: ['./src/app/widgets', './src/app/pages', './src/app/modules'],
+    },
+    {
+        target: './src/app/widgets',
         from: ['./src/app/pages', './src/app/modules'],
     },
     {

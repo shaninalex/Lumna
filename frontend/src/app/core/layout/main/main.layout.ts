@@ -1,5 +1,5 @@
 import {Component, DestroyRef, inject} from '@angular/core';
-import { SidebarComponent, HeaderComponent } from './components';
+import { SidebarComponent, HeaderComponent } from '@widgets';
 import {Actions, ofType} from '@ngrx/effects';
 import {actionToggleSidebar} from '@core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';

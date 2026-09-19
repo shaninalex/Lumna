@@ -48,6 +48,12 @@
             "@root/*": [
                 "./*"
             ],
+            "@widgets": [
+                "./src/app/widgets"
+            ],
+            "@widgets/*": [
+                "./src/app/widgets/*"
+            ]
         },
     },
     "angularCompilerOptions": {
