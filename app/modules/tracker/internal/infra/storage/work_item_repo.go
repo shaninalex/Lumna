@@ -109,3 +109,13 @@ func (s *WorkingItemRepo) Delete(ctx context.Context, itemId int) (bool, error) 
 	}
 	return true, nil
 }
+
+func (s *WorkingItemRepo) BatchDelete(ctx context.Context, itemIds []int) (bool, error) {
+	_, err := gorm.G[workItemRecord](s.db.From(ctx)).
+		Where("id IN ?", itemIds).
+		Delete(ctx)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

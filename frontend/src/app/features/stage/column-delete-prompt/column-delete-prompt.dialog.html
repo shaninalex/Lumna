@@ -1,0 +1,19 @@
+<div class="modal d-block">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Warning</h5>
+                <button type="button" class="btn-close" (click)="dialogRef.close({ withTasks: false, cancel: true })"></button>
+            </div>
+            <div class="modal-body">
+                <h4>Delete column with all tasks in it?</h4>
+                <p>Tasks without column will move to the draft table.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="dialogRef.close({ withTasks: true, cancel: false })">With tasks</button>
+                <button type="button" class="btn btn-danger" (click)="dialogRef.close({ withTasks: false, cancel: false })">Just column</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="dialogRef.close({ withTasks: false, cancel: true })">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

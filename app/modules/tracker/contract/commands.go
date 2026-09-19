@@ -128,3 +128,14 @@ func (WorkItemDelete) Permission() (action string, scope int) { return "", 0 }
 func ExecWorkItemDelete(ctx context.Context, a *core.App, cmd WorkItemDelete) (bool, error) {
 	return bus.Execute[WorkItemDelete, bool](ctx, a.Commands, cmd)
 }
+
+type StageDelete struct {
+	StageId   int
+	WithTasks bool
+}
+
+func (StageDelete) Permission() (action string, scope int) { return "", 0 }
+
+func ExecStageDelete(ctx context.Context, a *core.App, cmd StageDelete) (StageDeleteView, error) {
+	return bus.Execute[StageDelete, StageDeleteView](ctx, a.Commands, cmd)
+}

@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProjectCreateFeature } from '@features/project';
 import { GlobalLayout } from '@core/layout';
+import { UiService } from '@shared/ui';
+import { AppRoutes } from '@core';
 
 @Component({
     selector: 'lu-project-create-page',
@@ -17,4 +19,11 @@ import { GlobalLayout } from '@core/layout';
         </lu-global-layout>
     `,
 })
-export class ProjectCreatePage {}
+export class ProjectCreatePage {
+    private ui = inject(UiService);
+    readonly appRoutes = inject(AppRoutes);
+
+    constructor() {
+        this.ui.setPageTitle("Create Project");
+    }
+}

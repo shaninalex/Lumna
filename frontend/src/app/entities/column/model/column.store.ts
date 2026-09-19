@@ -9,28 +9,30 @@ export interface ColumnState extends EntityState<ColumnModel> {
     errors: Error[];
 }
 
-export const statusAdapter = createEntityAdapter<ColumnModel>({
+export const stageAdapter = createEntityAdapter<ColumnModel>({
     sortComparer: (a, b) => a.position - b.position,
 });
 
-const initialState: ColumnState = statusAdapter.getInitialState({
+const initialState: ColumnState = stageAdapter.getInitialState({
     loading: false,
     errors: [],
 });
 
 export const statusReducer = createReducer(
     initialState,
-    on(actionsColumns.createSuccess, (state, action) => statusAdapter.addOne(action.column, state)),
+    on(actionsColumns.createSuccess, (state, action) => stageAdapter.addOne(action.column, state)),
     on(actionsColumns.loadByBoardIdSuccess, (state, action) =>
-        statusAdapter.upsertMany(action.columns, state),
+        stageAdapter.upsertMany(action.columns, state),
     ),
     on(
         actionsColumns.loadByBoardIdFailed,
         actionsColumns.createFailed,
         actionsColumns.reorderFailed,
+        actionsColumns.deleteStageFailed,
         (state, action) => ({
             ...state,
             errors: action.errors,
         }),
     ),
+    on(actionsColumns.deleteStageSuccess, (state, { data }) => stageAdapter.removeOne(data.id, state)),
 );

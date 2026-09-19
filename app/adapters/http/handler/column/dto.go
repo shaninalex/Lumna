@@ -67,3 +67,8 @@ func (a columnCreateDto) Validate() error {
 		validation.Field(&a.BoardId, validation.Required, validation.Min(0)),
 	)
 }
+
+type columnDeleteResponseDto struct {
+	Id           int   `json:"id"`
+	DeletedTasks []int `json:"deleted_tasks"`
+}

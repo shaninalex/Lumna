@@ -4,7 +4,7 @@ import { Component, DestroyRef, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { actionsColumns } from '@entities/column';
+import { actionsColumns, ColumnMenuDropdownComponent } from '@entities/column';
 import { filter, tap, type Observable } from 'rxjs';
 import { TimeAgoPipe } from '@shared/utils';
 import { selectBoard, type BoardModel } from '@entities/board';
@@ -22,7 +22,7 @@ import { KanbanService } from './service';
 import { AppRoutes } from '@core';
 import { RouterLink } from '@angular/router';
 import { AssignmentDropdown, TaskInlineForm } from '@features/task';
-import { NewColumnFormComponent } from '@features/stages';
+import { ColumnDeletePromptComponent, NewColumnFormComponent } from '@features/stage';
 
 @Component({
     selector: 'lu-kanban-board-feature',
@@ -38,6 +38,8 @@ import { NewColumnFormComponent } from '@features/stages';
         TaskInlineForm,
         RouterLink,
         AssignmentDropdown,
+        ColumnMenuDropdownComponent,
+        ColumnDeletePromptComponent,
     ],
     templateUrl: './kanban-widget.component.html',
     styleUrl: './kanban-widget.component.css',
@@ -93,5 +95,9 @@ export class KanbanBoardWidget implements OnInit {
 
     public columnsAmount(): number {
         return this.kanban.getColumnsLength();
+    }
+
+    public cardsAmount(): number {
+        return this.kanban.cardsCount;
     }
 }

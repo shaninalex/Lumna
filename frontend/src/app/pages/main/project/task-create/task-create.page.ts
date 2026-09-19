@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ModalLayout } from '@core/layout';
+import { UiService } from '@shared/ui';
 
 @Component({
     selector: 'lu-task-create-page',
@@ -13,4 +14,9 @@ import { ModalLayout } from '@core/layout';
     `
 })
 export class TaskCreatePage {
+    private ui = inject(UiService);
+
+    constructor() {
+        this.ui.setPageTitle("Create Task")
+    }
 }

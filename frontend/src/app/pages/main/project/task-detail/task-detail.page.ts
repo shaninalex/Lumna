@@ -1,8 +1,11 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, effect, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppRoutes } from '@core';
 import { ModalLayout } from '@core/layout';
 import { TaskDetailView } from '@widgets/task-detail-view';
+import { UiService } from '@shared/ui';
+import { Store } from '@ngrx/store';
+import { selectTasks } from '@entities/task';
 
 @Component({
     selector: 'lu-task-detail-page',
@@ -14,11 +17,22 @@ import { TaskDetailView } from '@widgets/task-detail-view';
     `,
 })
 export class TaskDetailPage {
-    private readonly router = inject(Router);
-    private readonly activatedRoute = inject(ActivatedRoute);
-    private readonly appRoutes = inject(AppRoutes);
+    taskId = input.required({
+        transform: (id: string) => Number(id)
+    });
 
-    taskId = input.required({transform: (id: string) => Number(id)});
+    private store = inject(Store);
+    private router = inject(Router);
+    private activatedRoute = inject(ActivatedRoute);
+    private appRoutes = inject(AppRoutes);
+    private ui = inject(UiService);
+
+    constructor() {
+        effect(() => {
+            const t = this.store.selectSignal(selectTasks.byId(this.taskId()));
+            this.ui.setPageTitle(`Task: ${t()?.title}`)
+        });
+    }
 
     close(): void {
         const params = this.activatedRoute.parent?.snapshot.params;
