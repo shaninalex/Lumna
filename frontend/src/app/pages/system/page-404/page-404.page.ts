@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { StaticLayout } from "@core/layout";
+import { UiService } from '@shared/ui';
 
 @Component({
     selector: 'lu-page-404-page',
@@ -10,4 +11,10 @@ import { StaticLayout } from "@core/layout";
         </lu-static-layout>
     `,
 })
-export class Page404 {}
+export class Page404 {
+    private ui = inject(UiService);
+
+    constructor() {
+        this.ui.setPageTitle("Page not found")
+    }
+}

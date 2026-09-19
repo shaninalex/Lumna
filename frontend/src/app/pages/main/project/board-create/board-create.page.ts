@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { AppRoutes } from '@core';
 import { BoardCreateFeature } from '@features';
 import { MainLayout } from '@core/layout';
+import { UiService } from '@shared/ui';
 
 @Component({
     selector: 'lu-board-create-page',
@@ -17,5 +17,9 @@ import { MainLayout } from '@core/layout';
     `,
 })
 export class BoardCreatePage {
-    private appRoutes = inject(AppRoutes);
+    private ui = inject(UiService);
+
+    constructor() {
+        this.ui.setPageTitle("Create Board");
+    }
 }

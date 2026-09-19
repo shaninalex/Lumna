@@ -1,4 +1,3 @@
-import type { OnInit } from '@angular/core';
 import { Component, inject } from '@angular/core';
 import { UiService } from '@shared/ui';
 import { AuthLoginFeature } from "@features";
@@ -8,10 +7,10 @@ import { AuthLoginFeature } from "@features";
     imports: [AuthLoginFeature],
     templateUrl: './login.page.html',
 })
-export class LoginPage implements OnInit {
+export class LoginPage {
     private ui = inject(UiService);
 
-    ngOnInit(): void {
+    constructor() {
         this.ui.setPageTitle("Login")
     }
 }

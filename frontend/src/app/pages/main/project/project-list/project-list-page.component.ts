@@ -1,4 +1,3 @@
-import type { OnInit } from '@angular/core';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { UiService } from '@shared/ui';
@@ -15,7 +14,7 @@ import { GlobalLayout } from '@core/layout';
     imports: [GlobalLayout, RouterLink, AsyncPipe, ProjectCardComponent],
     templateUrl: './project-list-page.component.html',
 })
-export class ProjectListPage implements OnInit {
+export class ProjectListPage {
     private ui = inject(UiService);
     private store = inject(Store);
     readonly appRoutes = inject(AppRoutes);
@@ -29,7 +28,7 @@ export class ProjectListPage implements OnInit {
         ),
     );
 
-    ngOnInit(): void {
+    constructor() {
         this.ui.setPageTitle("Projects")
     }
 }

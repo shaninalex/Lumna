@@ -1,13 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MainLayout } from '@core/layout';
+import { UiService } from '@shared/ui';
+import { Store } from '@ngrx/store';
+import { selectWorkspaces, WorkspaceModel } from '@entities/workspace';
+import { Observable, tap } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'lu-workspace-entry-page',
-    imports: [MainLayout],
+    imports: [MainLayout, AsyncPipe],
     template: `
         <lu-main-layout>
-            <h1>Workspace Entry</h1>
+            @if (workspace$ | async; as workspace) {
+                <h1>{{ workspace.title }} workspace</h1>
+            }
         </lu-main-layout>
     `,
 })
-export class WorkspaceEntryPage {}
+export class WorkspaceEntryPage {
+    private store = inject(Store);
+    private ui = inject(UiService);
+
+    workspace$: Observable<WorkspaceModel | null> = this.store.select(selectWorkspaces.currentWorkspace).pipe(
+        tap(workspace => this.ui.setPageTitle(`Workspace: ${workspace?.title}`))
+    );
+}
