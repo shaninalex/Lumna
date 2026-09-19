@@ -6,15 +6,15 @@ import { filter, Observable, tap } from 'rxjs';
 import { form, FormField, required } from '@angular/forms/signals';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { actionTask, selectTasks, TaskEditModel, TaskModel } from '../../model';
+import { actionTask, selectTasks, TaskEditModel, TaskModel } from '@entities/task/model';
 
 
 @Component({
     selector: 'lu-task-detail-view',
     imports: [TimeAgoPipe, DatePipe, AsyncPipe, RouterLink, FormField],
-    templateUrl: './task-detail-view.view.html',
+    templateUrl: './task-detail-view.html',
 })
-export class TaskDetailViewView implements OnInit {
+export class TaskDetailView implements OnInit {
     private store = inject(Store);
     readonly appRoutes = inject(AppRoutes);
     taskId = input.required<number>();

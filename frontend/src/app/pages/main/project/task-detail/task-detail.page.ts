@@ -2,11 +2,11 @@ import { Component, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppRoutes } from '@core';
 import { ModalLayout } from '@core/layout';
-import { TaskDetailViewView } from '@entities/task';
+import { TaskDetailView } from '@widgets/task-detail-view';
 
 @Component({
     selector: 'lu-task-detail-page',
-    imports: [TaskDetailViewView, ModalLayout],
+    imports: [TaskDetailView, ModalLayout],
     template: `
         <lu-modal-layout (closed)="close()">
             <lu-task-detail-view [taskId]="taskId()"/>
