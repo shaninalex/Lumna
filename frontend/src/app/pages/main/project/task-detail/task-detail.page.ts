@@ -5,7 +5,6 @@ import { ModalLayout } from '@core/layout';
 import { TaskDetailView } from '@widgets/task-detail-view';
 import { UiService } from '@shared/ui';
 import { Store } from '@ngrx/store';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { selectTasks } from '@entities/task';
 
 @Component({
