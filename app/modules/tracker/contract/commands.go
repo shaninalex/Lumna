@@ -117,3 +117,14 @@ func (WorkItemAssign) Permission() (action string, scope int) { return "", 0 }
 func ExecWorkItemAssign(ctx context.Context, a *core.App, cmd WorkItemAssign) (bool, error) {
 	return bus.Execute[WorkItemAssign, bool](ctx, a.Commands, cmd)
 }
+
+// WorkItemDelete - assign work item on a member
+type WorkItemDelete struct {
+	WorkItemId int
+}
+
+func (WorkItemDelete) Permission() (action string, scope int) { return "", 0 }
+
+func ExecWorkItemDelete(ctx context.Context, a *core.App, cmd WorkItemDelete) (bool, error) {
+	return bus.Execute[WorkItemDelete, bool](ctx, a.Commands, cmd)
+}

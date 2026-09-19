@@ -55,25 +55,7 @@ func (s *WorkingItemRepo) List(ctx context.Context, scopeId int) ([]domain.WorkI
 
 	workItems := make([]domain.WorkItem, len(records))
 	for i, record := range records {
-		assigneeIDs := make([]int, len(record.Assignees))
-		for j, assignee := range record.Assignees {
-			assigneeIDs[j] = assignee.IdentityID
-		}
-		workItems[i] = domain.WorkItem{
-			ID:          record.ID,
-			ProjectID:   record.ProjectID,
-			Type:        domain.WorkItemType(record.Type),
-			ParentID:    record.ParentID,
-			Title:       record.Title,
-			Description: record.Description,
-			ScopeID:     record.ScopeID,
-			StageID:     record.StageID,
-			Rank:        record.Rank,
-			DueTo:       record.DueTo,
-			CreatedAt:   record.CreatedAt,
-			UpdatedAt:   record.UpdatedAt,
-			AssigneeIDs: assigneeIDs,
-		}
+		workItems[i] = workItemToDomain(record)
 	}
 
 	return workItems, nil
@@ -86,20 +68,9 @@ func (s *WorkingItemRepo) Get(ctx context.Context, itemId int) (*domain.WorkItem
 	if err != nil {
 		return nil, err
 	}
-	return &domain.WorkItem{
-		ID:          record.ID,
-		ProjectID:   record.ProjectID,
-		Type:        domain.WorkItemType(record.Type),
-		ParentID:    record.ParentID,
-		Title:       record.Title,
-		Description: record.Description,
-		ScopeID:     record.ScopeID,
-		StageID:     record.StageID,
-		Rank:        record.Rank,
-		DueTo:       record.DueTo,
-		CreatedAt:   record.CreatedAt,
-		UpdatedAt:   record.UpdatedAt,
-	}, nil
+
+	d := workItemToDomain(record)
+	return &d, nil
 }
 
 func (s *WorkingItemRepo) Assignment(ctx context.Context, identity, itemId int) error {
@@ -124,4 +95,17 @@ func (s *WorkingItemRepo) Assignment(ctx context.Context, identity, itemId int) 
 		return errors.New("unable to delete: work_item_assignment not found in database")
 	}
 	return nil
+}
+
+func (s *WorkingItemRepo) Delete(ctx context.Context, itemId int) (bool, error) {
+	r, err := gorm.G[workItemRecord](s.db.From(ctx)).
+		Where("id = ?", itemId).
+		Delete(ctx)
+	if err != nil {
+		return false, err
+	}
+	if r <= 0 {
+		return false, errors.New("unable to delete work_item, something went wrong")
+	}
+	return true, nil
 }

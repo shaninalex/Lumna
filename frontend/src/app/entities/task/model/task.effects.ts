@@ -75,4 +75,18 @@ export class TaskEffects {
             )
         )
     )
+
+    task_delete$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(actionTask.deleteTask),
+            switchMap((action) =>
+                this.api.delete(action.taskId).pipe(
+                    switchMap(() => of(actionTask.deleteTaskSuccess({ taskId: action.taskId }))),
+                    catchError((err: HttpErrorResponse) =>
+                        of(actionTask.assignTaskFailed({errors: fromErrorResponse(err)}))
+                    )
+                )
+            )
+        )
+    )
 }

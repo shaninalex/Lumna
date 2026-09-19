@@ -2,6 +2,7 @@ package task
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,7 @@ func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.POST("move", handleBoardAction(resolve))
 	router.PATCH(":task_id", handleTaskUpdate(resolve))
 	router.PATCH(":task_id/assign", handleTaskAssignment(resolve))
+	router.DELETE(":task_id", handleTaskDelete(resolve))
 }
 
 func handleList(resolve core.Resolve) gin.HandlerFunc {
@@ -174,5 +176,23 @@ func handleTaskAssignment(resolve core.Resolve) gin.HandlerFunc {
 			return
 		}
 		transport.Success(c, data)
+	}
+}
+
+func handleTaskDelete(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		taskId, err := strconv.Atoi(c.Param("task_id"))
+		if err != nil {
+			transport.Fail(c, err)
+			return
+		}
+		_, err = contract.ExecWorkItemDelete(c.Request.Context(), resolve(), contract.WorkItemDelete{
+			WorkItemId: taskId,
+		})
+		if err != nil {
+			transport.Fail(c, err)
+			return
+		}
+		transport.Success(c, true, fmt.Sprintf("Task [%d] deleted.", taskId))
 	}
 }

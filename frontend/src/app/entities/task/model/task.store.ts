@@ -35,5 +35,6 @@ export const taskReducer = createReducer(
             assignees.push(action.identity_id);
         }
         return taskAdapter.updateOne({id: action.task_id, changes: {assignees}}, state)
-    })
+    }),
+    on(actionTask.deleteTaskSuccess, (state, {taskId}) => taskAdapter.removeOne(taskId, state))
 );

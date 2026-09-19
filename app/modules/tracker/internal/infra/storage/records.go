@@ -1,6 +1,10 @@
 package storage
 
-import "time"
+import (
+	"time"
+
+	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
+)
 
 type stageRecord struct {
 	ID          int `gorm:"primaryKey;autoIncrement"`
@@ -66,3 +70,25 @@ type workItemRecord struct {
 }
 
 func (workItemRecord) TableName() string { return "work_items" }
+
+func workItemToDomain(record workItemRecord) domain.WorkItem {
+	assigneeIDs := make([]int, len(record.Assignees))
+	for j, assignee := range record.Assignees {
+		assigneeIDs[j] = assignee.IdentityID
+	}
+	return domain.WorkItem{
+		ID:          record.ID,
+		ProjectID:   record.ProjectID,
+		Type:        domain.WorkItemType(record.Type),
+		ParentID:    record.ParentID,
+		Title:       record.Title,
+		Description: record.Description,
+		ScopeID:     record.ScopeID,
+		StageID:     record.StageID,
+		Rank:        record.Rank,
+		DueTo:       record.DueTo,
+		CreatedAt:   record.CreatedAt,
+		UpdatedAt:   record.UpdatedAt,
+		AssigneeIDs: assigneeIDs,
+	}
+}

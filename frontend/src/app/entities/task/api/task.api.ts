@@ -22,7 +22,7 @@ export class TaskApi {
         return this.http
             .get<
                 APIResponse<TaskModel[]>
-            >(`/api/v1/tasks`, { params, withCredentials: true })
+            >(`/api/v1/tasks`, {params, withCredentials: true})
             .pipe(map((response) => response.data));
     }
 
@@ -30,7 +30,7 @@ export class TaskApi {
         return this.http
             .post<
                 APIResponse<TaskModel>
-            >(`/api/v1/tasks`, data, { withCredentials: true })
+            >(`/api/v1/tasks`, data, {withCredentials: true})
             .pipe(map((response) => response.data));
     }
 
@@ -38,7 +38,7 @@ export class TaskApi {
         return this.http
             .patch<
                 APIResponse<TaskModel>
-            >(`/api/v1/tasks/${data.task_id}`, data, { withCredentials: true })
+            >(`/api/v1/tasks/${data.task_id}`, data, {withCredentials: true})
             .pipe(map((response) => response.data));
     }
 
@@ -46,7 +46,15 @@ export class TaskApi {
         return this.http
             .patch<
                 APIResponse<TaskAssignModel>
-            >(`/api/v1/tasks/${data.task_id}/assign`, data, { withCredentials: true })
+            >(`/api/v1/tasks/${data.task_id}/assign`, data, {withCredentials: true})
+            .pipe(map((response) => response.data));
+    }
+
+    delete(taskId: number): Observable<unknown> {
+        return this.http
+            .delete<
+                APIResponse<unknown>
+            >(`/api/v1/tasks/${taskId}`, {withCredentials: true})
             .pipe(map((response) => response.data));
     }
 }

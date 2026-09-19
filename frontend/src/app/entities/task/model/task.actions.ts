@@ -17,5 +17,7 @@ export const actionTask = createActionGroup({
         'assign task': props<{ action: TaskAssignModel }>(),
         'assign task success': props<{ action: TaskAssignModel }>(),
         'assign task failed': props<{ errors: Error[] }>(),
+        'delete task': props<{ taskId: number }>(),
+        'delete task success': props<{ taskId: number }>(),
     },
 });
