@@ -6,3 +6,4 @@ stages:
 include:
   - local: .gitlab/test.yml
   - local: .gitlab/frontend-lint.yml
+  - local: .gitlab/mirror.yml
