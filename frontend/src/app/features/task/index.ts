@@ -1,3 +1,3 @@
 export * from './task-create-full'
-export * from './task-create-inline'
-export * from './task-detail-view'
+export * from './assignment-dropdown'
+export * from './task-inline-form'

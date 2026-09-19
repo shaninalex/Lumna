@@ -14,18 +14,17 @@ import { ThemeSwitcherComponent } from '@shared/ui';
                 <a [routerLink]="['/app/w', currentWorkspaceId() || '']">
                     <img src="images/logo-h.svg" alt="" style="width: 160px">
                 </a>
-
                 <div class="flex align-items-center">
-                    <lu-theme-switcher />
+                    <lu-theme-switcher/>
                     <button class="btn btn-sm">
                         <i class="fa-solid fa-bell"></i>
                     </button>
-                    <lu-user-menu />
+                    <lu-user-menu/>
                 </div>
             </div>
         </nav>
 
-        <ng-content />
+        <ng-content/>
     `,
 })
 export class GlobalLayout {

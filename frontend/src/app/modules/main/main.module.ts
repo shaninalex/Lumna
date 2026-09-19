@@ -13,7 +13,7 @@ import { UserApi, userFeature } from '@entities/user';
 import { TaskApi, taskFeature } from '@entities/task';
 import { ColumnApi, columnFeature } from '@entities/column';
 import { BoardApi, boardFeature } from '@entities/board';
-import { KanbanApi } from '@features/board/kanban-board/api';
+import { KanbanApi } from '@widgets/kanban-widget/api';
 
 @NgModule({
     declarations: [],

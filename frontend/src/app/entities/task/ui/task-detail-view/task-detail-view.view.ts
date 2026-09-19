@@ -1,5 +1,4 @@
 import { Component, inject, input, OnInit, signal, WritableSignal } from '@angular/core';
-import { actionTask, selectTasks, TaskEditModel, TaskModel } from '@entities/task';
 import { Store } from '@ngrx/store';
 import { TimeAgoPipe } from '@shared/utils';
 import { AppRoutes } from '@core';
@@ -7,6 +6,8 @@ import { filter, Observable, tap } from 'rxjs';
 import { form, FormField, required } from '@angular/forms/signals';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { actionTask, selectTasks, TaskEditModel, TaskModel } from '../../model';
+
 
 @Component({
     selector: 'lu-task-detail-view',
@@ -17,6 +18,7 @@ export class TaskDetailViewView implements OnInit {
     private store = inject(Store);
     readonly appRoutes = inject(AppRoutes);
     taskId = input.required<number>();
+
     task$: Observable<TaskModel>;
     taskEditFormModel: WritableSignal<TaskEditModel> = signal<TaskEditModel>({task_id: 0, title: '', body: ''})
 

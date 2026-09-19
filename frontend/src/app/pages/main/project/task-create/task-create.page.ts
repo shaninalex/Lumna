@@ -1,10 +1,16 @@
 import { Component } from '@angular/core';
-import { TaskCreateFullFeature } from '@features/task';
-import { MainLayout } from '@core/layout';
+import { ModalLayout } from '@core/layout';
 
 @Component({
     selector: 'lu-task-create-page',
-    imports: [MainLayout, TaskCreateFullFeature],
-    templateUrl: './task-create.page.html',
+    imports: [ModalLayout],
+    template: `
+        <lu-modal-layout>
+            <div class="container-fluid py-4">
+                <h3>Create task</h3>
+            </div>
+        </lu-modal-layout>
+    `
 })
-export class TaskCreatePage {}
+export class TaskCreatePage {
+}

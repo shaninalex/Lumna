@@ -21,10 +21,10 @@
                 Members
             </button>
 
-            <button class="btn btn-sm btn-primary">
+            <a class="btn btn-sm btn-primary" [routerLink]="appRoutes.createTask(boardId())">
                 <i class="fa-solid fa-plus me-2"></i>
                 New Task
-            </button>
+            </a>
         </div>
     </div>
 
@@ -59,7 +59,9 @@
                         >
                             @for (task of c.tasks; track task.id) {
                                 <div cdkDrag [cdkDragData]="task">
-                                    <lu-task-card [task]="task" />
+                                    <lu-task-card [task]="task">
+                                        <lu-assignment-dropdown assignmentSlot [task]="task" />
+                                    </lu-task-card>
                                 </div>
                             }
                         </div>

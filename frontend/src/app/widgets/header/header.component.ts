@@ -7,6 +7,7 @@ import { UserMenuComponent } from '@entities/user';
 import { NotificationsDropdownComponent } from '@entities/notification';
 import { ThemeSwitcherComponent } from '@shared/ui';
 import { ProjectDropdownComponent } from '@features/project';
+import { WorkspaceSwitcherComponent } from '@features';
 
 @Component({
     selector: 'lu-header',
@@ -15,6 +16,7 @@ import { ProjectDropdownComponent } from '@features/project';
         ThemeSwitcherComponent,
         NotificationsDropdownComponent,
         ProjectDropdownComponent,
+        WorkspaceSwitcherComponent,
     ],
     styleUrl: './header.component.css',
     template: `
@@ -34,7 +36,9 @@ import { ProjectDropdownComponent } from '@features/project';
                 <div class="flex align-items-center">
                     <lu-theme-switcher />
                     <lu-notifications-dropdown />
-                    <lu-user-menu />
+                    <lu-user-menu>
+                        <lu-workspace-switcher bottomMenuItems />
+                    </lu-user-menu>
                 </div>
             </div>
         </nav>

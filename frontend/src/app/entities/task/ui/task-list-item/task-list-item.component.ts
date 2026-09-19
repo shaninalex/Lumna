@@ -1,9 +1,9 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import type { TaskModel } from '@entities/task/model';
+import { TaskModel } from '../../model';
 import { AppRoutes } from '@core';
 import { standardTimeFormat } from '@shared/utils';
 import { Store } from '@ngrx/store';
-import { ColumnModel, selectColumns } from '@entities/column';
+import { ColumnModel, selectColumns } from '@entities/column'; // bad (?)
 import { filter, Observable } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';

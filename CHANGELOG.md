@@ -1,3 +1,9 @@
+## 0.38.0 (2026-09-19)
+
+### Fix
+
+- **client**: better FSD structure pattern
+
 ## 0.37.1 (2026-09-18)
 
 ### Fix
