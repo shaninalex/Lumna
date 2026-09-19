@@ -2,6 +2,7 @@ stages:
   - test
   - build
   - release
+  - mirror
 
 include:
   - local: .gitlab/test.yml
