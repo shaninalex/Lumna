@@ -31,6 +31,7 @@ type Module struct {
 	createScope        *handlers.ScopeCreate
 	createStage        *handlers.StateCreate
 	stageMove          *handlers.StageMove
+	stageDelete        *handlers.StageDelete
 	createWorkItem     *handlers.WorkItemCreate
 	workItemMove       *handlers.WorkItemMove
 	workItemTransfer   *handlers.WorkItemTransfer
@@ -57,6 +58,7 @@ func New(d Deps) *Module {
 		workItemRepo:       workItemRepo,
 		createScope:        handlers.NewCreateScope(scopeRepo, d.Clock),
 		createStage:        handlers.NewCreateStage(stageRepo, d.Clock),
+		stageDelete:        handlers.NewStageDelete(workItemRepo, stageRepo),
 		scopeList:          handlers.NewScopeList(scopeRepo),
 		stageList:          handlers.NewStageList(stageRepo),
 		stageMove:          handlers.NewStageMove(stageRepo, d.Clock),
@@ -79,6 +81,7 @@ func (m *Module) Register(a *core.App) error {
 
 		bus.RegisterCommand(a.Commands, m.createStage.Handle),
 		bus.RegisterCommand(a.Commands, m.stageMove.Handle),
+		bus.RegisterCommand(a.Commands, m.stageDelete.Handle),
 		bus.RegisterQuery(a.Queries, m.stageList.Handle),
 
 		bus.RegisterCommand(a.Commands, m.createWorkItem.Handle),

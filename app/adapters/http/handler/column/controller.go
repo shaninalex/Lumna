@@ -12,6 +12,7 @@ import (
 func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET("", handleList(resolve))
 	router.POST("", handleCreate(resolve))
+	router.DELETE(":stage_id", handleDelete(resolve))
 }
 
 func handleList(resolve core.Resolve) gin.HandlerFunc {
@@ -78,5 +79,36 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 			CreatedAt: stage.CreatedAt,
 			UpdatedAt: &stage.UpdatedAt,
 		})
+	}
+}
+
+type stageDeleteQuery struct {
+	WithTasks bool `form:"with_tasks"`
+}
+
+func handleDelete(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		stageId, err := strconv.Atoi(c.Param("task_id"))
+		if err != nil {
+			transport.Fail(c, err)
+			return
+		}
+
+		var query stageDeleteQuery
+		if err = c.ShouldBindQuery(&query); err != nil {
+			transport.Fail(c, err)
+			return
+		}
+
+		_, err = contract.ExecStageDelete(c.Request.Context(), resolve(), contract.StageDelete{
+			StageId:   stageId,
+			WithTasks: query.WithTasks,
+		})
+		if err != nil {
+			transport.Fail(c, err)
+			return
+		}
+
+		transport.Success(c, nil, "Stage deleted")
 	}
 }

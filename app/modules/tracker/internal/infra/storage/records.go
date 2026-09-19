@@ -15,14 +15,29 @@ type stageRecord struct {
 	Position    float64
 	WipLimit    *int `gorm:"column:wip_limit"`
 
-	Scope scopeRecord `gorm:"foreignKey:ScopeID;references:ID"`
-	//WorkItems []workItemRecord
+	Scope     scopeRecord      `gorm:"foreignKey:ScopeID;references:ID"`
+	WorkItems []workItemRecord `gorm:"foreignKey:StageID;references:ID"`
 
 	CreatedAt time.Time  `gorm:"autoCreateTime"`
 	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
 }
 
 func (stageRecord) TableName() string { return "stages" }
+
+func stageRecordToDomain(record stageRecord) domain.Stage {
+	return domain.Stage{
+		ID:          record.ID,
+		ScopeID:     record.ScopeID,
+		Name:        record.Name,
+		Description: *record.Description,
+		Category:    domain.StageCategory(record.Category),
+		Position:    record.Position,
+		WIPLimit:    record.WipLimit,
+		CreatedAt:   record.CreatedAt,
+		UpdatedAt:   *record.UpdatedAt,
+		WorkItems:   workItemsToDomain(record.WorkItems),
+	}
+}
 
 type scopeRecord struct {
 	ID          int `gorm:"primaryKey;autoIncrement"`
@@ -91,4 +106,12 @@ func workItemToDomain(record workItemRecord) domain.WorkItem {
 		UpdatedAt:   record.UpdatedAt,
 		AssigneeIDs: assigneeIDs,
 	}
+}
+
+func workItemsToDomain(records []workItemRecord) []domain.WorkItem {
+	workItems := make([]domain.WorkItem, len(records))
+	for i, record := range records {
+		workItems[i] = workItemToDomain(record)
+	}
+	return workItems
 }

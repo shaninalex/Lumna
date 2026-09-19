@@ -27,6 +27,8 @@ type Stage struct {
 	// Work In Progress limit
 	WIPLimit *int
 
+	WorkItems []WorkItem
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
