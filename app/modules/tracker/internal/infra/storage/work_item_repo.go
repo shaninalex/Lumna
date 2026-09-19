@@ -96,3 +96,16 @@ func (s *WorkingItemRepo) Assignment(ctx context.Context, identity, itemId int) 
 	}
 	return nil
 }
+
+func (s *WorkingItemRepo) Delete(ctx context.Context, itemId int) (bool, error) {
+	r, err := gorm.G[workItemRecord](s.db.From(ctx)).
+		Where("id = ?", itemId).
+		Delete(ctx)
+	if err != nil {
+		return false, err
+	}
+	if r <= 0 {
+		return false, errors.New("unable to delete work_item, something went wrong")
+	}
+	return true, nil
+}
