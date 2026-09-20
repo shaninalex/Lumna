@@ -48,6 +48,7 @@
                                     [board_id]="c.board_id"
                                     [task_count]="c.tasks.length"
                                     [project_id]="projectId"
+                                    [nextPosition]="c.tasks.length ? c.tasks[0].position / 2: 1"
                                 />
                             }
 

@@ -2,7 +2,7 @@ import { Component, inject, Input, signal, WritableSignal } from '@angular/core'
 import { FormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Store } from '@ngrx/store';
-import { actionTask, TaskCreateModel } from '@entities/task';
+import { actionTask, TaskCreateModel, TaskModel } from '@entities/task';
 import { form, FormField } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
 
@@ -20,10 +20,10 @@ export class CreateTaskModalComponent {
     @Input() board_id: number;
     @Input() task_count: number;
     @Input() project_id: number;
+    @Input() nextPosition: number;
 
     dialog = inject(Dialog);
     private store = inject(Store)
-
 
     openDialog(): void {
         const dialogRef = this.dialog.open<TaskCreateModel>(CreateTaskModalDialog, {
@@ -32,7 +32,7 @@ export class CreateTaskModalComponent {
                 title: '',
                 body: '',
                 project_id: this.project_id,
-                position: 0,
+                position: this.nextPosition,
                 column_id: this.column_id,
                 board_id: this.board_id,
             },
