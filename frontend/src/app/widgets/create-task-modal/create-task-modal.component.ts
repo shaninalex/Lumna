@@ -2,7 +2,7 @@ import { Component, inject, Input, signal, WritableSignal } from '@angular/core'
 import { FormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Store } from '@ngrx/store';
-import { actionTask, TaskCreateModel, TaskModel } from '@entities/task';
+import { actionTask, TaskCreateModel } from '@entities/task';
 import { form, FormField } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
 

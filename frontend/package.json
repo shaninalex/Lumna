@@ -28,6 +28,7 @@
         "@ngrx/store-devtools": "^21.1.0",
         "bootstrap": "^5.3.8",
         "date-fns": "^4.4.0",
+        "ngx-editor": "^19.0.0-beta.1",
         "rxjs": "~7.8.0",
         "tslib": "^2.3.0"
     },
