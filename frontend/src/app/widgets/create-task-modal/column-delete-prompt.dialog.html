@@ -1,0 +1,73 @@
+<div class="modal d-block">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-end mb-3">
+                    <button class="button ms-auto" (click)="dialogRef.close()">
+                        <i class="fa-solid fa-x"></i>
+                    </button>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input id="title" class="form-control" type="text" placeholder="Task title"
+                                   [formField]="taskEditForm.title"/>
+                        </div>
+
+                        <!-- rendered markdown text -->
+                        <label for="body" class="form-label">Description</label>
+                        <textarea id="body" class="form-control mb-3" rows="5" placeholder="Task description"
+                                  [formField]="taskEditForm.body"></textarea>
+
+                        <button
+                            class="btn btn-sm btn-primary"
+                            type="submit"
+                            (click)="submit($event)"
+                            [disabled]="taskEditForm().invalid()"
+                            >Save
+                        </button>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-lg-4">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                Details
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item d-flex justify-content-between">
+                                    <span class="text-muted">Board</span>
+                                    <a routerLink="/board">Development</a>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between">
+                                    <span class="text-muted">Column</span>
+                                    <strong>In Progress</strong>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between">
+                                    <span class="text-muted">Priority</span>
+                                    <span class="badge text-bg-danger">
+                                        High
+                                    </span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between">
+                                    <span class="text-muted">Assignee</span>
+                                    <strong>todo</strong>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between">
+                                    <span class="text-muted">Reporter</span>
+                                    <strong>todo</strong>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between">
+                                    <span class="text-muted">Due to</span>
+                                    <span>todo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,7 +5,7 @@ html, body {
 .app-version {
     position: fixed;
     z-index: 10;
-    bottom: -3px;
+    bottom: 0;
     right: 15px;
     font-size: 10px;
     opacity: 0.5;
@@ -30,4 +30,51 @@ html, body {
     width: 2rem;
     height: 2rem;
     font-size: 1rem;
+}
+
+:root {
+    --lu-background-color: var(--lu-color-tertiary);
+}
+
+[data-bs-theme="dark"] {
+    --lu-color-tertiary: #2b3035;
+    --bs-card-border-color: rgba(0, 0, 0, 0.005);
+}
+
+[data-bs-theme="light"] {
+    --lu-color-tertiary: #f8f9fa;
+    --bs-card-border-color: rgba(0, 0, 0, 0.005);
+}
+
+.layout-bg {
+    background-color: var(--lu-background-color);
+}
+
+button[disabled] {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: var(--lu-background-color);
+}
+
+.button-pill {
+    padding: 0 0.5rem;
+    border-radius: 1rem;
+}
+
+.button-outline-pill {
+    padding: 0 0.5rem;
+    border-radius: 1rem;
+    background-color: var(--lu-background-color);
+    border: 1px solid var(--lu-color-tertiary);
 }

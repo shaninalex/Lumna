@@ -23,7 +23,7 @@ import { Store } from '@ngrx/store';
                     </div>
                 -->
                 <div class="d-flex justify-content-between mb-2 align-items-start">
-                    <h6 class="mb-2 flex-grow-1">
+                    <h6 class="flex-grow-1 mb-0">
                         <a [routerLink]="routeService.task(task.board_id, task.id)">
                             {{ task.title }}
                         </a>

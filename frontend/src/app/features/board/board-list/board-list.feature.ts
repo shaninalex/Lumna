@@ -9,13 +9,11 @@ import { filter, switchMap } from 'rxjs';
     selector: 'lu-board-list-feature',
     imports: [AsyncPipe, BoardListItemComponent],
     template: `
-        <div class="list-group">
-            @if (boards$ | async; as boards) {
-                @for (board of boards; track $index) {
-                    <lu-board-list-item [board]="board" />
-                }
+        @if (boards$ | async; as boards) {
+            @for (board of boards; track $index) {
+                <lu-board-list-item class="mb-3 d-block" [board]="board" />
             }
-        </div>
+        }
     `,
 })
 export class BoardListFeature {
