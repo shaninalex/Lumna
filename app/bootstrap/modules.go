@@ -58,7 +58,7 @@ func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger, clk clo
 
 	trackerModule := tracker.New(tracker.Deps{DB: db, Log: log, Clock: clk, EventBus: e})
 	workspaceModule := workspace.New(workspace.Deps{DB: db, Log: log, Clock: clk})
-	notificationsModule := notifications.New(notifications.Deps{DB: db, Log: log, Clock: clk})
+	notificationsModule := notifications.New(notifications.Deps{DB: db, Log: log, Clock: clk, EventBus: e})
 
 	modules := []core.Module{
 		identityModule,

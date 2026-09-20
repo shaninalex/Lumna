@@ -31,7 +31,7 @@ func New(d Deps) *Module {
 	return &Module{
 		deps: d,
 
-		workItemStageChanged: handlers.NewWorkItemStageChanged(repo, d.Clock),
+		workItemStageChanged: handlers.NewWorkItemStageChanged(repo, d.Clock, d.EventBus),
 	}
 }
 
