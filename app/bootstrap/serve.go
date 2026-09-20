@@ -13,8 +13,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
-	api "gitlab.com/shaninalex/lumna/app/adapters/http"
-	"gitlab.com/shaninalex/lumna/app/adapters/webui"
+	api "gitlab.com/shaninalex/lumna/app/adapters/api"
+	"gitlab.com/shaninalex/lumna/app/adapters/web"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
