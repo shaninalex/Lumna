@@ -1,14 +1,22 @@
+import { AsyncPipe } from '@angular/common';
 import type { OnInit } from '@angular/core';
 import { Component, DestroyRef, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { actionsColumns, ColumnMenuDropdownComponent } from '@entities/column';
-import { filter, type Observable, tap } from 'rxjs';
+import { filter, tap, type Observable } from 'rxjs';
 import { TimeAgoPipe } from '@shared/utils';
-import { type BoardModel, selectBoard } from '@entities/board';
-import { actionTask, TaskCardComponent } from '@entities/task';
+import { selectBoard, type BoardModel } from '@entities/board';
+import { TaskCardComponent, actionTask } from '@entities/task';
+
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
+import {
+    CdkDrag,
+    CdkDragHandle,
+    CdkDropList,
+    CdkDropListGroup,
+} from '@angular/cdk/drag-drop';
 import type { KanbanCard, KanbanColumn } from './model/kanban.models';
 import { KanbanService } from './service';
 import { AppRoutes } from '@core';
@@ -20,6 +28,11 @@ import { selectProjects } from '@entities/project';
 @Component({
     selector: 'lu-kanban-board-feature',
     imports: [
+        CdkDropListGroup,
+        CdkDropList,
+        CdkDrag,
+        CdkDragHandle,
+        AsyncPipe,
         NewColumnFormComponent,
         TimeAgoPipe,
         TaskCardComponent,
