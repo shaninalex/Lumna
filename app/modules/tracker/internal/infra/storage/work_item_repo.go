@@ -63,6 +63,7 @@ func (s *WorkingItemRepo) List(ctx context.Context, scopeId int) ([]domain.WorkI
 
 func (s *WorkingItemRepo) Get(ctx context.Context, itemId int) (*domain.WorkItem, error) {
 	record, err := gorm.G[workItemRecord](s.db.From(ctx)).
+		Preload("Assignees", nil).
 		Where("id = ?", itemId).
 		First(ctx)
 	if err != nil {
@@ -75,7 +76,7 @@ func (s *WorkingItemRepo) Get(ctx context.Context, itemId int) (*domain.WorkItem
 
 func (s *WorkingItemRepo) Assignment(ctx context.Context, identity, itemId int) error {
 	_, err := gorm.G[workItemAssignRecord](s.db.From(ctx)).
-		Where("work_item_id = ? and identity_id", itemId, identity).
+		Where("work_item_id = ? and identity_id = ?", itemId, identity).
 		First(ctx)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		record := workItemAssignRecord{WorkItemID: itemId, IdentityID: identity}
