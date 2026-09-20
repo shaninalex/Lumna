@@ -12,17 +12,33 @@ type Event interface {
 }
 
 type EventBus struct {
-	subs map[reflect.Type][]Invoke
+	subs   map[reflect.Type][]Invoke
+	chain  []Middleware
+	sealed bool
 }
 
-func NewEventBus() *EventBus {
+func NewEventBus(mw ...Middleware) *EventBus {
 	return &EventBus{
-		subs: make(map[reflect.Type][]Invoke),
+		subs:  make(map[reflect.Type][]Invoke),
+		chain: mw,
 	}
 }
 
+func (b *EventBus) Seal() { b.sealed = true }
+
 func Subscribe[E Event](b *EventBus, h func(context.Context, E) error) error {
-	panic("Subscribe: not implemented")
+	if b.sealed {
+		return errors.New("bus: subscription after Seal()")
+	}
+	key := reflect.TypeFor[E]()
+	call := Invoke(func(ctx context.Context, msg any) (any, error) {
+		return nil, h(ctx, msg.(E))
+	})
+	for i := len(b.chain) - 1; i >= 0; i-- {
+		call = b.chain[i](call)
+	}
+	b.subs[key] = append(b.subs[key], call)
+	return nil
 }
 
 func (b *EventBus) Publish(ctx context.Context, e Event) error {
@@ -35,6 +51,17 @@ func (b *EventBus) Publish(ctx context.Context, e Event) error {
 	return errors.Join(errs...)
 }
 
-func safeCall(ctx context.Context, h Invoke, e Event) error {
-	panic("safeCall: not implemented")
+func safeCall(ctx context.Context, h Invoke, e Event) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			if pe, ok := r.(error); ok {
+				err = fmt.Errorf("panic: %w", pe)
+			} else {
+				err = fmt.Errorf("panic: %v", r)
+			}
+		}
+	}()
+
+	_, err = h(ctx, e)
+	return err
 }
