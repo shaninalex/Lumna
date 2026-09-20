@@ -8,7 +8,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/shaninalex/lumna/app/adapters/webui/templates"
+	"gitlab.com/shaninalex/lumna/app/adapters/web/templates"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"

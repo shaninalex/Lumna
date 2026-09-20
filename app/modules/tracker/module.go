@@ -14,9 +14,10 @@ import (
 )
 
 type Deps struct {
-	DB    *database.DB
-	Log   *slog.Logger
-	Clock clock.Clock
+	DB       *database.DB
+	Log      *slog.Logger
+	Clock    clock.Clock
+	EventBus *bus.EventBus
 }
 
 type Module struct {
@@ -65,7 +66,7 @@ func New(d Deps) *Module {
 		createWorkItem:     handlers.NewWorkItemCreate(workItemRepo, d.Clock),
 		workItemList:       handlers.NewWorkItemList(workItemRepo, d.Clock),
 		workItemMove:       handlers.NewWorkItemMove(workItemRepo, d.Clock),
-		workItemTransfer:   handlers.NewWorkItemTransfer(workItemRepo, stageRepo, d.Clock),
+		workItemTransfer:   handlers.NewWorkItemTransfer(workItemRepo, stageRepo, d.Clock, d.EventBus),
 		workItemUpdate:     handlers.NewWorkItemUpdate(workItemRepo, d.Clock),
 		workItemAssignment: handlers.NewWorkItemAssignment(workItemRepo, d.Clock),
 		workItemDelete:     handlers.NewWorkItemDelete(workItemRepo),

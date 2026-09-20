@@ -74,7 +74,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	}
 
 	// ======= Modules =======
-	mods, bridges, err := buildModules(cfg, db, log, clk)
+	mods, bridges, err := buildModules(cfg, db, log, clk, c.Events)
 	if err != nil {
 		return nil, err
 	}
@@ -84,9 +84,10 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 		}
 	}
 
-	// ======= Stop registering commands and queries =======
+	// ======= Stop registering commands, queries and events =======
 	c.Commands.Seal()
 	c.Queries.Seal()
+	c.Events.Seal()
 
 	return &Instance{
 		Core:    c,
