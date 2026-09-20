@@ -1,39 +1,25 @@
-import { AsyncPipe } from '@angular/common';
 import type { OnInit } from '@angular/core';
 import { Component, DestroyRef, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { actionsColumns, ColumnMenuDropdownComponent } from '@entities/column';
-import { filter, tap, type Observable } from 'rxjs';
+import { filter, type Observable, tap } from 'rxjs';
 import { TimeAgoPipe } from '@shared/utils';
-import { selectBoard, type BoardModel } from '@entities/board';
-import { TaskCardComponent, actionTask } from '@entities/task';
-
+import { type BoardModel, selectBoard } from '@entities/board';
+import { actionTask, TaskCardComponent } from '@entities/task';
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
-import {
-    CdkDrag,
-    CdkDragHandle,
-    CdkDropList,
-    CdkDropListGroup,
-} from '@angular/cdk/drag-drop';
 import type { KanbanCard, KanbanColumn } from './model/kanban.models';
 import { KanbanService } from './service';
 import { AppRoutes } from '@core';
-import { RouterLink } from '@angular/router';
 import { AssignmentDropdown } from '@features/task';
 import { ColumnDeletePromptComponent, NewColumnFormComponent } from '@features/stage';
 import { CreateTaskModalComponent } from '../create-task-modal';
-import { ProjectModel, selectProjects } from '@entities/project';
+import { selectProjects } from '@entities/project';
 
 @Component({
     selector: 'lu-kanban-board-feature',
     imports: [
-        CdkDropListGroup,
-        CdkDropList,
-        CdkDrag,
-        CdkDragHandle,
-        AsyncPipe,
         NewColumnFormComponent,
         TimeAgoPipe,
         TaskCardComponent,
@@ -47,16 +33,15 @@ import { ProjectModel, selectProjects } from '@entities/project';
     providers: [KanbanService],
 })
 export class KanbanBoardWidget implements OnInit {
+    readonly appRoutes = inject(AppRoutes);
+    boardId = input.required<number>();
+    board$: Observable<BoardModel>;
     private store = inject(Store);
+    projectId$ = this.store.select(selectProjects.currentProjectId);
     private actions$ = inject(Actions);
     private destroyRef = inject(DestroyRef);
     private kanban = inject(KanbanService);
-    readonly appRoutes = inject(AppRoutes);
-
-    boardId = input.required<number>();
-    board$: Observable<BoardModel>;
     kolumns$: Observable<KanbanColumn[]> = this.kanban.boardData();
-    projectId$ = this.store.select(selectProjects.currentProjectId);
 
     constructor() {
         effect(() => {
@@ -65,8 +50,8 @@ export class KanbanBoardWidget implements OnInit {
     }
 
     ngOnInit() {
-        const _q = { board_id: this.boardId() };
-        this.store.dispatch(actionTask.getList({ query: _q }));
+        const _q = {board_id: this.boardId()};
+        this.store.dispatch(actionTask.getList({query: _q}));
         this.store.dispatch(actionsColumns.loadByBoardId(_q));
         this.board$ = this.store
             .select(selectBoard.byId(_q.board_id))

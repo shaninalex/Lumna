@@ -3,9 +3,6 @@ import type {
     HttpHandlerFn,
     HttpEvent,
     HttpErrorResponse} from '@angular/common/http';
-import {
-    HttpClient
-} from '@angular/common/http';
 import { inject } from '@angular/core';
 import type { Observable} from 'rxjs';
 import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
