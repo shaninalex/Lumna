@@ -23,9 +23,9 @@ export const taskReducer = createReducer(
         taskAdapter.upsertOne(task, state)
     ),
     on(actionTask.assignTaskSuccess, (state, {action}) => {
-        const task = state.entities[action.task_id]
+        const task = state.entities[action.task_id];
         if (!task) {
-            return state
+            return state;
         }
 
         const assignees = new Set(task.assignees ?? []);
@@ -35,7 +35,7 @@ export const taskReducer = createReducer(
             assignees.add(action.identity_id);
         }
 
-        return taskAdapter.updateOne({id: action.task_id, changes: {assignees: [...assignees]}}, state)
+        return taskAdapter.updateOne({id: action.task_id, changes: {assignees: [...assignees]}}, state);
     }),
     on(actionTask.deleteTaskSuccess, (state, {taskId}) => taskAdapter.removeOne(taskId, state))
 );

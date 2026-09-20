@@ -1,6 +1,6 @@
 import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TrimPipe } from '@shared/utils';
+import { StripHtmlPipe, TrimPipe } from '@shared/utils';
 import { DatePipe } from '@angular/common';
 import { AppRoutes } from '@core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
@@ -11,7 +11,7 @@ import { Store } from '@ngrx/store';
 
 @Component({
     selector: 'lu-task-card',
-    imports: [RouterLink, TrimPipe, DatePipe, CdkMenu, CdkMenuItem, CdkMenuTrigger],
+    imports: [RouterLink, TrimPipe, DatePipe, CdkMenu, CdkMenuItem, CdkMenuTrigger, StripHtmlPipe],
     template: `
         <div class="card text-decoration-none text-body">
             <div class="card-body p-2">
@@ -34,7 +34,7 @@ import { Store } from '@ngrx/store';
                 </div>
 
                 @if (task.body !== '') {
-                    <p class="small text-muted mb-2">{{ task.body | trim: 65 }}</p>
+                    <p class="small text-muted mb-2">{{ task.body | strip_html | trim: 65 }}</p>
                 }
 
                 <div class="d-flex justify-content-between align-items-center">
