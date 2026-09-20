@@ -1,9 +1,10 @@
 # Lumna
 
-Lumna - is a self hosted, all in one, project management system that can be
-hosted in your own vps with minimal setup and configuration.
+> In development! Many features might be not implemented or work not properly,
+> documentation might be inconsistent or incorrect. Wait for release v1
 
->In development
+Lumna - is a self hosted, all in one, project management system that can be
+hosted in your own vps or cluster with minimal setup and configuration.
 
 ### build
 
