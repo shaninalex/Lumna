@@ -1,7 +1,12 @@
 @if (board$ | async; as board) {
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="mb-1">{{ board.title }}</h2>
+    <div class="row mb-4    ">
+        <div class="col-8">
+            <div class="d-flex align-items-center gap-3">
+                <h2 class="mb-1">{{ board.title }}</h2>
+                <button class="button">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+            </div>
             <p class="text-muted mb-0">
                 {{ cardsAmount() }} cards
                 @if (board.updated_at) {
@@ -9,22 +14,15 @@
                 }
             </p>
         </div>
-
-        <div class="d-flex gap-2">
-            <button class="btn btn-sm btn-outline-secondary" disabled>
+        <div class="col-4 text-end">
+            <button class="button button-pill" disabled>
                 <i class="fa-solid fa-filter me-2"></i>
                 Filter
             </button>
-
-            <button class="btn btn-sm btn-outline-secondary" disabled>
+            <button class="button button-pill" disabled>
                 <i class="fa-solid fa-users me-2"></i>
                 Members
             </button>
-
-            <a class="btn btn-sm btn-primary" [routerLink]="appRoutes.createTask(boardId())">
-                <i class="fa-solid fa-plus me-2"></i>
-                New Task
-            </a>
         </div>
     </div>
 
@@ -34,31 +32,35 @@
         <div cdkDropListGroup class="d-flex gap-3">
             @if (kolumns$ | async; as columns) {
                 @for (c of columns; track c.id) {
-                    <div cdkDrag [cdkDragData]="c" class="card board-column">
-                        <div class="card-header justify-content-between d-flex">
-                            <h4 class="mb-0 flex-grow-1">{{ c.title }}</h4>
-
+                    <div cdkDrag [cdkDragData]="c" class="board-column">
+                        <div
+                            class="justify-content-between align-items-center d-flex bg-body-tertiary py-2 px-3 rounded">
+                            <div class="fw-bolder flex-grow-1">{{ c.title }}</div>
                             <button cdkDragHandle class="btn btn-sm">
                                 <span class="icon">
                                     <i class="fa-regular fa-hand"></i>
                                 </span>
                             </button>
 
+                            @if (projectId$ | async; as projectId) {
+                                <lu-create-task-modal
+                                    [column_id]="c.id"
+                                    [board_id]="c.board_id"
+                                    [task_count]="c.tasks.length"
+                                    [project_id]="projectId"
+                                />
+                            }
+
                             <lu-column-menu-dropdown [stageId]="c.id">
-                                <lu-column-delete-prompt columnMenuSlot class="list-group-item list-group-item-action p-0 text-danger" [stageId]="c.id" />
+                                <lu-column-delete-prompt
+                                    columnMenuSlot
+                                    class="list-group-item list-group-item-action p-0 text-danger"
+                                    [stageId]="c.id"/>
                             </lu-column-menu-dropdown>
                         </div>
 
-                        <div class="card-header">
-                            <lu-task-inline-form
-                                [column_id]="c.id"
-                                [board_id]="c.board_id"
-                                [task_count]="c.tasks.length"
-                            />
-                        </div>
-
                         <!-- Tasks -->
-                        <div class="p-3 d-flex flex-column gap-2" cdkDropList
+                        <div class="p-2 d-flex flex-column gap-2" cdkDropList
                              [cdkDropListData]="c.tasks"
                              (cdkDropListDropped)="dropTask($event, c)"
                         >

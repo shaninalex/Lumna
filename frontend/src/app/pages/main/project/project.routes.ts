@@ -8,7 +8,6 @@ import { InboxPage } from "./inbox";
 import { BoardsPage } from './boards';
 import { BoardCreatePage } from './board-create';
 import { BoardDetailPage } from './board-detail';
-import { TaskCreatePage } from './task-create';
 import { TaskDetailPage } from './task-detail';
 
 
@@ -37,10 +36,6 @@ export const routes: Routes = [
                 path: 'board/:boardId',
                 component: BoardDetailPage,
                 children: [
-                    {
-                        path: 'task/create',
-                        component: TaskCreatePage,
-                    },
                     {
                         path: 'task/:taskId',
                         component: TaskDetailPage,

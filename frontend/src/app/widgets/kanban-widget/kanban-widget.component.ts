@@ -21,8 +21,10 @@ import type { KanbanCard, KanbanColumn } from './model/kanban.models';
 import { KanbanService } from './service';
 import { AppRoutes } from '@core';
 import { RouterLink } from '@angular/router';
-import { AssignmentDropdown, TaskInlineForm } from '@features/task';
+import { AssignmentDropdown } from '@features/task';
 import { ColumnDeletePromptComponent, NewColumnFormComponent } from '@features/stage';
+import { CreateTaskModalComponent } from '../create-task-modal';
+import { ProjectModel, selectProjects } from '@entities/project';
 
 @Component({
     selector: 'lu-kanban-board-feature',
@@ -35,11 +37,10 @@ import { ColumnDeletePromptComponent, NewColumnFormComponent } from '@features/s
         NewColumnFormComponent,
         TimeAgoPipe,
         TaskCardComponent,
-        TaskInlineForm,
-        RouterLink,
         AssignmentDropdown,
         ColumnMenuDropdownComponent,
         ColumnDeletePromptComponent,
+        CreateTaskModalComponent,
     ],
     templateUrl: './kanban-widget.component.html',
     styleUrl: './kanban-widget.component.css',
@@ -55,6 +56,7 @@ export class KanbanBoardWidget implements OnInit {
     boardId = input.required<number>();
     board$: Observable<BoardModel>;
     kolumns$: Observable<KanbanColumn[]> = this.kanban.boardData();
+    projectId$ = this.store.select(selectProjects.currentProjectId);
 
     constructor() {
         effect(() => {

@@ -21,6 +21,10 @@ export class TaskDetailView implements OnInit {
 
     task$: Observable<TaskModel>;
     taskEditFormModel: WritableSignal<TaskEditModel> = signal<TaskEditModel>({task_id: 0, title: '', body: ''})
+    taskEditForm = form(this.taskEditFormModel, (schemaPath) => {
+        required(schemaPath.task_id, {message: "Email is required"});
+        required(schemaPath.title, {message: "Email is required"});
+    })
 
     ngOnInit(): void {
         this.task$ = this.store.select(selectTasks.byId(this.taskId())).pipe(
@@ -32,11 +36,6 @@ export class TaskDetailView implements OnInit {
             })
         )
     }
-
-    taskEditForm = form(this.taskEditFormModel, (schemaPath) => {
-        required(schemaPath.task_id, {message: "Email is required"});
-        required(schemaPath.title, {message: "Email is required"});
-    })
 
     submit(event: Event): void {
         event.preventDefault();

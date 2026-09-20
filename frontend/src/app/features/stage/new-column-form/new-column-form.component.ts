@@ -19,20 +19,11 @@ import { tap } from 'rxjs';
                         placeholder="Column name"
                         [formField]="columnForm.title"
                     />
-                    @if (columnForm.title().touched()) {
-                        <ul class="error-list">
-                            @for (error of columnForm.title().errors(); track error) {
-                                <li class="text-danger">
-                                    <small>{{ error.message }}</small>
-                                </li>
-                            }
-                        </ul>
-                    }
                 </div>
 
                 <div class="d-flex gap-2">
                     <button
-                        class="btn btn-sm btn-primary"
+                        class="button button-outline-pill"
                         (click)="submit($event)"
                         [disabled]="columnForm().invalid()"
                     >
@@ -42,13 +33,13 @@ import { tap } from 'rxjs';
                             Create
                         }
                     </button>
-                    <button class="btn btn-sm btn-secondary" (click)="this.openedForm.set(false)">
-                        cancel
+                    <button class="button button-pill" (click)="this.openedForm.set(false)">
+                        Cancel
                     </button>
                 </div>
             </form>
         } @else {
-            <button class="btn btn-outline-secondary btn-sm" (click)="openForm()">
+            <button class="button button-pill" (click)="openForm()">
                 Create new column
             </button>
         }
