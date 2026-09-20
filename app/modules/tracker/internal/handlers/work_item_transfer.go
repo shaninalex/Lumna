@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 
+	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
@@ -13,13 +14,15 @@ type WorkItemTransfer struct {
 	items  domain.WorkingItemRepo
 	stages domain.StageRepo
 	clock  clock.Clock
+	bus    *bus.EventBus
 }
 
-func NewWorkItemTransfer(items domain.WorkingItemRepo, stages domain.StageRepo, clock clock.Clock) *WorkItemTransfer {
+func NewWorkItemTransfer(items domain.WorkingItemRepo, stages domain.StageRepo, clock clock.Clock, bus *bus.EventBus) *WorkItemTransfer {
 	return &WorkItemTransfer{
 		items:  items,
 		stages: stages,
 		clock:  clock,
+		bus:    bus,
 	}
 }
 
@@ -41,6 +44,11 @@ func (s *WorkItemTransfer) Handle(ctx context.Context, cmd contract.WorkItemTran
 	r.ChangeStage(cmd.ScopeId, cmd.StageId, cmd.Rank, s.clock.Now())
 
 	if err := s.items.Save(ctx, r); err != nil {
+		return contract.WorkItemView{}, err
+	}
+
+	err = s.bus.Publish(ctx, contract.WorkItemStageChanged{WorkItemId: cmd.WorkItemId, StageId: cmd.StageId})
+	if err != nil {
 		return contract.WorkItemView{}, err
 	}
 

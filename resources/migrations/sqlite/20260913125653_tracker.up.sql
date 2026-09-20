@@ -55,11 +55,11 @@ CREATE TABLE work_items
     created_at  DATETIME         DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME,
 
-    FOREIGN KEY (parent_id) REFERENCES work_items(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES work_items(id) ON DELETE SET NULL,
     FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE,
-    FOREIGN KEY (sprint_id) REFERENCES sprints (id) ON DELETE CASCADE,
-    FOREIGN KEY (scope_id) REFERENCES scopes (id) ON DELETE CASCADE,
-    FOREIGN KEY (stage_id) REFERENCES stages (id) ON DELETE CASCADE
+    FOREIGN KEY (sprint_id) REFERENCES sprints (id) ON DELETE SET NULL,
+    FOREIGN KEY (scope_id) REFERENCES scopes (id) ON DELETE SET NULL,
+    FOREIGN KEY (stage_id) REFERENCES stages (id) ON DELETE SET NULL
 );
 
 CREATE TABLE work_items_assignees
