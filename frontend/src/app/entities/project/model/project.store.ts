@@ -18,9 +18,9 @@ export const projectReducer = createReducer(
     on(actionProject.setList, (state, action) => projectsAdapter.addMany(action.projects, state)),
     on(actionProject.createSuccefull, (state, action) => projectsAdapter.upsertOne(action.project, state)),
     on(actionProject.deleteSuccefull, (state, action) =>
-        projectsAdapter.removeOne(action.project_id, {
+        projectsAdapter.removeOne(action.projectId, {
             ...state,
-            currentId: state.currentId === action.project_id ? null : state.currentId,
+            currentId: state.currentId === action.projectId ? null : state.currentId,
         }),
     ),
     on(actionProject.setCurrent, (state, { id }) => ({ ...state, currentId: id })),
@@ -30,6 +30,6 @@ export const projectReducer = createReducer(
             return state;
         }
         const current = state.entities[state.currentId];
-        return current && current.workspace_id === id ? state : { ...state, currentId: null };
+        return current && current.workspaceId === id ? state : { ...state, currentId: null };
     }),
 );

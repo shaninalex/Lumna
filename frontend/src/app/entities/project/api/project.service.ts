@@ -4,6 +4,12 @@ import { map } from 'rxjs';
 import type { ProjectModel, ProjectCreateModel } from '../model/project.model';
 import type { APIResponse } from '@shared/models';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+    ProjectModelDTO,
+    toProjectCreateModelDTO,
+    toProjectModel,
+    toProjectsModel
+} from '@entities/project/api/project.dto';
 
 @Injectable()
 export class ProjectApi {
@@ -11,23 +17,17 @@ export class ProjectApi {
 
     GetProjects(workspaceId: number): Observable<ProjectModel[]> {
         return this.http
-            .get<APIResponse<ProjectModel[]>>(`/api/v1/projects`, {
+            .get<APIResponse<ProjectModelDTO[]>>(`/api/v1/projects`, {
                 params: new HttpParams().set('workspace_id', workspaceId),
                 withCredentials: true,
             })
-            .pipe(map((response) => response.data));
-    }
-
-    GetProject(projectId: number): Observable<ProjectModel> {
-        return this.http
-            .get<APIResponse<ProjectModel>>(`/api/v1/projects/${projectId}`, { withCredentials: true })
-            .pipe(map((response) => response.data));
+            .pipe(map((response) => toProjectsModel(response.data)));
     }
 
     CreateProject(payload: ProjectCreateModel): Observable<ProjectModel> {
         return this.http
-            .post<APIResponse<ProjectModel>>(`/api/v1/projects`, payload, { withCredentials: true })
-            .pipe(map((response) => response.data));
+            .post<APIResponse<ProjectModelDTO>>(`/api/v1/projects`, toProjectCreateModelDTO(payload), { withCredentials: true })
+            .pipe(map((response) => toProjectModel(response.data)));
     }
 
     DeleteProject(projectId: number): Observable<void> {
@@ -39,8 +39,8 @@ export class ProjectApi {
     Patch(projectId: number, payload: ProjectCreateModel): Observable<ProjectModel> {
         return this.http
             .patch<
-                APIResponse<ProjectModel>
-            >(`/api/v1/projects/${projectId}`, payload, { withCredentials: true })
-            .pipe(map((response) => response.data));
+                APIResponse<ProjectModelDTO>
+            >(`/api/v1/projects/${projectId}`, toProjectCreateModelDTO(payload), { withCredentials: true })
+            .pipe(map((response) => toProjectModel(response.data)));
     }
 }

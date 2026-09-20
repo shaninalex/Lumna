@@ -11,25 +11,25 @@ export class BoardEffects {
     private actions$ = inject(Actions);
     private listApi = inject(BoardApi);
 
-    list_lists$ = createEffect(() =>
+    list$ = createEffect(() =>
         this.actions$.pipe(
             ofType(actionBoard.getList),
             exhaustMap((action) =>
                 this.listApi
-                    .List(action.projectId)
-                    .pipe(switchMap((boards) => of(actionBoard.setList({ boards })))),
+                    .list(action.projectId)
+                    .pipe(switchMap((boards) => of(actionBoard.setList({boards})))),
             ),
         ),
     );
 
-    create_list$ = createEffect(() =>
+    create$ = createEffect(() =>
         this.actions$.pipe(
             ofType(actionBoard.create),
             exhaustMap((action) =>
-                this.listApi.Create(action.data).pipe(
-                    switchMap((board) => of(actionBoard.createSuccess({ board }))),
+                this.listApi.create(action.data).pipe(
+                    switchMap((board) => of(actionBoard.createSuccess({board}))),
                     catchError((err: HttpErrorResponse) =>
-                        of(actionBoard.createFailed({ errors: fromErrorResponse(err) })),
+                        of(actionBoard.createFailed({errors: fromErrorResponse(err)})),
                     ),
                 ),
             ),
@@ -40,10 +40,10 @@ export class BoardEffects {
         this.actions$.pipe(
             ofType(actionBoard.patch),
             exhaustMap((action) =>
-                this.listApi.Patch(action.boardId, action.data).pipe(
-                    switchMap((board) => of(actionBoard.patchSuccess({ board }))),
+                this.listApi.patch(action.boardId, action.data).pipe(
+                    switchMap((board) => of(actionBoard.patchSuccess({board}))),
                     catchError((err: HttpErrorResponse) =>
-                        of(actionBoard.patchFailed({ errors: fromErrorResponse(err) })),
+                        of(actionBoard.patchFailed({errors: fromErrorResponse(err)})),
                     ),
                 ),
             ),
@@ -54,10 +54,10 @@ export class BoardEffects {
         this.actions$.pipe(
             ofType(actionBoard.delete),
             exhaustMap((action) =>
-                this.listApi.Delete(action.boardId).pipe(
-                    switchMap(() => of(actionBoard.deleteSuccess({ boardId: action.boardId }))),
+                this.listApi.delete(action.boardId).pipe(
+                    switchMap(() => of(actionBoard.deleteSuccess({boardId: action.boardId}))),
                     catchError((err: HttpErrorResponse) =>
-                        of(actionBoard.deleteFailed({ errors: fromErrorResponse(err) })),
+                        of(actionBoard.deleteFailed({errors: fromErrorResponse(err)})),
                     ),
                 ),
             ),
@@ -68,10 +68,10 @@ export class BoardEffects {
         this.actions$.pipe(
             ofType(actionBoard.getById),
             exhaustMap((action) =>
-                this.listApi.Get(action.boardId).pipe(
-                    switchMap((board) => of(actionBoard.set({ board }))),
+                this.listApi.get(action.boardId).pipe(
+                    switchMap((board) => of(actionBoard.set({board})),),
                     catchError((err: HttpErrorResponse) =>
-                        of(actionBoard.getFailed({ errors: fromErrorResponse(err) })),
+                        of(actionBoard.getFailed({errors: fromErrorResponse(err)})),
                     ),
                 ),
             ),

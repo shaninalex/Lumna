@@ -10,10 +10,10 @@ export const actionProject = createActionGroup({
         'create failed': props<{ errors: Error[] }>(),
 
         delete: props<{ project_id: number }>(),
-        'delete succefull': props<{ project_id: number }>(),
+        'delete succefull': props<{ projectId: number }>(),
         'delete failed': props<{ errors: Error[] }>(),
 
-        'get list': props<{ workspace_id: number }>(),
+        'get list': props<{ workspaceId: number }>(),
         'set list': props<{ projects: ProjectModel[] }>(),
 
         patch: props<{ id: number; data: ProjectCreateModel }>(),

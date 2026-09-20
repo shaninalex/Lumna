@@ -39,12 +39,12 @@ export class BoardCreateFeature {
     private appRoutes = inject(AppRoutes);
     private currentProjectId = this.store.selectSignal(selectProjects.currentProjectId);
 
-    pFormModel = signal<BoardPayloadModel>({ title: '', project_id: 0 });
+    pFormModel = signal<BoardPayloadModel>({ title: '', projectId: 0 });
     pForm = form(this.pFormModel, (schemaPath) => required(schemaPath.title));
 
     constructor() {
         const _currentProjectId = this.currentProjectId();
-        if (_currentProjectId) this.pFormModel().project_id = _currentProjectId;
+        if (_currentProjectId) this.pFormModel().projectId = _currentProjectId;
 
         this.actions$
             .pipe(ofType(actionBoard.createFailed), takeUntilDestroyed(this.destroyRef))

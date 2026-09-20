@@ -29,14 +29,14 @@ export class ProjectCreateFeature {
     private destroyRef = inject(DestroyRef);
     private workspace$ = this.store.select(selectWorkspaces.currentWorkspace);
 
-    pFormModel = signal<ProjectCreateModel>({ title: "", workspace_id: 0 });
+    pFormModel = signal<ProjectCreateModel>({ title: "", workspaceId: 0 });
     pForm = form(this.pFormModel, (schemaPath) => required(schemaPath.title));
-    
+
     constructor() {
         this.workspace$.pipe(
             takeUntilDestroyed(this.destroyRef),
             filter(wp => wp !== null),
-            tap((wp) => this.pFormModel().workspace_id = wp.id)
+            tap((wp) => this.pFormModel().workspaceId = wp.id)
         ).subscribe();
 
         this.actions$

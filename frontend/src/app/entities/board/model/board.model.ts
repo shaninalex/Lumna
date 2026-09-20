@@ -1,13 +1,12 @@
 export interface BoardModel {
     id: number;
     title: string;
-    project_id: number;
-
-    created_at: Date;
-    updated_at: Date;
+    projectId: number;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface BoardPayloadModel {
     title: string;
-    project_id: number;
+    projectId: number;
 }

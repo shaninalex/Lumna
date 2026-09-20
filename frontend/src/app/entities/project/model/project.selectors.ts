@@ -20,7 +20,7 @@ export const selectProjects = {
     total: createSelector(feature, entitySelectors.selectTotal),
     byId: (id: number) => createSelector(selectAll, (list) => list.find((p) => p.id === id)),
     byWorkspaceId: (workspaceId: number) =>
-        createSelector(selectAll, (list) => list.filter((p) => p.workspace_id === workspaceId)),
+        createSelector(selectAll, (list) => list.filter((p) => p.workspaceId === workspaceId)),
     currentProjectId: selectCurrentProjectId,
     currentProject: selectCurrentProject,
 };

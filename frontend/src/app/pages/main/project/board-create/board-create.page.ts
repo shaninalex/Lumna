@@ -10,7 +10,6 @@ import { UiService } from '@shared/ui';
         <lu-main-layout>
             <div class="container-fluid">
                 <h1>Create Board</h1>
-
                 <lu-board-create-feature />
             </div>
         </lu-main-layout>

@@ -3,47 +3,42 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 import type { APIResponse } from '@shared/models';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import type { BoardModel, BoardPayloadModel } from '../model/board.model';
+import { BoardModel, BoardPayloadModel } from '../model/board.model';
+import { BoardModelDTO, toBoardCreateDTO, toBoardModel, toBoardModels } from './board.dto';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class BoardApi {
-    http = inject(HttpClient);
+    private http = inject(HttpClient);
 
-    List(projectId: number): Observable<BoardModel[]> {
-        let params = new HttpParams();
-        params = params.set('project_id', projectId);
+    list(projectId: number): Observable<BoardModel[]> {
+        const params = new HttpParams().set('project_id', projectId);
         return this.http
-            .get<
-                APIResponse<BoardModel[]>
-            >(`/api/v1/boards`, { params: params, withCredentials: true })
-            .pipe(map((response) => response.data));
+            .get<APIResponse<BoardModelDTO[]>>('/api/v1/boards', {params, withCredentials: true})
+            .pipe(map((res) => toBoardModels(res.data)));
     }
 
-    Create(payload: BoardPayloadModel): Observable<BoardModel> {
+    create(payload: BoardPayloadModel): Observable<BoardModel> {
         return this.http
-            .post<APIResponse<BoardModel>>(`/api/v1/boards`, payload, { withCredentials: true })
-            .pipe(map((response) => response.data));
+            .post<APIResponse<BoardModelDTO>>('/api/v1/boards', toBoardCreateDTO(payload), {withCredentials: true})
+            .pipe(map((res) => toBoardModel(res.data)));
     }
 
-    Get(boardId: number): Observable<BoardModel> {
+    get(boardId: number): Observable<BoardModel> {
         return this.http
-            .get<APIResponse<BoardModel>>(`/api/v1/boards/${boardId}`, { withCredentials: true })
-            .pipe(map((response) => response.data));
+            .get<APIResponse<BoardModelDTO>>(`/api/v1/boards/${boardId}`, {withCredentials: true})
+            .pipe(map((res) => toBoardModel(res.data)));
     }
 
-    Delete(boardId: number): Observable<void> {
+    patch(boardId: number, payload: BoardPayloadModel): Observable<BoardModel> {
         return this.http
-            .delete<APIResponse<void>>(`/api/v1/boards/${boardId}`, { withCredentials: true })
-            .pipe(map((response) => response.data));
+            .patch<APIResponse<BoardModelDTO>>(`/api/v1/boards/${boardId}`, toBoardCreateDTO(payload), {withCredentials: true})
+            .pipe(map((res) => toBoardModel(res.data)));
     }
 
-    Patch(boardId: number, payload: BoardPayloadModel): Observable<BoardModel> {
+    delete(boardId: number): Observable<void> {
         return this.http
-            .patch<
-                APIResponse<BoardModel>
-            >(`/api/v1/boards/${boardId}`, payload, { withCredentials: true })
-            .pipe(map((response) => response.data));
+            .delete<APIResponse<void>>(`/api/v1/boards/${boardId}`, {withCredentials: true})
+            .pipe(map((res) => res.data));
     }
 }
+
