@@ -59,11 +59,11 @@ import { AsyncPipe } from '@angular/common';
     `,
 })
 export class AssignmentDropdown {
+    @Input() task: TaskModel;
     private store = inject(Store);
     readonly user$ = this.store.select(selectUser.user).pipe(filter(user => !!user));
-    @Input() task: TaskModel;
 
     assign(taskId: number, identityId: number) {
-        this.store.dispatch(actionTask.assignTask({action: { task_id: taskId, identity_id: identityId }}))
+        this.store.dispatch(actionTask.assignTask({action: {task_id: taskId, identity_id: identityId}}))
     }
 }
