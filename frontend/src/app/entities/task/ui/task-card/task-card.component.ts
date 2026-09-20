@@ -12,6 +12,7 @@ import { Store } from '@ngrx/store';
 @Component({
     selector: 'lu-task-card',
     imports: [RouterLink, TrimPipe, DatePipe, CdkMenu, CdkMenuItem, CdkMenuTrigger, StripHtmlPipe],
+    styleUrl: './task-card.component.css',
     template: `
         <div class="card text-decoration-none text-body">
             <div class="card-body p-2">
@@ -24,7 +25,7 @@ import { Store } from '@ngrx/store';
                 -->
                 <div class="d-flex justify-content-between mb-2 align-items-start">
                     <h6 class="flex-grow-1 mb-0">
-                        <a [routerLink]="routeService.task(task.board_id, task.id)">
+                        <a class="task-card-link" [routerLink]="routeService.task(task.board_id, task.id)">
                             {{ task.title }}
                         </a>
                     </h6>
