@@ -21,13 +21,13 @@ export class SessionApi {
 
     logout(): Observable<void> {
         return this.http
-            .get<APIResponse<void>>(`/api/v1/auth/logout`, { withCredentials: true })
+            .post<APIResponse<void>>(`/api/v1/auth/logout`, { withCredentials: true })
             .pipe(map((response) => response.data));
     }
 
     refresh(): Observable<void> {
         return this.http
-            .get<APIResponse<void>>(`/api/v1/auth/refresh`, { withCredentials: true })
+            .post<APIResponse<void>>(`/api/v1/auth/refresh`, { withCredentials: true })
             .pipe(map((response) => response.data));
     }
 }
