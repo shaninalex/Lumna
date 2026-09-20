@@ -60,6 +60,7 @@ import { AsyncPipe } from '@angular/common';
 })
 export class AssignmentDropdown {
     @Input() task: TaskModel;
+
     private store = inject(Store);
     readonly user$ = this.store.select(selectUser.user).pipe(filter(user => !!user));
 

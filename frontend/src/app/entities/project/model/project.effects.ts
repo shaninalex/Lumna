@@ -15,7 +15,7 @@ export class ProjectEffects {
         this.actions$.pipe(
             ofType(actionProject.getList),
             exhaustMap((action) =>
-                this.projectsApi.GetProjects(action.workspace_id).pipe(
+                this.projectsApi.GetProjects(action.workspaceId).pipe(
                     switchMap((data) => of(actionProject.setList({ projects: data })))
                 ),
             ),
@@ -50,7 +50,7 @@ export class ProjectEffects {
             ofType(actionProject.delete),
             exhaustMap((action) =>
                 this.projectsApi.DeleteProject(action.project_id).pipe(
-                    switchMap(() => of(actionProject.deleteSuccefull({ project_id: action.project_id }))))
+                    switchMap(() => of(actionProject.deleteSuccefull({ projectId: action.project_id }))))
                 )
         ),
     );

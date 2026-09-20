@@ -36,7 +36,7 @@ export class MainEffects {
             ofType(actionWorkspace.setCurrent),
             map((action) => action.id),
             filter((id) => id !== null),
-            map((id) => actionProject.getList({ workspace_id: id })),
+            map((id) => actionProject.getList({ workspaceId: id })),
         ),
     );
 

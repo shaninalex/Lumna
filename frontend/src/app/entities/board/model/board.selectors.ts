@@ -11,7 +11,7 @@ export const selectBoard = {
     entities: createSelector(feature, entitySelectors.selectEntities),
     total: createSelector(feature, entitySelectors.selectTotal),
     byProjectId: (projectId: number) =>
-        createSelector(selectAll, (boards) => boards.filter((b) => b.project_id === projectId)),
+        createSelector(selectAll, (boards) => boards.filter((b) => b.projectId === projectId)),
     byId: (listId: number) =>
         createSelector(feature, (state) => entitySelectors.selectEntities(state)[listId] ?? null),
 };
