@@ -26,7 +26,7 @@ type StageCreate struct {
 	Description string
 	Category    string
 	Position    float64
-	WIPLimit    *int
+	WIPLimit    int
 }
 
 func (StageCreate) Permission() (action string, scope int) { return "", 0 }
@@ -37,12 +37,12 @@ func ExecCreateStage(ctx context.Context, a *core.App, cmd StageCreate) (StageVi
 
 type WorkItemCreate struct {
 	Title       string
-	Description *string
+	Description string
 	ProjectId   int
 	Position    float64
-	StageId     *int
-	ScopeId     *int
-	DueTo       *time.Time
+	StageId     int
+	ScopeId     int
+	DueTo       time.Time
 }
 
 func (WorkItemCreate) Permission() (action string, scope int) { return "", 0 }
@@ -97,7 +97,7 @@ func ExecStageMove(ctx context.Context, a *core.App, cmd StageMove) (StageView, 
 type WorkItemUpdate struct {
 	WorkItemId  int
 	Title       string
-	Description *string
+	Description string
 }
 
 func (WorkItemUpdate) Permission() (action string, scope int) { return "", 0 }

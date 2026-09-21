@@ -49,7 +49,7 @@ type Module struct {
 func New(d Deps) *Module {
 	scopeRepo := storage.NewScopeRepo(d.DB)
 	stageRepo := storage.NewStageRepo(d.DB)
-	workItemRepo := storage.NewWorkingItemRepo(d.DB)
+	workItemRepo := storage.NewWorkingItemRepo(d.DB, d.Clock)
 
 	return &Module{
 		deps: d,

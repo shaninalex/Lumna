@@ -105,10 +105,12 @@
                         <span class="text-muted">Created</span>
                         <span>{{ t.created_at | date }}</span>
                     </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <span class="text-muted">Updated</span>
-                        <span>{{ t.updated_at | timeAgo }}</span>
-                    </div>
+                    @if (t.updated_at) {
+                        <div class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted">Updated</span>
+                            <span>{{ t.updated_at | timeAgo }}</span>
+                        </div>
+                    }
                 </div>
             </div>
 

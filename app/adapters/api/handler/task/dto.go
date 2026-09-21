@@ -9,20 +9,20 @@ import (
 )
 
 type taskDTO struct {
-	ID        int        `json:"id"`
-	Title     string     `json:"title"`
-	Body      *string    `json:"body"`
-	Completed bool       `json:"completed"`
-	Meta      string     `json:"meta"`
-	ProjectId int        `json:"project_id"`
-	BoardId   *int       `json:"board_id"`
-	ColumnId  *int       `json:"column_id"`
-	Position  float64    `json:"position"`
-	OwnerId   int        `json:"owner_id"`
-	Assignees []int      `json:"assignees"`
-	DueTo     *time.Time `json:"due_to"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt *time.Time `json:"updated_at"`
+	ID        int       `json:"id"`
+	Title     string    `json:"title"`
+	Body      string    `json:"body,omitempty"`
+	Completed bool      `json:"completed"`
+	Meta      string    `json:"meta"`
+	ProjectId int       `json:"project_id"`
+	BoardId   int       `json:"board_id,omitempty"`
+	ColumnId  int       `json:"column_id,omitempty"`
+	Position  float64   `json:"position"`
+	OwnerId   int       `json:"owner_id"`
+	Assignees []int     `json:"assignees"`
+	DueTo     time.Time `json:"due_to,omitzero"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at,omitzero"`
 }
 
 type BoardTaskDto struct {
@@ -53,13 +53,13 @@ func toTaskDTO(w contract.WorkItemView) taskDTO {
 }
 
 type taskCreateDTO struct {
-	Title     string     `json:"title"`
-	Body      string     `json:"body"`
-	ProjectId int        `json:"project_id"`
-	Position  float64    `json:"position"`
-	ColumnId  int        `json:"column_id"`
-	BoardId   int        `json:"board_id"`
-	DueTo     *time.Time `json:"due_to"`
+	Title     string    `json:"title"`
+	Body      string    `json:"body"`
+	ProjectId int       `json:"project_id"`
+	Position  float64   `json:"position"`
+	ColumnId  int       `json:"column_id"`
+	BoardId   int       `json:"board_id"`
+	DueTo     time.Time `json:"due_to,omitzero"`
 }
 
 func (a taskCreateDTO) Verify() error {
@@ -75,7 +75,7 @@ type columnDTO struct {
 	BoardId   int        `json:"board_id"`
 	Position  float64    `json:"position"`
 	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt *time.Time `json:"updated_at"`
+	UpdatedAt time.Time  `json:"updated_at,omitzero"`
 }
 
 type columnMeta struct {
@@ -96,7 +96,7 @@ func toColumnDTO(s contract.StageView) columnDTO {
 		},
 		Position:  s.Position,
 		CreatedAt: s.CreatedAt,
-		UpdatedAt: &s.UpdatedAt,
+		UpdatedAt: s.UpdatedAt,
 	}
 }
 

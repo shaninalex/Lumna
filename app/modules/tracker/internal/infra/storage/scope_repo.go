@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -24,9 +25,9 @@ func (s ScopeRepo) Save(ctx context.Context, scope *domain.Scope) error {
 	record := scopeRecord{
 		ProjectID:   scope.ProjectID,
 		Name:        scope.Name,
-		Description: &scope.Description,
+		Description: sql.NullString{String: scope.Description, Valid: scope.Description != ""},
 		CreatedAt:   scope.CreatedAt,
-		UpdatedAt:   scope.UpdatedAt,
+		UpdatedAt:   sql.NullTime{Time: scope.UpdatedAt, Valid: scope.UpdatedAt.IsZero()},
 	}
 	if err := s.db.From(ctx).Save(&record).Error; err != nil {
 		return err
@@ -44,20 +45,20 @@ func (s ScopeRepo) Get(ctx context.Context, projectId int) ([]domain.Scope, erro
 	if err != nil {
 		return nil, err
 	}
-	var result []domain.Scope
+	result := make([]domain.Scope, 0, len(records))
 	for _, record := range records {
-		var stages []domain.Stage
+		stages := make([]domain.Stage, 0, len(record.Stages))
 		for _, stage := range record.Stages {
 			st := domain.Stage{
 				ID:          stage.ID,
 				ScopeID:     stage.ScopeID,
 				Name:        stage.Name,
-				Description: *stage.Description,
+				Description: stage.Description.String,
 				Category:    domain.StageCategory(stage.Category),
 				Position:    stage.Position,
-				WIPLimit:    stage.WipLimit,
+				WIPLimit:    int(stage.WipLimit.Int32),
 				CreatedAt:   stage.CreatedAt,
-				UpdatedAt:   *stage.UpdatedAt,
+				UpdatedAt:   stage.UpdatedAt.Time,
 			}
 			stages = append(stages, st)
 		}
@@ -66,9 +67,9 @@ func (s ScopeRepo) Get(ctx context.Context, projectId int) ([]domain.Scope, erro
 			ProjectID:   record.ProjectID,
 			Name:        record.Name,
 			Stages:      stages,
-			Description: *record.Description,
+			Description: record.Description.String,
 			CreatedAt:   record.CreatedAt,
-			UpdatedAt:   record.UpdatedAt,
+			UpdatedAt:   record.UpdatedAt.Time,
 		})
 	}
 

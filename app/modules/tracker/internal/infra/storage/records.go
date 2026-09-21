@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
@@ -10,16 +11,16 @@ type stageRecord struct {
 	ID          int `gorm:"primaryKey;autoIncrement"`
 	ScopeID     int
 	Name        string
-	Description *string
+	Description sql.NullString
 	Category    string
 	Position    float64
-	WipLimit    *int `gorm:"column:wip_limit"`
+	WipLimit    sql.NullInt32 `gorm:"column:wip_limit"`
 
 	Scope     scopeRecord      `gorm:"foreignKey:ScopeID;references:ID"`
 	WorkItems []workItemRecord `gorm:"foreignKey:StageID;references:ID"`
 
-	CreatedAt time.Time  `gorm:"autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
+	CreatedAt time.Time    `gorm:"autoCreateTime"`
+	UpdatedAt sql.NullTime `gorm:"autoUpdateTime"`
 }
 
 func (stageRecord) TableName() string { return "stages" }
@@ -29,12 +30,12 @@ func stageRecordToDomain(record stageRecord) domain.Stage {
 		ID:          record.ID,
 		ScopeID:     record.ScopeID,
 		Name:        record.Name,
-		Description: *record.Description,
+		Description: record.Description.String,
 		Category:    domain.StageCategory(record.Category),
 		Position:    record.Position,
-		WIPLimit:    record.WipLimit,
+		WIPLimit:    int(record.WipLimit.Int32),
 		CreatedAt:   record.CreatedAt,
-		UpdatedAt:   *record.UpdatedAt,
+		UpdatedAt:   record.UpdatedAt.Time,
 		WorkItems:   workItemsToDomain(record.WorkItems),
 	}
 }
@@ -43,12 +44,12 @@ type scopeRecord struct {
 	ID          int `gorm:"primaryKey;autoIncrement"`
 	ProjectID   int
 	Name        string
-	Description *string
+	Description sql.NullString
 
 	Stages []stageRecord `gorm:"foreignKey:ScopeID;references:ID"`
 
-	CreatedAt time.Time  `gorm:"autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
+	CreatedAt time.Time    `gorm:"autoCreateTime"`
+	UpdatedAt sql.NullTime `gorm:"autoUpdateTime"`
 }
 
 func (scopeRecord) TableName() string { return "scopes" }
@@ -65,11 +66,11 @@ type workItemRecord struct {
 	ID          int `gorm:"primaryKey;autoIncrement"`
 	ProjectID   int
 	Type        string
-	ParentID    *int
+	ParentID    sql.NullInt64
 	Title       string
-	Description *string
-	ScopeID     *int
-	StageID     *int
+	Description sql.NullString
+	ScopeID     sql.NullInt64
+	StageID     sql.NullInt64
 	Rank        float64
 
 	//	Priority    *string
@@ -79,9 +80,9 @@ type workItemRecord struct {
 	//	Parent   *workItemRecord  `gorm:"foreignKey:ParentID;references:ID"`
 	//	Children []workItemRecord `gorm:"foreignKey:ParentID;references:ID"`
 
-	DueTo     *time.Time `gorm:"due_to"`
-	CreatedAt time.Time  `gorm:"autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
+	DueTo     sql.NullTime `gorm:"due_to"`
+	CreatedAt time.Time    `gorm:"autoCreateTime"`
+	UpdatedAt sql.NullTime `gorm:"autoUpdateTime"`
 }
 
 func (workItemRecord) TableName() string { return "work_items" }
@@ -95,15 +96,15 @@ func workItemToDomain(record workItemRecord) domain.WorkItem {
 		ID:          record.ID,
 		ProjectID:   record.ProjectID,
 		Type:        domain.WorkItemType(record.Type),
-		ParentID:    record.ParentID,
+		ParentID:    int(record.ParentID.Int64),
 		Title:       record.Title,
-		Description: record.Description,
-		ScopeID:     record.ScopeID,
-		StageID:     record.StageID,
+		Description: record.Description.String,
+		ScopeID:     int(record.ScopeID.Int64),
+		StageID:     int(record.StageID.Int64),
 		Rank:        record.Rank,
-		DueTo:       record.DueTo,
+		DueTo:       record.DueTo.Time,
 		CreatedAt:   record.CreatedAt,
-		UpdatedAt:   record.UpdatedAt,
+		UpdatedAt:   record.UpdatedAt.Time,
 		AssigneeIDs: assigneeIDs,
 	}
 }

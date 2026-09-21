@@ -2,22 +2,26 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 	"gorm.io/gorm"
 )
 
 type WorkingItemRepo struct {
-	db *database.DB
+	db    *database.DB
+	clock clock.Clock
 }
 
 var _ domain.WorkingItemRepo = (*WorkingItemRepo)(nil)
 
-func NewWorkingItemRepo(db *database.DB) *WorkingItemRepo {
+func NewWorkingItemRepo(db *database.DB, clock clock.Clock) *WorkingItemRepo {
 	return &WorkingItemRepo{
-		db: db,
+		db:    db,
+		clock: clock,
 	}
 }
 
@@ -26,21 +30,20 @@ func (s *WorkingItemRepo) Save(ctx context.Context, wi *domain.WorkItem) error {
 		ID:          wi.ID,
 		ProjectID:   wi.ProjectID,
 		Type:        string(wi.Type),
-		ParentID:    wi.ParentID,
+		ParentID:    sql.NullInt64{Int64: int64(wi.ParentID), Valid: wi.ParentID != 0},
 		Title:       wi.Title,
-		Description: wi.Description,
-		ScopeID:     wi.ScopeID,
-		StageID:     wi.StageID,
+		Description: sql.NullString{String: wi.Description, Valid: wi.Description != ""},
+		ScopeID:     sql.NullInt64{Int64: int64(wi.ScopeID), Valid: wi.ScopeID != 0},
+		StageID:     sql.NullInt64{Int64: int64(wi.StageID), Valid: wi.StageID != 0},
 		Rank:        wi.Rank,
-		CreatedAt:   wi.CreatedAt,
-		UpdatedAt:   wi.UpdatedAt,
-		DueTo:       wi.DueTo,
+		CreatedAt:   s.clock.Now(),
+		DueTo:       sql.NullTime{Time: wi.DueTo, Valid: wi.DueTo.IsZero()},
 	}
 	if err := s.db.From(ctx).Save(&record).Error; err != nil {
 		return err
 	}
-
 	wi.ID = record.ID
+	wi.CreatedAt = record.CreatedAt
 	return nil
 }
 

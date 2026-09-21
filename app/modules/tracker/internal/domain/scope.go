@@ -10,5 +10,5 @@ type Scope struct {
 	Description string
 	Stages      []Stage
 	CreatedAt   time.Time
-	UpdatedAt   *time.Time
+	UpdatedAt   time.Time
 }

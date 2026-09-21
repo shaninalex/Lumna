@@ -1,7 +1,7 @@
 export interface TaskModel {
     id: number;
     title: string;
-    body: string;
+    body?: string;
     completed: boolean;
     meta: string;
     project_id: number;
@@ -12,7 +12,7 @@ export interface TaskModel {
     assignees: number[];
     due_to?: Date;
     created_at: Date;
-    updated_at: Date;
+    updated_at?: Date;
     task_events: EntityEvent[];
 }
 

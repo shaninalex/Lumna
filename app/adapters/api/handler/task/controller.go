@@ -50,11 +50,11 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 		data := transport.BindPayload(c, taskCreateDTO{})
 		result, err := contract.ExecWorkItemCreate(c.Request.Context(), resolve(), contract.WorkItemCreate{
 			Title:       data.Title,
-			Description: &data.Body,
+			Description: data.Body,
 			ProjectId:   data.ProjectId,
 			Position:    data.Position,
-			StageId:     &data.ColumnId,
-			ScopeId:     &data.BoardId,
+			StageId:     data.ColumnId,
+			ScopeId:     data.BoardId,
 			DueTo:       data.DueTo,
 		})
 		if err != nil {
@@ -154,7 +154,7 @@ func handleTaskUpdate(resolve core.Resolve) gin.HandlerFunc {
 		result, err := contract.ExecWorkItemUpdate(c.Request.Context(), resolve(), contract.WorkItemUpdate{
 			WorkItemId:  data.TaskId,
 			Title:       data.Title,
-			Description: &data.Body,
+			Description: data.Body,
 		})
 		if err != nil {
 			transport.Fail(c, err)

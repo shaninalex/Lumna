@@ -27,7 +27,6 @@ func (s *ScopeCreate) Handle(ctx context.Context, cmd contract.CreateScope) (con
 		Description: cmd.Description,
 		ProjectID:   cmd.ProjectId,
 		CreatedAt:   s.clock.Now(),
-		UpdatedAt:   nil,
 	}
 	if err := s.scopeRepo.Save(ctx, &scope); err != nil {
 		return result, err

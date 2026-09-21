@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
@@ -26,12 +27,12 @@ func (s *StageRepo) Save(ctx context.Context, stage *domain.Stage) error {
 		ID:          stage.ID,
 		ScopeID:     stage.ScopeID,
 		Name:        stage.Name,
-		Description: &stage.Description,
+		Description: sql.NullString{String: stage.Description, Valid: stage.Description != ""},
 		Category:    string(stage.Category),
 		Position:    stage.Position,
-		WipLimit:    stage.WIPLimit,
+		WipLimit:    sql.NullInt32{Int32: int32(stage.WIPLimit), Valid: stage.WIPLimit != 0},
 		CreatedAt:   stage.CreatedAt,
-		UpdatedAt:   &stage.UpdatedAt,
+		UpdatedAt:   sql.NullTime{Time: stage.UpdatedAt, Valid: stage.UpdatedAt.IsZero()},
 	}
 	if err := s.db.From(ctx).Save(&record).Error; err != nil {
 		return err

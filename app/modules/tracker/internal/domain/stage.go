@@ -25,7 +25,7 @@ type Stage struct {
 	Position float64
 
 	// Work In Progress limit
-	WIPLimit *int
+	WIPLimit int
 
 	WorkItems []WorkItem
 

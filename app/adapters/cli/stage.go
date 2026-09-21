@@ -38,9 +38,7 @@ func newCreateStageCmd(app core.Resolve) *cobra.Command {
 				Description: description,
 				Category:    category,
 				Position:    position,
-			}
-			if wipLimit > 0 {
-				params.WIPLimit = &wipLimit
+				WIPLimit:    wipLimit,
 			}
 
 			stage, err := contract.ExecCreateStage(ctx, app(), params)

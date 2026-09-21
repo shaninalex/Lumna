@@ -7,3 +7,7 @@ func Map[T any, R any](items []T, fn func(T) R) []R {
 	}
 	return result
 }
+
+func Ptr[T any](v T) *T {
+	return &v
+}

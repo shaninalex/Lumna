@@ -8,7 +8,7 @@ type ScopeRepo interface {
 }
 
 type StageRepo interface {
-	Save(ctx context.Context, scope *Stage) error
+	Save(ctx context.Context, stage *Stage) error
 	Get(ctx context.Context, scopeId int) ([]Stage, error)
 	GetById(ctx context.Context, stageId int) (*Stage, error)
 	Delete(ctx context.Context, stageId int) (bool, error)
