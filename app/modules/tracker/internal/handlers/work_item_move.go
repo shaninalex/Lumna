@@ -28,7 +28,7 @@ func (s *WorkItemMove) Handle(ctx context.Context, cmd contract.WorkItemMove) (c
 
 	w.ChangeRank(cmd.Rank, s.clock.Now())
 
-	if err := s.repo.Save(ctx, w); err != nil {
+	if err := s.repo.Update(ctx, w); err != nil {
 		return contract.WorkItemView{}, err
 	}
 	return toWorkItemView(w), nil

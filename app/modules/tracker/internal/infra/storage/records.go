@@ -19,8 +19,8 @@ type stageRecord struct {
 	Scope     scopeRecord      `gorm:"foreignKey:ScopeID;references:ID"`
 	WorkItems []workItemRecord `gorm:"foreignKey:StageID;references:ID"`
 
-	CreatedAt time.Time    `gorm:"autoCreateTime"`
-	UpdatedAt sql.NullTime `gorm:"autoUpdateTime"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt sql.NullTime
 }
 
 func (stageRecord) TableName() string { return "stages" }
@@ -48,11 +48,27 @@ type scopeRecord struct {
 
 	Stages []stageRecord `gorm:"foreignKey:ScopeID;references:ID"`
 
-	CreatedAt time.Time    `gorm:"autoCreateTime"`
-	UpdatedAt sql.NullTime `gorm:"autoUpdateTime"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt sql.NullTime
 }
 
 func (scopeRecord) TableName() string { return "scopes" }
+
+func scopeRecordToDomain(record scopeRecord) domain.Scope {
+	stages := make([]domain.Stage, len(record.Stages))
+	for i, stage := range record.Stages {
+		stages[i] = stageRecordToDomain(stage)
+	}
+	return domain.Scope{
+		ID:          record.ID,
+		ProjectID:   record.ProjectID,
+		Name:        record.Name,
+		Description: record.Description.String,
+		Stages:      stages,
+		CreatedAt:   record.CreatedAt,
+		UpdatedAt:   record.UpdatedAt.Time,
+	}
+}
 
 type workItemAssignRecord struct {
 	IdentityID int `gorm:"primaryKey"`
@@ -80,9 +96,9 @@ type workItemRecord struct {
 	//	Parent   *workItemRecord  `gorm:"foreignKey:ParentID;references:ID"`
 	//	Children []workItemRecord `gorm:"foreignKey:ParentID;references:ID"`
 
-	DueTo     sql.NullTime `gorm:"due_to"`
+	DueTo     sql.NullTime `gorm:"column:due_to"`
 	CreatedAt time.Time    `gorm:"autoCreateTime"`
-	UpdatedAt sql.NullTime `gorm:"autoUpdateTime"`
+	UpdatedAt sql.NullTime
 }
 
 func (workItemRecord) TableName() string { return "work_items" }

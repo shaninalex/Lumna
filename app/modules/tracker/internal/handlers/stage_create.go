@@ -21,8 +21,7 @@ func NewCreateStage(repo domain.StageRepo, clock clock.Clock) *StateCreate {
 }
 
 func (s *StateCreate) Handle(ctx context.Context, cmd contract.StageCreate) (contract.StageView, error) {
-	var result contract.StageView
-	stage := domain.Stage{
+	stage, err := s.repo.Create(ctx, domain.Stage{
 		ScopeID:     cmd.ScopeID,
 		Name:        cmd.Name,
 		Description: cmd.Description,
@@ -30,22 +29,10 @@ func (s *StateCreate) Handle(ctx context.Context, cmd contract.StageCreate) (con
 		Position:    cmd.Position,
 		WIPLimit:    cmd.WIPLimit,
 		CreatedAt:   s.clock.Now(),
-	}
-	if err := s.repo.Save(ctx, &stage); err != nil {
-		return result, err
-	}
-
-	result = contract.StageView{
-		Id:          stage.ID,
-		ScopeId:     stage.ScopeID,
-		Name:        stage.Name,
-		Description: stage.Description,
-		Category:    string(stage.Category),
-		Position:    stage.Position,
-		WIPLimit:    stage.WIPLimit,
-		CreatedAt:   stage.CreatedAt,
-		UpdatedAt:   stage.UpdatedAt,
+	})
+	if err != nil {
+		return contract.StageView{}, err
 	}
 
-	return result, nil
+	return toStageView(stage), nil
 }

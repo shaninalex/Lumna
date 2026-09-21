@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 
+	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -25,8 +26,8 @@ func NewWorkingItemRepo(db *database.DB, clock clock.Clock) *WorkingItemRepo {
 	}
 }
 
-func (s *WorkingItemRepo) Save(ctx context.Context, wi *domain.WorkItem) error {
-	record := workItemRecord{
+func workItemToRecord(wi domain.WorkItem) workItemRecord {
+	return workItemRecord{
 		ID:          wi.ID,
 		ProjectID:   wi.ProjectID,
 		Type:        string(wi.Type),
@@ -36,18 +37,54 @@ func (s *WorkingItemRepo) Save(ctx context.Context, wi *domain.WorkItem) error {
 		ScopeID:     sql.NullInt64{Int64: int64(wi.ScopeID), Valid: wi.ScopeID != 0},
 		StageID:     sql.NullInt64{Int64: int64(wi.StageID), Valid: wi.StageID != 0},
 		Rank:        wi.Rank,
-		CreatedAt:   s.clock.Now(),
-		DueTo:       sql.NullTime{Time: wi.DueTo, Valid: wi.DueTo.IsZero()},
+		CreatedAt:   wi.CreatedAt,
+		UpdatedAt:   sql.NullTime{Time: wi.UpdatedAt, Valid: !wi.UpdatedAt.IsZero()},
+		DueTo:       sql.NullTime{Time: wi.DueTo, Valid: !wi.DueTo.IsZero()},
 	}
-	if err := s.db.From(ctx).Save(&record).Error; err != nil {
-		return err
+}
+
+func (s *WorkingItemRepo) Create(ctx context.Context, wi domain.WorkItem) (domain.WorkItem, error) {
+	record := workItemToRecord(wi)
+	record.ID = 0
+	record.CreatedAt = s.clock.Now()
+	if err := gorm.G[workItemRecord](s.db.From(ctx)).Create(ctx, &record); err != nil {
+		return domain.WorkItem{}, err
 	}
-	wi.ID = record.ID
-	wi.CreatedAt = record.CreatedAt
+	created := workItemToDomain(record)
+	created.AssigneeIDs = wi.AssigneeIDs
+	return created, nil
+}
+
+func (s *WorkingItemRepo) Update(ctx context.Context, wi domain.WorkItem) error {
+	if wi.ID == 0 {
+		return errs.Validation("work_item_id_required", "work item id is required to update a work item")
+	}
+	record := workItemToRecord(wi)
+	res := s.db.From(ctx).Save(&record)
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return errs.NotFound("work_item_not_found", "work item not found")
+	}
 	return nil
 }
 
-func (s *WorkingItemRepo) List(ctx context.Context, scopeId int) ([]domain.WorkItem, error) {
+func (s *WorkingItemRepo) Get(ctx context.Context, itemId int) (domain.WorkItem, error) {
+	record, err := gorm.G[workItemRecord](s.db.From(ctx)).
+		Preload("Assignees", nil).
+		Where("id = ?", itemId).
+		First(ctx)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return domain.WorkItem{}, errs.NotFound("work_item_not_found", "work item not found")
+	}
+	if err != nil {
+		return domain.WorkItem{}, err
+	}
+	return workItemToDomain(record), nil
+}
+
+func (s *WorkingItemRepo) ListByScope(ctx context.Context, scopeId int) ([]domain.WorkItem, error) {
 	records, err := gorm.G[workItemRecord](s.db.From(ctx)).
 		Preload("Assignees", nil).
 		Where("scope_id = ?", scopeId).
@@ -55,26 +92,7 @@ func (s *WorkingItemRepo) List(ctx context.Context, scopeId int) ([]domain.WorkI
 	if err != nil {
 		return nil, err
 	}
-
-	workItems := make([]domain.WorkItem, len(records))
-	for i, record := range records {
-		workItems[i] = workItemToDomain(record)
-	}
-
-	return workItems, nil
-}
-
-func (s *WorkingItemRepo) Get(ctx context.Context, itemId int) (*domain.WorkItem, error) {
-	record, err := gorm.G[workItemRecord](s.db.From(ctx)).
-		Preload("Assignees", nil).
-		Where("id = ?", itemId).
-		First(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	d := workItemToDomain(record)
-	return &d, nil
+	return workItemsToDomain(records), nil
 }
 
 func (s *WorkingItemRepo) Assignment(ctx context.Context, identity, itemId int) error {
@@ -88,38 +106,37 @@ func (s *WorkingItemRepo) Assignment(ctx context.Context, identity, itemId int) 
 	if err != nil {
 		return err
 	}
-
 	r, err := gorm.G[workItemAssignRecord](s.db.From(ctx)).
-		Where("work_item_id = ? and identity_id", itemId, identity).
+		Where("work_item_id = ? and identity_id = ?", itemId, identity).
 		Delete(ctx)
 	if err != nil {
 		return err
 	}
-	if r <= 0 {
-		return errors.New("unable to delete: work_item_assignment not found in database")
+	if r == 0 {
+		return errs.NotFound("work_item_assignment_not_found", "work item assignment not found")
 	}
 	return nil
 }
 
-func (s *WorkingItemRepo) Delete(ctx context.Context, itemId int) (bool, error) {
+func (s *WorkingItemRepo) Delete(ctx context.Context, itemId int) error {
 	r, err := gorm.G[workItemRecord](s.db.From(ctx)).
 		Where("id = ?", itemId).
 		Delete(ctx)
 	if err != nil {
-		return false, err
+		return err
 	}
-	if r <= 0 {
-		return false, errors.New("unable to delete work_item, something went wrong")
+	if r == 0 {
+		return errs.NotFound("work_item_not_found", "work item not found")
 	}
-	return true, nil
+	return nil
 }
 
-func (s *WorkingItemRepo) BatchDelete(ctx context.Context, itemIds []int) (bool, error) {
+func (s *WorkingItemRepo) BatchDelete(ctx context.Context, itemIds []int) error {
+	if len(itemIds) == 0 {
+		return nil
+	}
 	_, err := gorm.G[workItemRecord](s.db.From(ctx)).
 		Where("id IN ?", itemIds).
 		Delete(ctx)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
+	return err
 }

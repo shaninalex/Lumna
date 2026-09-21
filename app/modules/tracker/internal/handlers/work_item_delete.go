@@ -18,5 +18,8 @@ func NewWorkItemDelete(repo domain.WorkingItemRepo) *WorkItemDelete {
 }
 
 func (s *WorkItemDelete) Handle(ctx context.Context, cmd contract.WorkItemDelete) (bool, error) {
-	return s.repo.Delete(ctx, cmd.WorkItemId)
+	if err := s.repo.Delete(ctx, cmd.WorkItemId); err != nil {
+		return false, err
+	}
+	return true, nil
 }

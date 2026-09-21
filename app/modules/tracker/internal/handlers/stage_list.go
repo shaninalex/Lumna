@@ -18,24 +18,9 @@ func NewStageList(repo domain.StageRepo) *StageList {
 }
 
 func (s *StageList) Handle(ctx context.Context, cmd contract.StageList) ([]contract.StageView, error) {
-	result, err := s.repo.Get(ctx, cmd.ScopeId)
+	result, err := s.repo.ListByScope(ctx, cmd.ScopeId)
 	if err != nil {
 		return nil, err
 	}
-	stages := make([]contract.StageView, len(result))
-	for i, scope := range result {
-		stages[i] = contract.StageView{
-			Id:          scope.ID,
-			ScopeId:     scope.ScopeID,
-			Name:        scope.Name,
-			Description: scope.Description,
-			Category:    string(scope.Category),
-			Position:    scope.Position,
-			WIPLimit:    scope.WIPLimit,
-			CreatedAt:   scope.CreatedAt,
-			UpdatedAt:   scope.UpdatedAt,
-		}
-	}
-
-	return stages, nil
+	return toStageViews(result), nil
 }

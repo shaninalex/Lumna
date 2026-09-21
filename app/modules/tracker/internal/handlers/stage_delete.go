@@ -26,7 +26,7 @@ func (s *StageDelete) Handle(ctx context.Context, cmd contract.StageDelete) (con
 	}
 
 	if cmd.WithTasks {
-		stage, err := s.stageRepo.GetById(ctx, cmd.StageId)
+		stage, err := s.stageRepo.Get(ctx, cmd.StageId)
 		if err != nil {
 			return contract.StageDeleteView{}, err
 		}
@@ -34,14 +34,14 @@ func (s *StageDelete) Handle(ctx context.Context, cmd contract.StageDelete) (con
 			return item.ID
 		})
 		if len(ids) != 0 {
-			if _, err = s.itemsRepo.BatchDelete(ctx, ids); err != nil {
+			if err = s.itemsRepo.BatchDelete(ctx, ids); err != nil {
 				return contract.StageDeleteView{}, err
 			}
 			response.DeletedTasks = ids
 		}
 	}
 
-	if _, err := s.stageRepo.Delete(ctx, cmd.StageId); err != nil {
+	if err := s.stageRepo.Delete(ctx, cmd.StageId); err != nil {
 		return contract.StageDeleteView{}, err
 	}
 
