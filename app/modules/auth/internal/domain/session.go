@@ -9,15 +9,15 @@ type RefreshToken struct {
 	ID         int
 	IdentityID int
 	Hash       string
-	ClientID   *string
-	Scopes     *string
+	ClientID   string
+	Scopes     string
 	ExpiresAt  time.Time
 	Revoked    bool
 	CreatedAt  time.Time
 }
 
-func NewRefreshToken(identityID int, hash string, ttl time.Duration, now time.Time) *RefreshToken {
-	return &RefreshToken{
+func NewRefreshToken(identityID int, hash string, ttl time.Duration, now time.Time) RefreshToken {
+	return RefreshToken{
 		IdentityID: identityID,
 		Hash:       hash,
 		ExpiresAt:  now.Add(ttl),

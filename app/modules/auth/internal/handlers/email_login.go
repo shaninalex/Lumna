@@ -60,8 +60,7 @@ func issueSession(
 		return zero, err
 	}
 
-	// Transaction is already open (command middleware) — nothing to manage here.
-	if err := repo.Save(ctx, domain.NewRefreshToken(identityID, hash, refreshTTL, now)); err != nil {
+	if _, err = repo.Save(ctx, domain.NewRefreshToken(identityID, hash, refreshTTL, now)); err != nil {
 		return zero, err
 	}
 

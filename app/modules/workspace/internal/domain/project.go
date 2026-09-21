@@ -7,13 +7,13 @@ type Project struct {
 	Title       string
 	WorkspaceId int
 	OwnerId     int
-	Meta        *string
+	Meta        string
 	CreatedAt   time.Time
-	UpdatedAt   *time.Time
+	UpdatedAt   time.Time
 }
 
-func NewProject(title string, workspaceId, ownerId int, now time.Time) *Project {
-	return &Project{
+func NewProject(title string, workspaceId, ownerId int, now time.Time) Project {
+	return Project{
 		Title:       title,
 		WorkspaceId: workspaceId,
 		OwnerId:     ownerId,

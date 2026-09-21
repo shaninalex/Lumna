@@ -34,14 +34,9 @@ func (p *Provisioner) EnsureIdentityByEmail(ctx context.Context, email, fullName
 	if !errors.Is(err, domain.ErrNotFound) {
 		return 0, err
 	}
-
-	ident, err = domain.NewIdentity(email, fullName, p.clock.Now())
+	identity, err := p.identities.Save(ctx, domain.NewIdentity(email, fullName, p.clock.Now()))
 	if err != nil {
 		return 0, err
 	}
-	if err := p.identities.Save(ctx, ident); err != nil {
-		return 0, err
-	}
-
-	return ident.ID, nil
+	return identity.ID, nil
 }

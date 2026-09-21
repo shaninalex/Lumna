@@ -34,12 +34,13 @@ func (u *Logout) Handle(ctx context.Context, cmd contract.Logout) (contract.Logo
 		return contract.LogoutView{}, err
 	}
 
-	if err := stored.Usable(u.clock.Now()); err != nil {
+	if err = stored.Usable(u.clock.Now()); err != nil {
 		return contract.LogoutView{Revoked: false}, nil
 	}
 
 	stored.Revoke()
-	if err := u.refresh.Save(ctx, stored); err != nil {
+
+	if _, err = u.refresh.Save(ctx, stored); err != nil {
 		return contract.LogoutView{}, err
 	}
 

@@ -26,17 +26,18 @@ func NewWorkItemStageChanged(repo domain.NotificationRepo, c clock.Clock, eventB
 }
 
 func (s *WorkItemStageChanged) Handle(ctx context.Context, changed contract.WorkItemStageChanged) error {
-	n := &domain.Notification{
+	n := domain.Notification{
 		NotificationType: changed.EventName(),
 		Content:          "Work item stage changed", // todo: use i18n _(""), use standard message library
-		RefId:            &changed.WorkItemId,
+		RefId:            changed.WorkItemId,
 		Created:          s.c.Now(),
 	}
 	if a, ok := actor.From(ctx); ok {
-		n.IdentityId = &a.IdentityID
+		n.IdentityId = a.IdentityID
 	}
 
-	if err := s.repo.Save(ctx, n); err != nil {
+	_, err := s.repo.Save(ctx, n)
+	if err != nil {
 		return err
 	}
 

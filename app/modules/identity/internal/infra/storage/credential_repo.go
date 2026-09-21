@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/domain"
@@ -18,33 +19,31 @@ func NewCredentialRepo(db *database.DB) *CredentialRepo {
 
 var _ domain.CredentialRepo = (*CredentialRepo)(nil)
 
-func (r *CredentialRepo) Save(ctx context.Context, c *domain.Credential) error {
+func (r *CredentialRepo) Save(ctx context.Context, c domain.Credential) (domain.Credential, error) {
 	record := credentialRecord{
 		ID:             c.ID,
 		IdentityID:     c.IdentityID,
 		Provider:       c.Provider,
-		ProviderUserID: c.ProviderUserID,
-		Email:          c.Email,
-		PasswordHash:   c.PasswordHash,
+		ProviderUserID: sql.NullString{String: c.ProviderUserID, Valid: c.ProviderUserID != ""},
+		Email:          sql.NullString{String: c.Email, Valid: c.Email != ""},
+		PasswordHash:   sql.NullString{String: c.PasswordHash, Valid: c.PasswordHash != ""},
 		CreatedAt:      c.CreatedAt,
 	}
 	if err := r.db.From(ctx).Save(&record).Error; err != nil {
-		return err
+		return domain.Credential{}, err
 	}
-
-	c.ID = record.ID
-	return nil
+	return toDomainCredential(record), nil
 }
 
-func (r *CredentialRepo) ByIdentityAndProvider(ctx context.Context, id int, p domain.Provider) (*domain.Credential, error) {
+func (r *CredentialRepo) ByIdentityAndProvider(ctx context.Context, id int, p domain.Provider) (domain.Credential, error) {
 	rec, err := gorm.G[credentialRecord](r.db.From(ctx)).
 		Where("identity_id = ? and provider = ?", id, string(p)).
 		First(ctx)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domain.ErrNotFound
+		return domain.Credential{}, domain.ErrNotFound
 	}
 	if err != nil {
-		return nil, err
+		return domain.Credential{}, err
 	}
 	return toDomainCredential(rec), nil
 }

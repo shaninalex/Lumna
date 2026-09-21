@@ -23,10 +23,5 @@ func (s *GetProfile) Handle(ctx context.Context, q contract.GetProfile) (contrac
 	if err != nil {
 		return contract.ProfileView{}, err
 	}
-	return contract.ProfileView{
-		ID:       identity.ID,
-		Email:    identity.Email,
-		FullName: identity.FullName,
-		Active:   identity.Active,
-	}, nil
+	return toProfileView(identity), nil
 }

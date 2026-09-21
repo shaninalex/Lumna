@@ -21,7 +21,7 @@ func NewAddIdentityToWorkspace(repo domain.IdentityWorkspaceRepo, clk clock.Cloc
 }
 
 func (s *AddIdentityToWorkspace) Handle(ctx context.Context, cmd contract.AddIdentityToWorkspace) (bool, error) {
-	err := s.repo.Save(ctx, &domain.IdentityWorkspace{
+	_, err := s.repo.Save(ctx, domain.IdentityWorkspace{
 		IdentityID:  cmd.IdentityId,
 		WorkspaceID: cmd.WorkspaceId,
 		CreatedAt:   s.clock.Now(),

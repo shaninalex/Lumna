@@ -1,8 +1,6 @@
 package domain
 
 import (
-	"net/mail"
-	"strings"
 	"time"
 )
 
@@ -12,6 +10,7 @@ type Identity struct {
 	FullName string
 	Active   bool
 	Created  time.Time
+	Updated  time.Time
 }
 
 type Hasher interface {
@@ -20,20 +19,11 @@ type Hasher interface {
 }
 
 // NewIdentity - makes new identity
-func NewIdentity(email, fullName string, now time.Time) (*Identity, error) {
-	email = strings.ToLower(strings.TrimSpace(email))
-	if _, err := mail.ParseAddress(email); err != nil {
-		return nil, ErrInvalidEmail
-	}
-
-	if fullName == "" {
-		return nil, ErrEmptyName
-	}
-
-	return &Identity{
+func NewIdentity(email, fullName string, now time.Time) Identity {
+	return Identity{
 		Email:    email,
 		FullName: fullName,
 		Active:   true,
 		Created:  now,
-	}, nil
+	}
 }
