@@ -26,12 +26,7 @@ func (u *ListProfiles) Handle(ctx context.Context, q contract.ListProfiles) (con
 	}
 	profiles := make([]contract.ProfileView, len(identities))
 	for i := range identities {
-		profiles[i] = contract.ProfileView{
-			ID:       identities[i].ID,
-			Email:    identities[i].Email,
-			FullName: identities[i].FullName,
-			Active:   identities[i].Active,
-		}
+		profiles[i] = toProfileView(identities[i])
 	}
 	return contract.ListProfilesView{
 		Profiles: profiles,

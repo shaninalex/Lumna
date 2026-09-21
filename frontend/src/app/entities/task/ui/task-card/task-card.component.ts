@@ -34,7 +34,7 @@ import { Store } from '@ngrx/store';
                     </button>
                 </div>
 
-                @if (task.body !== '') {
+                @if (task.body) {
                     <p class="small text-muted mb-2">{{ task.body | strip_html | trim: 65 }}</p>
                 }
 

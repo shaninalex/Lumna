@@ -21,7 +21,7 @@ func NewWorkItemCreate(repo domain.WorkingItemRepo, clock clock.Clock) *WorkItem
 }
 
 func (s *WorkItemCreate) Handle(ctx context.Context, cmd contract.WorkItemCreate) (contract.WorkItemView, error) {
-	w := domain.WorkItem{
+	w, err := s.repo.Create(ctx, domain.WorkItem{
 		Title:       cmd.Title,
 		Description: cmd.Description,
 		ProjectID:   cmd.ProjectId,
@@ -29,10 +29,10 @@ func (s *WorkItemCreate) Handle(ctx context.Context, cmd contract.WorkItemCreate
 		StageID:     cmd.StageId,
 		ScopeID:     cmd.ScopeId,
 		DueTo:       cmd.DueTo,
-	}
-	if err := s.repo.Save(ctx, &w); err != nil {
+	})
+	if err != nil {
 		return contract.WorkItemView{}, err
 	}
 
-	return toWorkItemView(&w), nil
+	return toWorkItemView(w), nil
 }

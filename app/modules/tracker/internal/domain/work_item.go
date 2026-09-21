@@ -40,35 +40,35 @@ type WorkItem struct {
 	ProjectID int
 	Type      WorkItemType
 
-	ParentID    *int
+	ParentID    int
 	Title       string
-	Description *string
+	Description string
 
 	// Work context and execution stage:
-	ScopeID *int
-	StageID *int
+	ScopeID int
+	StageID int
 
 	// Rank - Position within the stage. Using float64 solves the issue of mass updates.
 	Rank float64
 
 	Priority    Priority
 	AssigneeIDs []int
-	SprintID    *int
+	SprintID    int
 	Estimate    *Estimate
 
-	DueTo     *time.Time
+	DueTo     time.Time
 	CreatedAt time.Time
-	UpdatedAt *time.Time
+	UpdatedAt time.Time
 }
 
 func (w *WorkItem) ChangeRank(rank float64, t time.Time) {
 	w.Rank = rank
-	w.UpdatedAt = &t
+	w.UpdatedAt = t
 }
 
 func (w *WorkItem) ChangeStage(scopeId, stageId int, rank float64, t time.Time) {
-	w.ScopeID = &scopeId
-	w.StageID = &stageId
+	w.ScopeID = scopeId
+	w.StageID = stageId
 	w.Rank = rank
-	w.UpdatedAt = &t
+	w.UpdatedAt = t
 }

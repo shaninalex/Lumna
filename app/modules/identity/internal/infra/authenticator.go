@@ -45,11 +45,11 @@ func (a *Authenticator) VerifyPassword(ctx context.Context, email string, passwo
 		return 0, err
 	}
 
-	if cred.PasswordHash == nil {
+	if cred.PasswordHash == "" {
 		return 0, domain.ErrBadCredentials
 	}
 
-	if err := a.hasher.Verify(*cred.PasswordHash, password.Reveal()); err != nil {
+	if err := a.hasher.Verify(cred.PasswordHash, password.Reveal()); err != nil {
 		return 0, domain.ErrBadCredentials
 	}
 

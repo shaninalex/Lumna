@@ -30,16 +30,12 @@ func NewRegister(
 func (u *Register) Handle(ctx context.Context, cmd contract.Register) (contract.ProfileView, error) {
 	var zero contract.ProfileView
 
-	if existing, err := u.identities.ByEmail(ctx, cmd.Email); err == nil && existing != nil {
+	if existing, err := u.identities.ByEmail(ctx, cmd.Email); err == nil && existing.ID != 0 {
 		return zero, domain.ErrEmailTaken
 	}
 
-	ident, err := domain.NewIdentity(cmd.Email, cmd.FullName, u.clock.Now())
+	identity, err := u.identities.Save(ctx, domain.NewIdentity(cmd.Email, cmd.FullName, u.clock.Now()))
 	if err != nil {
-		return zero, err
-	}
-
-	if err := u.identities.Save(ctx, ident); err != nil {
 		return zero, err
 	}
 
@@ -47,8 +43,8 @@ func (u *Register) Handle(ctx context.Context, cmd contract.Register) (contract.
 	if err != nil {
 		return zero, err
 	}
-	cred := domain.NewPasswordCredential(ident.ID, hash, ident.Email)
-	if err := u.creds.Save(ctx, cred); err != nil {
+	_, err = u.creds.Save(ctx, domain.NewPasswordCredential(identity.ID, hash, identity.Email))
+	if err != nil {
 		return zero, err
 	}
 
@@ -58,10 +54,5 @@ func (u *Register) Handle(ctx context.Context, cmd contract.Register) (contract.
 	//	return zero, err
 	//}
 
-	return contract.ProfileView{
-		ID:       ident.ID,
-		Email:    ident.Email,
-		FullName: ident.FullName,
-		Active:   ident.Active,
-	}, nil
+	return toProfileView(identity), nil
 }

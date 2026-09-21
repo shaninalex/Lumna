@@ -22,7 +22,7 @@ func NewStageMove(repo domain.StageRepo, clock clock.Clock) *StageMove {
 }
 
 func (s *StageMove) Handle(ctx context.Context, cmd contract.StageMove) (contract.StageView, error) {
-	stage, err := s.repo.GetById(ctx, cmd.StageId)
+	stage, err := s.repo.Get(ctx, cmd.StageId)
 	if err != nil {
 		return contract.StageView{}, err
 	}
@@ -31,22 +31,10 @@ func (s *StageMove) Handle(ctx context.Context, cmd contract.StageMove) (contrac
 		return contract.StageView{}, errs.Validation("stage_scope_mismatch", "stage does not belong to this scope")
 	}
 
-	stage.Position = cmd.Position
-	stage.UpdatedAt = s.clock.Now()
-
-	if err := s.repo.Save(ctx, stage); err != nil {
+	stage.UpdatePosition(cmd.Position, s.clock.Now())
+	if err := s.repo.Update(ctx, stage); err != nil {
 		return contract.StageView{}, err
 	}
 
-	return contract.StageView{
-		Id:          stage.ID,
-		ScopeId:     stage.ScopeID,
-		Name:        stage.Name,
-		Description: stage.Description,
-		Category:    string(stage.Category),
-		Position:    stage.Position,
-		WIPLimit:    stage.WIPLimit,
-		CreatedAt:   stage.CreatedAt,
-		UpdatedAt:   stage.UpdatedAt,
-	}, nil
+	return toStageView(stage), nil
 }

@@ -22,15 +22,7 @@ func (s *ProjectList) Handle(ctx context.Context, list contract.ProjectList) ([]
 	}
 	projects := make([]contract.ProjectView, len(result))
 	for i, project := range result {
-		projects[i] = contract.ProjectView{
-			Id:          project.ID,
-			Title:       project.Title,
-			WorkspaceId: project.WorkspaceId,
-			OwnerId:     project.OwnerId,
-			Meta:        project.Meta,
-			CreatedAt:   project.CreatedAt,
-			UpdatedAt:   project.UpdatedAt,
-		}
+		projects[i] = toProjectView(project)
 	}
 
 	return projects, nil

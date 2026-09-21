@@ -21,16 +21,9 @@ func NewCreateWorkspace(workspaceRepo domain.WorkspaceRepo, clk clock.Clock) *Cr
 }
 
 func (s *CreateWorkspace) Handle(ctx context.Context, cmd contract.CreateWorkspace) (contract.WorkspaceView, error) {
-	workspace := domain.NewWorkspace(cmd.Title, cmd.OwnerEmail, cmd.Active, s.clock.Now())
-	if err := s.workspaceRepo.Save(ctx, workspace); err != nil {
+	workspace, err := s.workspaceRepo.Save(ctx, domain.NewWorkspace(cmd.Title, cmd.OwnerEmail, cmd.Active, s.clock.Now()))
+	if err != nil {
 		return contract.WorkspaceView{}, err
 	}
-	return contract.WorkspaceView{
-		Id:         workspace.ID,
-		Title:      workspace.Title,
-		OwnerEmail: workspace.OwnerEmail,
-		Active:     workspace.Active,
-		CreatedAt:  workspace.CreatedAt,
-		UpdatedAt:  workspace.UpdatedAt,
-	}, nil
+	return toWorkspaceView(workspace), nil
 }

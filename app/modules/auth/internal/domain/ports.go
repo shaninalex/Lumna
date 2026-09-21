@@ -6,8 +6,8 @@ import (
 )
 
 type RefreshTokenRepo interface {
-	Save(ctx context.Context, t *RefreshToken) error
-	ByHash(ctx context.Context, hash string) (*RefreshToken, error)
+	Save(ctx context.Context, t RefreshToken) (RefreshToken, error)
+	ByHash(ctx context.Context, hash string) (RefreshToken, error)
 }
 
 type Tokens interface {

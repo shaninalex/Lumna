@@ -37,7 +37,9 @@ export class TaskDetailView implements OnInit, OnDestroy {
             tap(task => {
                 this.taskEditForm.task_id().value.set(task.id);
                 this.taskEditForm.title().value.set(task.title);
-                this.taskEditForm.body().value.set(task.body);
+                if (task.body) {
+                    this.taskEditForm.body().value.set(task.body);
+                }
                 this.html = toDoc(task.body || '', this.editor.schema);
             })
         );

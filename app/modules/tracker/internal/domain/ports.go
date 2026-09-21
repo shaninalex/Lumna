@@ -3,22 +3,25 @@ package domain
 import "context"
 
 type ScopeRepo interface {
-	Save(ctx context.Context, scope *Scope) error
-	Get(ctx context.Context, projectId int) ([]Scope, error)
+	Create(ctx context.Context, scope Scope) (Scope, error)
+	Update(ctx context.Context, scope Scope) error
+	ListByProject(ctx context.Context, projectId int) ([]Scope, error)
 }
 
 type StageRepo interface {
-	Save(ctx context.Context, scope *Stage) error
-	Get(ctx context.Context, scopeId int) ([]Stage, error)
-	GetById(ctx context.Context, stageId int) (*Stage, error)
-	Delete(ctx context.Context, stageId int) (bool, error)
+	Create(ctx context.Context, stage Stage) (Stage, error)
+	Update(ctx context.Context, stage Stage) error
+	Get(ctx context.Context, stageId int) (Stage, error)
+	ListByScope(ctx context.Context, scopeId int) ([]Stage, error)
+	Delete(ctx context.Context, stageId int) error
 }
 
 type WorkingItemRepo interface {
-	Save(ctx context.Context, wi *WorkItem) error
-	List(ctx context.Context, scopeId int) ([]WorkItem, error)
-	Get(ctx context.Context, itemId int) (*WorkItem, error)
+	Create(ctx context.Context, wi WorkItem) (WorkItem, error)
+	Update(ctx context.Context, wi WorkItem) error
+	Get(ctx context.Context, itemId int) (WorkItem, error)
+	ListByScope(ctx context.Context, scopeId int) ([]WorkItem, error)
 	Assignment(ctx context.Context, identity, itemId int) error
-	Delete(ctx context.Context, itemId int) (bool, error)
-	BatchDelete(ctx context.Context, itemIds []int) (bool, error)
+	Delete(ctx context.Context, itemId int) error
+	BatchDelete(ctx context.Context, itemIds []int) error
 }

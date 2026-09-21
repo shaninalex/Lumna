@@ -38,7 +38,7 @@ func (u *RefreshSession) Handle(ctx context.Context, cmd contract.RefreshSession
 	}
 
 	stored.Revoke()
-	if err := u.refresh.Save(ctx, stored); err != nil {
+	if _, err := u.refresh.Save(ctx, stored); err != nil {
 		return zero, err
 	}
 

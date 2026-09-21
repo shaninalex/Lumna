@@ -17,29 +17,33 @@ func NewIdentityWorkspaceRepo(db *database.DB) *IdentityWorkspaceRepo {
 	return &IdentityWorkspaceRepo{db: db}
 }
 
-func (s *IdentityWorkspaceRepo) Save(ctx context.Context, t *domain.IdentityWorkspace) error {
+func (s *IdentityWorkspaceRepo) Save(ctx context.Context, t domain.IdentityWorkspace) (domain.IdentityWorkspace, error) {
 	record := identityWorkspaceRecord{
 		IdentityID:  t.IdentityID,
 		WorkspaceID: t.WorkspaceID,
 		CreatedAt:   t.CreatedAt,
 	}
 	if err := s.db.From(ctx).Save(&record).Error; err != nil {
-		return err
+		return domain.IdentityWorkspace{}, err
 	}
-	return nil
+	return domain.IdentityWorkspace{
+		IdentityID:  record.IdentityID,
+		WorkspaceID: record.WorkspaceID,
+		CreatedAt:   record.CreatedAt,
+	}, nil
 }
 
-func (s *IdentityWorkspaceRepo) ByIdentityId(ctx context.Context, identityId int) ([]domain.IdentityWorkspace, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *IdentityWorkspaceRepo) ByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.IdentityWorkspace, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *IdentityWorkspaceRepo) Delete(ctx context.Context, identityId, workspaceId int) (bool, error) {
-	//TODO implement me
-	panic("implement me")
-}
+//func (s *IdentityWorkspaceRepo) ByIdentityId(ctx context.Context, identityId int) ([]domain.IdentityWorkspace, error) {
+//	//TODO implement me
+//	panic("implement me")
+//}
+//
+//func (s *IdentityWorkspaceRepo) ByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.IdentityWorkspace, error) {
+//	//TODO implement me
+//	panic("implement me")
+//}
+//
+//func (s *IdentityWorkspaceRepo) Delete(ctx context.Context, identityId, workspaceId int) (bool, error) {
+//	//TODO implement me
+//	panic("implement me")
+//}

@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -18,20 +19,18 @@ func NewProjectRepo(db *database.DB) *ProjectRepo {
 	return &ProjectRepo{db: db}
 }
 
-func (s *ProjectRepo) Save(ctx context.Context, t *domain.Project) error {
+func (s *ProjectRepo) Save(ctx context.Context, t domain.Project) (domain.Project, error) {
 	record := projectRecord{
 		Title:       t.Title,
 		WorkspaceId: t.WorkspaceId,
 		OwnerId:     t.OwnerId,
-		Meta:        t.Meta,
+		Meta:        sql.NullString{String: t.Meta, Valid: t.Meta != ""},
 		CreatedAt:   t.CreatedAt,
-		UpdatedAt:   t.UpdatedAt,
 	}
 	if err := s.db.From(ctx).Save(&record).Error; err != nil {
-		return err
+		return domain.Project{}, err
 	}
-	t.ID = record.ID
-	return nil
+	return toDomainProject(record), nil
 }
 
 func (s *ProjectRepo) ByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.Project, error) {

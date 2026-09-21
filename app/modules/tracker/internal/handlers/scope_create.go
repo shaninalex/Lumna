@@ -21,26 +21,15 @@ func NewCreateScope(scopeRepo domain.ScopeRepo, clock clock.Clock) *ScopeCreate 
 }
 
 func (s *ScopeCreate) Handle(ctx context.Context, cmd contract.CreateScope) (contract.ScopeView, error) {
-	var result contract.ScopeView
-	scope := domain.Scope{
+	scope, err := s.scopeRepo.Create(ctx, domain.Scope{
 		Name:        cmd.Name,
 		Description: cmd.Description,
 		ProjectID:   cmd.ProjectId,
 		CreatedAt:   s.clock.Now(),
-		UpdatedAt:   nil,
-	}
-	if err := s.scopeRepo.Save(ctx, &scope); err != nil {
-		return result, err
-	}
-
-	result = contract.ScopeView{
-		Id:          scope.ID,
-		Name:        scope.Name,
-		Description: scope.Description,
-		ProjectId:   scope.ProjectID,
-		CreatedAt:   scope.CreatedAt,
-		UpdatedAt:   scope.UpdatedAt,
+	})
+	if err != nil {
+		return contract.ScopeView{}, err
 	}
 
-	return result, nil
+	return toScopeView(scope), nil
 }

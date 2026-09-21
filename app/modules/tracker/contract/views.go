@@ -8,7 +8,7 @@ type ScopeView struct {
 	Description string
 	ProjectId   int
 	CreatedAt   time.Time
-	UpdatedAt   *time.Time
+	UpdatedAt   time.Time
 }
 
 type StageView struct {
@@ -18,7 +18,7 @@ type StageView struct {
 	Description string
 	Category    string
 	Position    float64
-	WIPLimit    *int
+	WIPLimit    int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -31,13 +31,13 @@ type StageDeleteView struct {
 type WorkItemView struct {
 	Id          int
 	Title       string
-	Description *string
+	Description string
 	ProjectId   int
-	StageId     *int
-	ScopeId     *int
+	StageId     int
+	ScopeId     int
 	Rank        float64
-	DueTo       *time.Time
+	DueTo       time.Time
 	CreatedAt   time.Time
-	UpdatedAt   *time.Time
+	UpdatedAt   time.Time
 	Assignees   []int
 }

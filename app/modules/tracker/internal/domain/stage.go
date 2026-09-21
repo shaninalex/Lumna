@@ -25,10 +25,15 @@ type Stage struct {
 	Position float64
 
 	// Work In Progress limit
-	WIPLimit *int
+	WIPLimit int
 
 	WorkItems []WorkItem
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (s Stage) UpdatePosition(position float64, timestamp time.Time) {
+	s.Position = position
+	s.UpdatedAt = timestamp
 }

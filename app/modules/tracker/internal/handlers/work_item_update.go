@@ -28,10 +28,9 @@ func (s *WorkItemUpdate) Handle(ctx context.Context, cmd contract.WorkItemUpdate
 
 	r.Title = cmd.Title
 	r.Description = cmd.Description
-	updTime := s.clock.Now()
-	r.UpdatedAt = &updTime
+	r.UpdatedAt = s.clock.Now()
 
-	if err := s.items.Save(ctx, r); err != nil {
+	if err := s.items.Update(ctx, r); err != nil {
 		return contract.WorkItemView{}, err
 	}
 

@@ -8,7 +8,7 @@ type WorkspaceView struct {
 	OwnerEmail string
 	Active     bool
 	CreatedAt  time.Time
-	UpdatedAt  *time.Time
+	UpdatedAt  time.Time
 }
 
 type ProjectView struct {
@@ -16,7 +16,7 @@ type ProjectView struct {
 	Title       string
 	WorkspaceId int
 	OwnerId     int
-	Meta        *string
+	Meta        string
 	CreatedAt   time.Time
-	UpdatedAt   *time.Time
+	UpdatedAt   time.Time
 }

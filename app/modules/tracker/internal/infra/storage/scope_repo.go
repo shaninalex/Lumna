@@ -2,7 +2,9 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 
+	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 	"gorm.io/gorm"
@@ -20,23 +22,42 @@ func NewScopeRepo(db *database.DB) *ScopeRepo {
 	}
 }
 
-func (s ScopeRepo) Save(ctx context.Context, scope *domain.Scope) error {
-	record := scopeRecord{
+func scopeToRecord(scope domain.Scope) scopeRecord {
+	return scopeRecord{
+		ID:          scope.ID,
 		ProjectID:   scope.ProjectID,
 		Name:        scope.Name,
-		Description: &scope.Description,
+		Description: sql.NullString{String: scope.Description, Valid: scope.Description != ""},
 		CreatedAt:   scope.CreatedAt,
-		UpdatedAt:   scope.UpdatedAt,
+		UpdatedAt:   sql.NullTime{Time: scope.UpdatedAt, Valid: !scope.UpdatedAt.IsZero()},
 	}
-	if err := s.db.From(ctx).Save(&record).Error; err != nil {
-		return err
-	}
+}
 
-	scope.ID = record.ID
+func (s *ScopeRepo) Create(ctx context.Context, scope domain.Scope) (domain.Scope, error) {
+	record := scopeToRecord(scope)
+	record.ID = 0
+	if err := gorm.G[scopeRecord](s.db.From(ctx)).Create(ctx, &record); err != nil {
+		return domain.Scope{}, err
+	}
+	return scopeRecordToDomain(record), nil
+}
+
+func (s *ScopeRepo) Update(ctx context.Context, scope domain.Scope) error {
+	if scope.ID == 0 {
+		return errs.Validation("scope_id_required", "scope id is required to update a scope")
+	}
+	record := scopeToRecord(scope)
+	res := s.db.From(ctx).Save(&record)
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return errs.NotFound("scope_not_found", "scope not found")
+	}
 	return nil
 }
 
-func (s ScopeRepo) Get(ctx context.Context, projectId int) ([]domain.Scope, error) {
+func (s *ScopeRepo) ListByProject(ctx context.Context, projectId int) ([]domain.Scope, error) {
 	records, err := gorm.G[scopeRecord](s.db.From(ctx)).
 		Preload("Stages", nil).
 		Where("project_id = ?", projectId).
@@ -44,33 +65,9 @@ func (s ScopeRepo) Get(ctx context.Context, projectId int) ([]domain.Scope, erro
 	if err != nil {
 		return nil, err
 	}
-	var result []domain.Scope
-	for _, record := range records {
-		var stages []domain.Stage
-		for _, stage := range record.Stages {
-			st := domain.Stage{
-				ID:          stage.ID,
-				ScopeID:     stage.ScopeID,
-				Name:        stage.Name,
-				Description: *stage.Description,
-				Category:    domain.StageCategory(stage.Category),
-				Position:    stage.Position,
-				WIPLimit:    stage.WipLimit,
-				CreatedAt:   stage.CreatedAt,
-				UpdatedAt:   *stage.UpdatedAt,
-			}
-			stages = append(stages, st)
-		}
-		result = append(result, domain.Scope{
-			ID:          record.ID,
-			ProjectID:   record.ProjectID,
-			Name:        record.Name,
-			Stages:      stages,
-			Description: *record.Description,
-			CreatedAt:   record.CreatedAt,
-			UpdatedAt:   record.UpdatedAt,
-		})
+	scopes := make([]domain.Scope, len(records))
+	for i, record := range records {
+		scopes[i] = scopeRecordToDomain(record)
 	}
-
-	return result, nil
+	return scopes, nil
 }

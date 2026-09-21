@@ -19,13 +19,38 @@ func NewIdentityRepo(db *database.DB) *IdentityRepo { return &IdentityRepo{db: d
 
 var _ domain.IdentityRepo = (*IdentityRepo)(nil)
 
-func (r *IdentityRepo) ByEmail(ctx context.Context, email string) (*domain.Identity, error) {
-	rec, err := gorm.G[identityRecord](r.db.From(ctx)).Where("email = ?", strings.ToLower(email)).First(ctx)
+func (r *IdentityRepo) Save(ctx context.Context, i domain.Identity) (domain.Identity, error) {
+	record := identityRecord{
+		ID:        i.ID,
+		Email:     i.Email,
+		FullName:  i.FullName,
+		Active:    i.Active,
+		CreatedAt: i.Created,
+	}
+	if err := r.db.From(ctx).Save(&record).Error; err != nil {
+		return domain.Identity{}, err
+	}
+	return toDomainIdentity(record), nil
+}
+
+func (r *IdentityRepo) ByID(ctx context.Context, id int) (domain.Identity, error) {
+	record, err := gorm.G[identityRecord](r.db.From(ctx)).Where("id = ?", id).First(ctx)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domain.ErrNotFound
+		return domain.Identity{}, domain.ErrNotFound
 	}
 	if err != nil {
-		return nil, err
+		return domain.Identity{}, err
+	}
+	return toDomainIdentity(record), nil
+}
+
+func (r *IdentityRepo) ByEmail(ctx context.Context, email string) (domain.Identity, error) {
+	rec, err := gorm.G[identityRecord](r.db.From(ctx)).Where("email = ?", strings.ToLower(email)).First(ctx)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return domain.Identity{}, domain.ErrNotFound
+	}
+	if err != nil {
+		return domain.Identity{}, err
 	}
 	return toDomainIdentity(rec), nil
 }
@@ -45,45 +70,16 @@ func (r *IdentityRepo) DisplayNames(ctx context.Context, ids []int) (map[int]str
 	return out, nil
 }
 
-func (r *IdentityRepo) ByID(ctx context.Context, id int) (*domain.Identity, error) {
-	rec, err := gorm.G[identityRecord](r.db.From(ctx)).Where("id = ?", id).First(ctx)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, domain.ErrNotFound
-	}
-	if err != nil {
-		return nil, err
-	}
-	return toDomainIdentity(rec), nil
-}
-
-func (r *IdentityRepo) Save(ctx context.Context, i *domain.Identity) error {
-	record := identityRecord{
-		ID:        i.ID,
-		Email:     i.Email,
-		FullName:  i.FullName,
-		Active:    i.Active,
-		CreatedAt: i.Created,
-	}
-	if err := r.db.From(ctx).Save(&record).Error; err != nil {
-		return err
-	}
-
-	i.ID = record.ID
-	return nil
-}
-
-func (r *IdentityRepo) List(ctx context.Context, limit, offset int) ([]*domain.Identity, error) {
+func (r *IdentityRepo) List(ctx context.Context, limit, offset int) ([]domain.Identity, error) {
 	q := gorm.G[identityRecord](r.db.From(ctx)).Offset(offset)
 	if limit > 0 {
 		q = q.Limit(limit)
 	}
-
 	recs, err := q.Find(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	result := make([]*domain.Identity, 0, len(recs))
+	result := make([]domain.Identity, 0, len(recs))
 	for _, rec := range recs {
 		result = append(result, toDomainIdentity(rec))
 	}

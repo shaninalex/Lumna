@@ -27,7 +27,7 @@ func NewWorkItemTransfer(items domain.WorkingItemRepo, stages domain.StageRepo, 
 }
 
 func (s *WorkItemTransfer) Handle(ctx context.Context, cmd contract.WorkItemTransfer) (contract.WorkItemView, error) {
-	stage, err := s.stages.GetById(ctx, cmd.StageId)
+	stage, err := s.stages.Get(ctx, cmd.StageId)
 	if err != nil {
 		return contract.WorkItemView{}, err
 	}
@@ -43,7 +43,7 @@ func (s *WorkItemTransfer) Handle(ctx context.Context, cmd contract.WorkItemTran
 
 	r.ChangeStage(cmd.ScopeId, cmd.StageId, cmd.Rank, s.clock.Now())
 
-	if err := s.items.Save(ctx, r); err != nil {
+	if err := s.items.Update(ctx, r); err != nil {
 		return contract.WorkItemView{}, err
 	}
 
