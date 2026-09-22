@@ -1,6 +1,7 @@
 package wshub
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -21,6 +22,7 @@ func (h *Hub) AddClient(conn *websocket.Conn) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 	h.clients[conn] = true
+	fmt.Println("Added new client")
 }
 
 func (h *Hub) RemoveClient(conn *websocket.Conn) {

@@ -4,10 +4,9 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class WebSocketService {
-    private socket$: WebSocketSubject<unknown>;
+    public socket$: WebSocketSubject<unknown>;
 
     constructor() {
-        console.log('WebSocketService');
         this.socket$ = webSocket(`ws://localhost:8000/ws`);
     }
 

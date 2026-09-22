@@ -7,7 +7,7 @@ export const routes: Routes = [
     },
     {
         path: 'app',
-        loadChildren: () => import('../modules/main/main.module').then((m) => m.MainModule),
+        loadChildren: () => import('../modules/main/main.routes').then((m) => m.routes),
     },
     {
         path: '',
