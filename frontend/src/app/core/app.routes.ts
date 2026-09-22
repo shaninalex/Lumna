@@ -3,11 +3,11 @@ import type { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: 'auth',
-        loadChildren: () => import('../modules/auth/auth.module').then((m) => m.AuthModule),
+        loadChildren: () => import('../pages/auth/auth.routes').then((m) => m.routes),
     },
     {
         path: 'app',
-        loadChildren: () => import('../modules/main/main.module').then((m) => m.MainModule),
+        loadChildren: () => import('../modules/main/main.routes').then((m) => m.routes),
     },
     {
         path: '',
