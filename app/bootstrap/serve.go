@@ -13,8 +13,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
-	api "gitlab.com/shaninalex/lumna/app/adapters/http"
-	"gitlab.com/shaninalex/lumna/app/adapters/webui"
+	api "gitlab.com/shaninalex/lumna/app/adapters/api"
+	"gitlab.com/shaninalex/lumna/app/adapters/web"
+	"gitlab.com/shaninalex/lumna/app/adapters/ws"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
@@ -35,14 +36,14 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 			// router and routes registration
 			router := gin.Default()
 			if cfg.SetupEnabled() {
-				webui.RegisterSetupRoute(resolve, router)
+				web.RegisterSetupRoute(resolve, router)
 			}
 			if cfg.EmbedSPA() {
-				webui.RegisterSPA(router)
+				web.RegisterSPA(router)
 			}
 
-			webui.RegisterDocsRoute(router)
-			api.RegisterWebsocketRoute(resolve, router)
+			web.RegisterDocsRoute(router)
+			ws.RegisterWebsocketRoute(resolve, router)
 			api.RegisterApiRoutes(resolve, app().Bridges.AuthVerifier, api.Config{
 				CORSOrigins:   cfg.CORSOrigins(),
 				SecureCookies: cfg.SecureCookies(),
