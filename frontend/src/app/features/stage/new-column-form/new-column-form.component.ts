@@ -51,7 +51,7 @@ export class NewColumnFormComponent implements OnInit {
     private store = inject(Store);
     private destroyRef = inject(DestroyRef);
 
-    @Input() board_id: number;
+    @Input() boardId: number;
     @Input() position: number;
 
     openedForm = signal<boolean>(false);
@@ -96,7 +96,7 @@ export class NewColumnFormComponent implements OnInit {
 
         const payload = {
             title: formData.title,
-            board_id: this.board_id,
+            boardId: this.boardId,
             order: this.position,
         };
 

@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import type { UserModel } from '../model/user.model';
 import type { APIResponse } from '@shared/models';
 import { HttpClient } from '@angular/common/http';
+import { toUserModel, UserModelDTO } from './user.dto';
 
 @Injectable()
 export class UserApi {
@@ -11,7 +12,7 @@ export class UserApi {
 
     me(): Observable<UserModel> {
         return this.http
-            .get<APIResponse<UserModel>>(`/api/v1/user/me`, { withCredentials: true })
-            .pipe(map((response) => response.data));
+            .get<APIResponse<UserModelDTO>>(`/api/v1/user/me`, { withCredentials: true })
+            .pipe(map((response) => toUserModel(response.data)));
     }
 }

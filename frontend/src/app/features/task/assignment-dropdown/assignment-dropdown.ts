@@ -65,6 +65,6 @@ export class AssignmentDropdown {
     readonly user$ = this.store.select(selectUser.user).pipe(filter(user => !!user));
 
     assign(taskId: number, identityId: number) {
-        this.store.dispatch(actionTask.assignTask({action: {task_id: taskId, identity_id: identityId}}))
+        this.store.dispatch(actionTask.assignTask({action: {taskId: taskId, identityId: identityId}}))
     }
 }

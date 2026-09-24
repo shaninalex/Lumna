@@ -4,6 +4,7 @@ import { map } from "rxjs";
 import type { APIResponse } from "@shared/models";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { ColumnDeleteModel, ColumnDeleteResponseModel, ColumnModel, ColumnPayloadModel } from "../model/column.model";
+import { ColumnModelDTO, toColumnModel, toColumnModels, toColumnPayloadModelDTO } from './column.dto';
 
 @Injectable()
 export class ColumnApi {
@@ -14,17 +15,17 @@ export class ColumnApi {
         params = params.append('board_id', listId);
         return this.http
             .get<
-                APIResponse<ColumnModel[]>
+                APIResponse<ColumnModelDTO[]>
             >(`/api/v1/columns`, { params, withCredentials: true })
-            .pipe(map((response) => response.data));
+            .pipe(map((response) => toColumnModels(response.data)));
     }
 
     create(data: ColumnPayloadModel): Observable<ColumnModel> {
         return this.http
             .post<
-                APIResponse<ColumnModel>
-            >(`/api/v1/columns`, data, { withCredentials: true })
-            .pipe(map((response) => response.data));
+                APIResponse<ColumnModelDTO>
+            >(`/api/v1/columns`, toColumnPayloadModelDTO(data), { withCredentials: true })
+            .pipe(map((response) => toColumnModel(response.data)));
     }
 
     delete(data: ColumnDeleteModel): Observable<ColumnDeleteResponseModel> {

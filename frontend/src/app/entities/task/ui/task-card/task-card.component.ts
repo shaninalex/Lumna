@@ -25,7 +25,7 @@ import { Store } from '@ngrx/store';
                 -->
                 <div class="d-flex justify-content-between mb-2 align-items-start">
                     <h6 class="flex-grow-1 mb-0">
-                        <a class="task-card-link" [routerLink]="routeService.task(task.board_id, task.id)">
+                        <a class="task-card-link" [routerLink]="routeService.task(task.boardId, task.id)">
                             {{ task.title }}
                         </a>
                     </h6>
@@ -43,10 +43,10 @@ import { Store } from '@ngrx/store';
                         <!-- Slot for feature actions (assignment, status change, etc.) -->
                         <ng-content select="[assignmentSlot]"/>
 
-                        @if (task.due_to) {
+                        @if (task.dueTo) {
                             <span class="badge rounded-pill text-bg-secondary">
                                 <i class="fa-regular fa-calendar"></i>
-                                {{ task.due_to | date: 'd MMM' }}
+                                {{ task.dueTo | date: 'd MMM' }}
                             </span>
                         }
                     </div>

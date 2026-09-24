@@ -16,10 +16,10 @@ import { RouterLink } from '@angular/router';
     `,
 })
 export class CreateTaskModalComponent {
-    @Input() column_id: number;
-    @Input() board_id: number;
-    @Input() task_count: number;
-    @Input() project_id: number;
+    @Input() columnId: number;
+    @Input() boardId: number;
+    @Input() taskCount: number;
+    @Input() projectId: number;
     @Input() nextPosition: number;
 
     dialog = inject(Dialog);
@@ -31,10 +31,10 @@ export class CreateTaskModalComponent {
             data: {
                 title: '',
                 body: '',
-                project_id: this.project_id,
+                projectId: this.projectId,
                 position: this.nextPosition,
-                column_id: this.column_id,
-                board_id: this.board_id,
+                columnId: this.columnId,
+                boardId: this.boardId,
             },
         });
         dialogRef.closed.subscribe(data => {
@@ -56,11 +56,11 @@ export class CreateTaskModalDialog {
     taskEditFormModel: WritableSignal<TaskCreateModel> = signal<TaskCreateModel>({
         title: this.data.title,
         body: this.data.body,
-        project_id: this.data.project_id,
+        projectId: this.data.projectId,
         position: this.data.position,
-        column_id: this.data.column_id,
-        board_id: this.data.board_id,
-        due_to: this.data.due_to,
+        columnId: this.data.columnId,
+        boardId: this.data.boardId,
+        dueTo: this.data.dueTo,
     })
     taskEditForm = form(this.taskEditFormModel)
 

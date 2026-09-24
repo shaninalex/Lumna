@@ -1,7 +1,7 @@
 @if (task$ | async; as t) {
     <nav class="mb-3 d-flex gap-2">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a [routerLink]="appRoutes.board(t.board_id)">Development</a></li>
+            <li class="breadcrumb-item"><a [routerLink]="appRoutes.board(t.boardId)">Development</a></li>
             <li class="breadcrumb-item active">#Feat-123</li>
         </ol>
     </nav>
@@ -95,20 +95,20 @@
                         <span class="text-muted">Reporter</span>
                         <strong>Kate</strong>
                     </div>
-                    @if (t.due_to) {
+                    @if (t.dueTo) {
                         <div class="list-group-item d-flex justify-content-between">
                             <span class="text-muted">Due to</span>
-                            <span>{{ t.due_to | date }}</span>
+                            <span>{{ t.dueTo | date }}</span>
                         </div>
                     }
                     <div class="list-group-item d-flex justify-content-between">
                         <span class="text-muted">Created</span>
-                        <span>{{ t.created_at | date }}</span>
+                        <span>{{ t.createdAt | date }}</span>
                     </div>
-                    @if (t.updated_at) {
+                    @if (t.updatedAt) {
                         <div class="list-group-item d-flex justify-content-between">
                             <span class="text-muted">Updated</span>
-                            <span>{{ t.updated_at | timeAgo }}</span>
+                            <span>{{ t.updatedAt | timeAgo }}</span>
                         </div>
                     }
                 </div>

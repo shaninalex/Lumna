@@ -13,7 +13,7 @@ export const selectColumns = {
     total: createSelector(feature, entitySelectors.selectTotal),
     byId: (id: number) => createSelector(selectAll, (list) => list.find((a) => a.id === id)),
     byListId: (listId: number) =>
-        createSelector(selectAll, (list) => list.filter((a) => a.board_id === listId)),
+        createSelector(selectAll, (list) => list.filter((a) => a.boardId === listId)),
     loading: createSelector(feature, (state) => state?.loading ?? false),
     error: createSelector(feature, (state) => state?.errors ?? []),
 };

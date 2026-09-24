@@ -23,19 +23,19 @@ export const taskReducer = createReducer(
         taskAdapter.upsertOne(task, state)
     ),
     on(actionTask.assignTaskSuccess, (state, {action}) => {
-        const task = state.entities[action.task_id];
+        const task = state.entities[action.taskId];
         if (!task) {
             return state;
         }
 
         const assignees = new Set(task.assignees ?? []);
-        if (assignees.has(action.identity_id)) {
-            assignees.delete(action.identity_id);
+        if (assignees.has(action.identityId)) {
+            assignees.delete(action.identityId);
         } else {
-            assignees.add(action.identity_id);
+            assignees.add(action.identityId);
         }
 
-        return taskAdapter.updateOne({id: action.task_id, changes: {assignees: [...assignees]}}, state);
+        return taskAdapter.updateOne({id: action.taskId, changes: {assignees: [...assignees]}}, state);
     }),
     on(actionTask.deleteTaskSuccess, (state, {taskId}) => taskAdapter.removeOne(taskId, state))
 );

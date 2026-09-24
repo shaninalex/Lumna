@@ -63,11 +63,11 @@ export class KanbanBoardWidget implements OnInit {
     }
 
     ngOnInit() {
-        const _q = {board_id: this.boardId()};
+        const _q = {boardId: this.boardId()};
         this.store.dispatch(actionTask.getList({query: _q}));
         this.store.dispatch(actionsColumns.loadByBoardId(_q));
         this.board$ = this.store
-            .select(selectBoard.byId(_q.board_id))
+            .select(selectBoard.byId(_q.boardId))
             .pipe(filter((board) => board !== null));
 
         this.actions$

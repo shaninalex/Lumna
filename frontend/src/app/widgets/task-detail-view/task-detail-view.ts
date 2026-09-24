@@ -20,9 +20,9 @@ export class TaskDetailView implements OnInit, OnDestroy {
     readonly appRoutes = inject(AppRoutes);
     taskId = input.required<number>();
     task$: Observable<TaskModel>;
-    taskEditFormModel: WritableSignal<TaskEditModel> = signal<TaskEditModel>({task_id: 0, title: '', body: ''})
+    taskEditFormModel: WritableSignal<TaskEditModel> = signal<TaskEditModel>({taskId: 0, title: '', body: ''})
     taskEditForm = form(this.taskEditFormModel, (schemaPath) => {
-        required(schemaPath.task_id, {message: "Task ID is required"});
+        required(schemaPath.taskId, {message: "Task ID is required"});
         required(schemaPath.title, {message: "Title is required"});
     })
     editor: Editor;
@@ -35,7 +35,7 @@ export class TaskDetailView implements OnInit, OnDestroy {
         this.task$ = this.store.select(selectTasks.byId(this.taskId())).pipe(
             filter(task => !!task),
             tap(task => {
-                this.taskEditForm.task_id().value.set(task.id);
+                this.taskEditForm.taskId().value.set(task.id);
                 this.taskEditForm.title().value.set(task.title);
                 if (task.body) {
                     this.taskEditForm.body().value.set(task.body);
@@ -59,7 +59,7 @@ export class TaskDetailView implements OnInit, OnDestroy {
         const _data = this.taskEditFormModel();
         this.store.dispatch(actionTask.updateTask({
             data: {
-                task_id: _data.task_id,
+                taskId: _data.taskId,
                 title: _data.title.trim(),
                 body: _data.body.trim(),
             }

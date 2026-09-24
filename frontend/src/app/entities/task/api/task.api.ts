@@ -10,6 +10,13 @@ import type {
     TaskListQueryModel,
     TaskModel
 } from "../model/task.model";
+import {
+    TaskAssignModelDTO, TaskModelDTO,
+    toTaskAssignModel,
+    toTaskAssignModelDTO,
+    toTaskCreateModelDTO,
+    toTaskEditModelDTO, toTaskModel, toTaskModels
+} from './task.dto';
 
 @Injectable()
 export class TaskApi {
@@ -17,37 +24,37 @@ export class TaskApi {
 
     list(q: TaskListQueryModel): Observable<TaskModel[]> {
         let params = new HttpParams()
-        params = params.append("board_id", q.board_id)
+        params = params.append("board_id", q.boardId)
 
         return this.http
             .get<
-                APIResponse<TaskModel[]>
+                APIResponse<TaskModelDTO[]>
             >(`/api/v1/tasks`, {params, withCredentials: true})
-            .pipe(map((response) => response.data));
+            .pipe(map((response) => toTaskModels(response.data)));
     }
 
     create(data: TaskCreateModel): Observable<TaskModel> {
         return this.http
             .post<
-                APIResponse<TaskModel>
-            >(`/api/v1/tasks`, data, {withCredentials: true})
-            .pipe(map((response) => response.data));
+                APIResponse<TaskModelDTO>
+            >(`/api/v1/tasks`, toTaskCreateModelDTO(data), {withCredentials: true})
+            .pipe(map((response) => toTaskModel(response.data)));
     }
 
     update(data: TaskEditModel): Observable<TaskModel> {
         return this.http
             .patch<
-                APIResponse<TaskModel>
-            >(`/api/v1/tasks/${data.task_id}`, data, {withCredentials: true})
-            .pipe(map((response) => response.data));
+                APIResponse<TaskModelDTO>
+            >(`/api/v1/tasks/${data.taskId}`, toTaskEditModelDTO(data), {withCredentials: true})
+            .pipe(map((response) => toTaskModel(response.data)));
     }
 
     assign(data: TaskAssignModel): Observable<TaskAssignModel> {
         return this.http
             .patch<
-                APIResponse<TaskAssignModel>
-            >(`/api/v1/tasks/${data.task_id}/assign`, data, {withCredentials: true})
-            .pipe(map((response) => response.data));
+                APIResponse<TaskAssignModelDTO>
+            >(`/api/v1/tasks/${data.taskId}/assign`, toTaskAssignModelDTO(data), {withCredentials: true})
+            .pipe(map((response) => toTaskAssignModel(response.data)));
     }
 
     delete(taskId: number): Observable<unknown> {
