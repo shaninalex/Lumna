@@ -6,6 +6,7 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/modules/notifications/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications/internal/handlers"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications/internal/infra/storage"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
@@ -17,6 +18,7 @@ type Deps struct {
 	Log      *slog.Logger
 	Clock    clock.Clock
 	EventBus *bus.EventBus
+	Pusher   contract.Pusher
 }
 
 type Module struct {
@@ -31,7 +33,7 @@ func New(d Deps) *Module {
 	return &Module{
 		deps: d,
 
-		workItemStageChanged: handlers.NewWorkItemStageChanged(repo, d.Clock, d.EventBus),
+		workItemStageChanged: handlers.NewWorkItemStageChanged(repo, d.Clock, d.EventBus, d.Pusher),
 	}
 }
 

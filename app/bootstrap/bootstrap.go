@@ -14,6 +14,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 	pmw "gitlab.com/shaninalex/lumna/app/platform/middleware"
+	"gitlab.com/shaninalex/lumna/app/platform/realtime"
 )
 
 type Instance struct {
@@ -23,7 +24,8 @@ type Instance struct {
 	Bridges Bridges
 	modules []core.Module
 
-	closers []func(context.Context) error
+	closers  []func(context.Context) error
+	Realtime *realtime.Hub
 }
 
 // Close clear resources. Required for CLI
@@ -49,6 +51,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	log := slog.New(slog.NewTextHandler(os.Stderr, nil))
 	db := database.New(cfg)
 	clk := clock.System()
+	hub := realtime.NewHub(64)
 
 	// ======= Core =======
 	write := []bus.Middleware{
@@ -74,7 +77,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	}
 
 	// ======= Modules =======
-	mods, bridges, err := buildModules(cfg, db, log, clk, c.Events)
+	mods, bridges, err := buildModules(cfg, db, log, clk, c.Events, hub)
 	if err != nil {
 		return nil, err
 	}
@@ -90,10 +93,11 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	c.Events.Seal()
 
 	return &Instance{
-		Core:    c,
-		Log:     log,
-		Clock:   clk,
-		Bridges: bridges,
-		modules: mods,
+		Core:     c,
+		Log:      log,
+		Clock:    clk,
+		Bridges:  bridges,
+		modules:  mods,
+		Realtime: hub,
 	}, nil
 }

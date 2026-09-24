@@ -15,13 +15,20 @@ type WorkItemStageChanged struct {
 	c        clock.Clock
 	repo     domain.NotificationRepo
 	eventBus *bus.EventBus
+	pusher   notificationsContract.Pusher
 }
 
-func NewWorkItemStageChanged(repo domain.NotificationRepo, c clock.Clock, eventBus *bus.EventBus) *WorkItemStageChanged {
+func NewWorkItemStageChanged(
+	repo domain.NotificationRepo,
+	c clock.Clock,
+	eventBus *bus.EventBus,
+	pusher notificationsContract.Pusher,
+) *WorkItemStageChanged {
 	return &WorkItemStageChanged{
 		c:        c,
 		repo:     repo,
 		eventBus: eventBus,
+		pusher:   pusher,
 	}
 }
 
@@ -36,15 +43,26 @@ func (s *WorkItemStageChanged) Handle(ctx context.Context, changed contract.Work
 		n.IdentityId = a.IdentityID
 	}
 
-	_, err := s.repo.Save(ctx, n)
+	n, err := s.repo.Save(ctx, n)
 	if err != nil {
 		return err
 	}
 
+	// to internal subscribers
 	notify := notificationsContract.NotificationCreated{Source: changed.EventName()}
 	if err := s.eventBus.Publish(ctx, notify); err != nil {
 		return err
 	}
+
+	// to adapters
+	// NOTE: assignees id's and watchers
+	s.pusher.Push(ctx, []int{n.IdentityId}, notificationsContract.NotificationView{
+		ID:        n.ID,
+		Type:      changed.EventName(),
+		Content:   n.Content,
+		RefID:     n.RefId,
+		CreatedAt: n.Created,
+	})
 
 	return nil
 }
