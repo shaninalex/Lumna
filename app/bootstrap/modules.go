@@ -16,6 +16,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
+	"gitlab.com/shaninalex/lumna/app/platform/realtime"
 )
 
 const (
@@ -30,7 +31,14 @@ type Bridges struct {
 	AuthVerifier authc.Verifier
 }
 
-func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger, clk clock.Clock, e *bus.EventBus) ([]core.Module, Bridges, error) {
+func buildModules(
+	cfg *config.Config,
+	db *database.DB,
+	log *slog.Logger,
+	clk clock.Clock,
+	e *bus.EventBus,
+	hub *realtime.Hub,
+) ([]core.Module, Bridges, error) {
 	secret := []byte(cfg.AuthSecret())
 	if len(secret) == 0 {
 		return nil, Bridges{}, errors.New("bootstrap: secret_key is empty, cannot sign tokens")
@@ -44,21 +52,37 @@ func buildModules(cfg *config.Config, db *database.DB, log *slog.Logger, clk clo
 	})
 
 	authModule := auth.New(auth.Deps{
-		DB:         db,
-		Log:        log,
-		Clock:      clk,
-		Secret:     secret,
-		AccessTTL:  minutesOr(cfg.Int("auth.access_ttl"), defaultAccessTTL),
-		RefreshTTL: minutesOr(cfg.Int("auth.refresh_ttl"), defaultRefreshTTL),
-		Issuer:     tokenIssuer,
-
+		DB:          db,
+		Log:         log,
+		Clock:       clk,
+		Secret:      secret,
+		AccessTTL:   minutesOr(cfg.Int("auth.access_ttl"), defaultAccessTTL),
+		RefreshTTL:  minutesOr(cfg.Int("auth.refresh_ttl"), defaultRefreshTTL),
+		Issuer:      tokenIssuer,
 		Identities:  identityModule.Authenticator(),
 		Provisioner: identityModule.Provisioner(),
 	})
 
-	trackerModule := tracker.New(tracker.Deps{DB: db, Log: log, Clock: clk, EventBus: e})
-	workspaceModule := workspace.New(workspace.Deps{DB: db, Log: log, Clock: clk})
-	notificationsModule := notifications.New(notifications.Deps{DB: db, Log: log, Clock: clk, EventBus: e})
+	trackerModule := tracker.New(tracker.Deps{
+		DB:       db,
+		Log:      log,
+		Clock:    clk,
+		EventBus: e,
+	})
+
+	workspaceModule := workspace.New(workspace.Deps{
+		DB:    db,
+		Log:   log,
+		Clock: clk,
+	})
+
+	notificationsModule := notifications.New(notifications.Deps{
+		DB:       db,
+		Log:      log,
+		Clock:    clk,
+		EventBus: e,
+		Pusher:   notificationPusher{hub: hub},
+	})
 
 	modules := []core.Module{
 		identityModule,
