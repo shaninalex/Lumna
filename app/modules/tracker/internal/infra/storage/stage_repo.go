@@ -43,7 +43,8 @@ func (s *StageRepo) Create(ctx context.Context, stage domain.Stage) (domain.Stag
 	if err := gorm.G[stageRecord](s.db.From(ctx)).Create(ctx, &record); err != nil {
 		return domain.Stage{}, err
 	}
-	return stageRecordToDomain(record), nil
+	st := stageRecordToDomain(record)
+	return st, nil
 }
 
 func (s *StageRepo) Update(ctx context.Context, stage domain.Stage) error {

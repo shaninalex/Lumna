@@ -6,7 +6,7 @@ CREATE TABLE notifications
 	content     TEXT NOT NULL,
 	ref_id      INTEGER,
 	priority    TEXT,
-	read_at     DATETIME,
+	read_at     DATETIME DEFAULT NULL,
 	created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
 
 	FOREIGN KEY (identity_id)

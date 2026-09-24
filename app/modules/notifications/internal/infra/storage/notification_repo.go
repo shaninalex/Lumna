@@ -33,14 +33,17 @@ func (r *NotificationRepo) Save(ctx context.Context, n domain.Notification) (dom
 }
 
 func toNotificationDomain(n notificationRecord) domain.Notification {
-	return domain.Notification{
+	dn := domain.Notification{
 		ID:               n.ID,
 		IdentityId:       int(n.IdentityID.Int64),
 		NotificationType: n.Type,
 		Content:          n.Content,
 		RefId:            int(n.RefID.Int64),
 		Priority:         n.Priority.String,
-		ReadAt:           n.ReadAt.Time,
 		Created:          n.CreatedAt,
 	}
+	if n.ReadAt.Valid {
+		dn.ReadAt = n.ReadAt.Time
+	}
+	return dn
 }
