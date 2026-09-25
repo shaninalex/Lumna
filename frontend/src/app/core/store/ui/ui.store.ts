@@ -1,20 +1,15 @@
-import { createFeature, createReducer, on } from '@ngrx/store';
-import { actionUI } from './ui.effects';
+import { createReducer, on } from '@ngrx/store';
+import { actionUI } from './ui.actions';
 
 export interface UIState {
-    sidebar: boolean;
+    sidebarOpen: boolean;
 }
 
 const initialState: UIState = {
-    sidebar: true,
+    sidebarOpen: true,
 };
 
 export const uiReducer = createReducer(
     initialState,
-    on(actionUI.sidebarState, (state, action) => ({sidebar: action.state})),
+    on(actionUI.sidebarState, (state, action) => ({sidebarOpen: action.state})),
 );
-
-export const uiFeature = createFeature({
-    name: 'sidebar',
-    reducer: uiReducer,
-});
