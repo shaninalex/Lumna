@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { Actions, ofType } from '@ngrx/effects';
 import { actionToggleSidebar } from '@core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -20,9 +20,7 @@ export class SidebarComponent {
     private ref = inject(DestroyRef);
     private store = inject(Store);
 
-    currentWorkspaceId = this.store.selectSignal(selectWorkspaces.currentWorkspaceId);
-    hideSidebar = false;
-
+    hideSidebar = signal(false);
     currentProject = this.store.selectSignal(selectProjects.currentProject);
 
     workspace$ = this.store.select(selectWorkspaces.currentWorkspaceId).pipe(
@@ -36,7 +34,9 @@ export class SidebarComponent {
 
     constructor() {
         this.actions$
-            .pipe(ofType(actionToggleSidebar), takeUntilDestroyed(this.ref))
-            .subscribe(() => (this.hideSidebar = !this.hideSidebar));
+            .pipe(
+                ofType(actionToggleSidebar),
+                takeUntilDestroyed(this.ref),
+            ).subscribe();
     }
 }

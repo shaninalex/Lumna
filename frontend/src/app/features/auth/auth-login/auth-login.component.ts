@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { actionSession } from '@core/store/session.actions';
+import { actionSession } from '@core/store/session/session.actions';
 import { Store } from '@ngrx/store';
 import { form, required, email, FormField } from '@angular/forms/signals';
 

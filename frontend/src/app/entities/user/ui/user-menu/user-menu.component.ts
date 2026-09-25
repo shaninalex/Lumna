@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { Store } from '@ngrx/store';
-import { actionSession } from '@core/store/session.actions';
+import { actionSession } from '@core/store/session/session.actions';
 
 @Component({
     selector: 'lu-user-menu',

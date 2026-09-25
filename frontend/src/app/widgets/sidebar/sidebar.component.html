@@ -1,5 +1,5 @@
 @if (workspace$ | async; as workspace) {
-    <nav class="sidebar h-100 bg-body-tertiary" [ngClass]="{ 'sidebar-closed': hideSidebar }">
+    <nav class="sidebar h-100 bg-body-tertiary" [ngClass]="{ 'sidebar-closed': hideSidebar() }">
         <ul class="nav flex-column">
             @if (currentProject(); as project) {
                 <li class="nav-item">

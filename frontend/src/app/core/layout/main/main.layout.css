@@ -15,11 +15,6 @@
     grid-area: header;
 }
 
-.dashboard-sidebar {
-    grid-area: sidebar;
-    overflow-y: auto;
-}
-
 .dashboard-content {
     grid-area: content;
     overflow: auto;

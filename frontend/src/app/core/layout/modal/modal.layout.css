@@ -33,4 +33,12 @@
 .modal-content-scroller {
     height: 100%;
     overflow: auto;
+    position: relative;
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    line-height: 1;
 }
