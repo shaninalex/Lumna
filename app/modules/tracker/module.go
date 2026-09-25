@@ -60,7 +60,7 @@ func New(d Deps) *Module {
 		createScope:        handlers.NewCreateScope(scopeRepo, d.Clock),
 		createStage:        handlers.NewCreateStage(stageRepo, d.Clock),
 		stageDelete:        handlers.NewStageDelete(workItemRepo, stageRepo),
-		scopeList:          handlers.NewScopeList(scopeRepo),
+		scopeList:          handlers.NewScopeList(scopeRepo, stageRepo, workItemRepo),
 		stageList:          handlers.NewStageList(stageRepo),
 		stageMove:          handlers.NewStageMove(stageRepo, d.Clock),
 		createWorkItem:     handlers.NewWorkItemCreate(workItemRepo, d.Clock),

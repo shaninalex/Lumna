@@ -1,0 +1,6 @@
+@if (visible()) {
+    <div class="input-group mb-3">
+        <input type="text" class="form-control form-control-sm" placeholder="Task title" [formField]="taskEditForm.title">
+        <button class="btn btn-sm btn-outline-secondary" type="button" (click)="submit($event)" [disabled]="taskEditFormModel().title === ''">Save</button>
+    </div>
+}

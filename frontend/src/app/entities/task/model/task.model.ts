@@ -36,6 +36,15 @@ export interface TaskCreateModel {
     dueTo?: Date;
 }
 
+export const taskCreateModelDefault: TaskCreateModel = {
+    title: '',
+    body: '',
+    projectId: 0,
+    position: 0,
+    columnId: 0,
+    boardId: 0,
+}
+
 export interface TaskListQueryModel {
     boardId: number;
 }

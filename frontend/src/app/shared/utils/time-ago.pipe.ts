@@ -6,7 +6,10 @@ import { formatDistance } from 'date-fns';
     name: 'timeAgo',
 })
 export class TimeAgoPipe implements PipeTransform {
-    transform(value: Date): unknown {
+    transform(value: Date | undefined | null): unknown {
+        if (!value) {
+            return '';
+        }
         return formatDistance(value, new Date(), { addSuffix: true });
     }
 }

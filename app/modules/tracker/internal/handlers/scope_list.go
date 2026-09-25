@@ -8,12 +8,16 @@ import (
 )
 
 type ScopeList struct {
-	repo domain.ScopeRepo
+	repo      domain.ScopeRepo
+	stageRepo domain.StageRepo
+	itemsRepo domain.WorkingItemRepo
 }
 
-func NewScopeList(repo domain.ScopeRepo) *ScopeList {
+func NewScopeList(repo domain.ScopeRepo, stageRepo domain.StageRepo, itemsRepo domain.WorkingItemRepo) *ScopeList {
 	return &ScopeList{
-		repo: repo,
+		repo:      repo,
+		stageRepo: stageRepo,
+		itemsRepo: itemsRepo,
 	}
 }
 

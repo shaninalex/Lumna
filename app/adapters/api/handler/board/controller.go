@@ -2,7 +2,6 @@ package board
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
@@ -33,12 +32,7 @@ func handleList(resolve core.Resolve) gin.HandlerFunc {
 
 		boards := make([]boardDTO, len(result))
 		for i, scope := range result {
-			boards[i] = boardDTO{
-				Id:        scope.Id,
-				Title:     scope.Name,
-				ProjectId: id,
-				CreatedAt: time.Now(),
-			}
+			boards[i] = toBoardDTO(scope)
 		}
 
 		httpx.Success(c, boards)
@@ -65,13 +59,6 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 			httpx.Fail(c, err)
 			return
 		}
-
-		httpx.Success(c, boardDTO{
-			Id:        scope.Id,
-			Title:     scope.Name,
-			ProjectId: scope.ProjectId,
-			CreatedAt: scope.CreatedAt,
-			UpdatedAt: scope.UpdatedAt,
-		})
+		httpx.Success(c, toBoardDTO(scope))
 	}
 }

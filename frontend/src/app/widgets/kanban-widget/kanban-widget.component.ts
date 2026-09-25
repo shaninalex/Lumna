@@ -14,21 +14,23 @@ import { actionsColumns, ColumnMenuDropdownComponent } from '@entities/column';
 import { filter, tap, type Observable } from 'rxjs';
 import { TimeAgoPipe } from '@shared/utils';
 import { selectBoard, type BoardModel } from '@entities/board';
-import { TaskCardComponent, actionTask } from '@entities/task';
+import { TaskCardComponent, actionTask, AddTaskBtnComponent, AddTaskPlusBtnComponent } from '@entities/task';
 
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CdkDrag, CdkDragHandle, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 import type { KanbanCard, KanbanColumn } from './model/kanban.models';
 import { KanbanService } from './service';
 import { AppRoutes } from '@core';
-import { AssignmentDropdown } from '@features/task';
+import { AssignmentDropdown, TaskColumnForm } from '@features/task';
 import { ColumnDeletePromptComponent, NewColumnFormComponent } from '@features/stage';
-import { CreateTaskModalComponent } from '../create-task-modal';
 import { selectProjects } from '@entities/project';
 
 @Component({
     selector: 'lu-kanban-board-feature',
     imports: [
+        TaskColumnForm,
+        AddTaskBtnComponent,
+        AddTaskPlusBtnComponent,
         CdkDropListGroup,
         CdkDropList,
         CdkDrag,
@@ -40,11 +42,9 @@ import { selectProjects } from '@entities/project';
         AssignmentDropdown,
         ColumnMenuDropdownComponent,
         ColumnDeletePromptComponent,
-        CreateTaskModalComponent,
     ],
     templateUrl: './kanban-widget.component.html',
     styleUrl: './kanban-widget.component.css',
-
     providers: [KanbanService],
 })
 export class KanbanBoardWidget implements OnInit {
@@ -52,7 +52,7 @@ export class KanbanBoardWidget implements OnInit {
     boardId = input.required<number>();
     board$: Observable<BoardModel>;
     private store = inject(Store);
-    projectId$ = this.store.select(selectProjects.currentProjectId);
+    projectId = this.store.selectSignal(selectProjects.currentProjectId);
     private actions$ = inject(Actions);
     private destroyRef = inject(DestroyRef);
     private kanban = inject(KanbanService);

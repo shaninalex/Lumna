@@ -1,28 +1,34 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import type { BoardModel } from '../../model/board.model';
 import { RouterLink } from '@angular/router';
 import { AppRoutes } from '@core';
+import { TimeAgoPipe } from '@shared/utils';
 
 @Component({
     selector: 'lu-board-list-item',
-    imports: [RouterLink],
+    imports: [RouterLink, TimeAgoPipe],
 
     template: `
-        <a [routerLink]="appRoutes.board(board.id)" class="text-decoration-none">
-            <h5 class="mb-1">{{ board.title }}</h5>
+        <a [routerLink]="appRoutes.board(board().id)" class="text-decoration-none">
+            <h5 class="mb-1">{{ board().title }}</h5>
         </a>
-
-        <p class="mb-2 text-muted">Main board for feature development, bugs and improvements.</p>
-
+        @if (board().issueCount) {
+            <p class="mb-2 text-muted">{{ board().description }}</p>
+        }
         <div class="d-flex gap-3 small text-muted">
-            <span>42 cards</span>
-            <span>5 columns</span>
-            <span>Updated 2 hours ago</span>
+            @if (board().issueCount) {
+                <span>{{ board().issueCount }} cards</span>
+            }
+            @if (board().stageCount) {
+                <span>{{ board().stageCount }} columns</span>
+            }
+            @if (board().updatedAt) {
+                <span>Updated {{ board()?.updatedAt | timeAgo }}</span>
+            }
         </div>
     `,
 })
 export class BoardListItemComponent {
-    @Input() board: BoardModel;
-
+    board = input.required<BoardModel>();
     readonly appRoutes = inject(AppRoutes);
 }

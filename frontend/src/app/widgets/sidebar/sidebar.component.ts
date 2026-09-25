@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
