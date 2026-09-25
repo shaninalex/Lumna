@@ -15,7 +15,6 @@ import { RouterLink } from '@angular/router';
 @Component({
     selector: 'lu-create-task-modal',
     imports: [],
-
     template: `
         <button class="button" type="button" (click)="openDialog()">
             <i class="fa-solid fa-plus"></i>
@@ -34,7 +33,7 @@ export class CreateTaskModalComponent {
 
     openDialog(): void {
         const dialogRef = this.dialog.open<TaskCreateModel>(CreateTaskModalDialog, {
-            width: '650px',
+            width: '750px',
             data: {
                 title: '',
                 body: '',
@@ -56,7 +55,6 @@ export class CreateTaskModalComponent {
 @Component({
     selector: 'lu-column-delete-prompt-dialog',
     templateUrl: 'column-delete-prompt.dialog.html',
-
     imports: [FormsModule, RouterLink, FormField],
 })
 export class CreateTaskModalDialog {
