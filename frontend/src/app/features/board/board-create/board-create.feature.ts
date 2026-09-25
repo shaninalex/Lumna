@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { tap } from 'rxjs';
 @Component({
     selector: 'lu-board-create-feature',
     imports: [FormField],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <form (submit)="onSubmit($event)">
             <div class="mb-4">

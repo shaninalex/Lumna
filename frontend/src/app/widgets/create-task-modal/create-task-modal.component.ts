@@ -1,4 +1,11 @@
-import { Component, inject, Input, signal, WritableSignal } from '@angular/core';
+import {
+    Component,
+    inject,
+    Input,
+    signal,
+    WritableSignal,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Store } from '@ngrx/store';
@@ -9,6 +16,7 @@ import { RouterLink } from '@angular/router';
 @Component({
     selector: 'lu-create-task-modal',
     imports: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <button class="button" type="button" (click)="openDialog()">
             <i class="fa-solid fa-plus"></i>
@@ -23,7 +31,7 @@ export class CreateTaskModalComponent {
     @Input() nextPosition: number;
 
     dialog = inject(Dialog);
-    private store = inject(Store)
+    private store = inject(Store);
 
     openDialog(): void {
         const dialogRef = this.dialog.open<TaskCreateModel>(CreateTaskModalDialog, {
@@ -37,16 +45,19 @@ export class CreateTaskModalComponent {
                 boardId: this.boardId,
             },
         });
-        dialogRef.closed.subscribe(data => {
-            if (!data) { return; }
+        dialogRef.closed.subscribe((data) => {
+            if (!data) {
+                return;
+            }
             this.store.dispatch(actionTask.create({ data }));
-        })
+        });
     }
 }
 
 @Component({
     selector: 'lu-column-delete-prompt-dialog',
     templateUrl: 'column-delete-prompt.dialog.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule, RouterLink, FormField],
 })
 export class CreateTaskModalDialog {
@@ -61,8 +72,8 @@ export class CreateTaskModalDialog {
         columnId: this.data.columnId,
         boardId: this.data.boardId,
         dueTo: this.data.dueTo,
-    })
-    taskEditForm = form(this.taskEditFormModel)
+    });
+    taskEditForm = form(this.taskEditFormModel);
 
     submit(event: Event) {
         event.preventDefault();

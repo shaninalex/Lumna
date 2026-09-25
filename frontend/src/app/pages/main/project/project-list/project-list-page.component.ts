@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { UiService } from '@shared/ui';
 import { ProjectCardComponent, selectProjects } from '@entities/project';
 import { selectWorkspaces } from '@entities/workspace';
@@ -12,6 +12,7 @@ import { GlobalLayout } from '@core/layout';
 @Component({
     selector: 'lu-project-list-page',
     imports: [GlobalLayout, RouterLink, AsyncPipe, ProjectCardComponent],
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './project-list-page.component.html',
 })
 export class ProjectListPage {
@@ -20,15 +21,15 @@ export class ProjectListPage {
     readonly appRoutes = inject(AppRoutes);
 
     workspace$ = this.store.select(selectWorkspaces.currentWorkspace).pipe(
-        filter(workspace => workspace !== null),
+        filter((workspace) => workspace !== null),
         switchMap((workspace) =>
-            this.store.select(selectProjects.byWorkspaceId(workspace.id)).pipe(
-                map((projects) => ({workspace, projects}))
-            )
+            this.store
+                .select(selectProjects.byWorkspaceId(workspace.id))
+                .pipe(map((projects) => ({ workspace, projects }))),
         ),
     );
 
     constructor() {
-        this.ui.setPageTitle("Projects")
+        this.ui.setPageTitle('Projects');
     }
 }

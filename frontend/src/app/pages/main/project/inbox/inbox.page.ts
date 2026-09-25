@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UiService } from '@shared/ui';
 import { MainLayout } from '@core/layout';
 
 @Component({
     selector: 'lu-inbox-page',
     imports: [MainLayout],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <lu-main-layout>
             <div class="container-fluid py-4">
@@ -15,7 +16,7 @@ import { MainLayout } from '@core/layout';
         </lu-main-layout>
     `,
 })
-export class InboxPage  {
+export class InboxPage {
     private ui = inject(UiService);
 
     constructor() {

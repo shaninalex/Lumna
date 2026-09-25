@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ProjectCreateFeature } from '@features/project';
 import { GlobalLayout } from '@core/layout';
 import { UiService } from '@shared/ui';
@@ -7,6 +7,7 @@ import { AppRoutes } from '@core';
 @Component({
     selector: 'lu-project-create-page',
     imports: [GlobalLayout, ProjectCreateFeature],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <lu-global-layout>
             <div class="container py-4">
@@ -24,6 +25,6 @@ export class ProjectCreatePage {
     readonly appRoutes = inject(AppRoutes);
 
     constructor() {
-        this.ui.setPageTitle("Create Project");
+        this.ui.setPageTitle('Create Project');
     }
 }

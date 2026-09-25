@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { actionToggleSidebar } from '@core';
 import { Actions, ofType } from '@ngrx/effects';
@@ -19,6 +19,7 @@ import { WorkspaceSwitcherComponent } from '@features';
         WorkspaceSwitcherComponent,
     ],
     styleUrl: './header.component.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">

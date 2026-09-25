@@ -13,6 +13,7 @@
         "importHelpers": true,
         "target": "ES2022",
         "module": "preserve",
+        "strictTemplates": false,
         "strictPropertyInitialization": false,
         "paths": {
             "@core": [

@@ -1,8 +1,9 @@
-import { Component, output } from '@angular/core';
+import { Component, output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'lu-modal-layout',
     styleUrl: './modal.layout.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <div class="modal-layout">
             <div class="modal-layout-backdrop" (click)="closed.emit()"></div>
@@ -14,11 +15,11 @@ import { Component, output } from '@angular/core';
                         </button>
                     </div>
 
-                    <ng-content/>
+                    <ng-content />
                 </div>
             </div>
         </div>
-    `
+    `,
 })
 export class ModalLayout {
     readonly closed = output<void>();

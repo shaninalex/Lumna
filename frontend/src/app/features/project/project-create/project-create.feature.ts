@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
 import { actionProject, type ProjectCreateModel } from '@entities/project';
@@ -10,11 +10,17 @@ import { filter, tap } from 'rxjs';
 @Component({
     selector: 'lu-project-create-feature',
     imports: [FormField],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <form (submit)="onSubmit($event)">
             <div class="mb-4">
                 <label for="project_title" class="form-label">Project title</label>
-                <input type="text" class="form-control" id="project_title" [formField]="pForm.title">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="project_title"
+                    [formField]="pForm.title"
+                />
             </div>
 
             <div>
@@ -29,28 +35,25 @@ export class ProjectCreateFeature {
     private destroyRef = inject(DestroyRef);
     private workspace$ = this.store.select(selectWorkspaces.currentWorkspace);
 
-    pFormModel = signal<ProjectCreateModel>({ title: "", workspaceId: 0 });
+    pFormModel = signal<ProjectCreateModel>({ title: '', workspaceId: 0 });
     pForm = form(this.pFormModel, (schemaPath) => required(schemaPath.title));
 
     constructor() {
-        this.workspace$.pipe(
-            takeUntilDestroyed(this.destroyRef),
-            filter(wp => wp !== null),
-            tap((wp) => this.pFormModel().workspaceId = wp.id)
-        ).subscribe();
+        this.workspace$
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                filter((wp) => wp !== null),
+                tap((wp) => (this.pFormModel().workspaceId = wp.id)),
+            )
+            .subscribe();
 
         this.actions$
-            .pipe(
-                ofType(actionProject.createFailed),
-                takeUntilDestroyed(this.destroyRef)
-            )
+            .pipe(ofType(actionProject.createFailed), takeUntilDestroyed(this.destroyRef))
             .subscribe((action) => console.log(action));
     }
 
     onSubmit(event: Event): void {
         event.preventDefault();
-        this.store.dispatch(
-            actionProject.create({ payload: this.pFormModel() })
-        );
+        this.store.dispatch(actionProject.create({ payload: this.pFormModel() }));
     }
 }

@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { BoardListItemComponent, selectBoard } from '@entities/board';
 import { selectProjects } from '@entities/project';
 import { Store } from '@ngrx/store';
@@ -8,6 +8,7 @@ import { filter, switchMap } from 'rxjs';
 @Component({
     selector: 'lu-board-list-feature',
     imports: [AsyncPipe, BoardListItemComponent],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         @if (boards$ | async; as boards) {
             @for (board of boards; track $index) {

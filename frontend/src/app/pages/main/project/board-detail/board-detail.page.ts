@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, type Observable } from 'rxjs';
@@ -13,6 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
     selector: 'lu-board-detail-page',
     imports: [MainLayout, AsyncPipe, KanbanBoardWidget, RouterOutlet],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <lu-main-layout>
             @if (boardId$ | async; as boardId) {
@@ -28,7 +29,7 @@ export class BoardDetailPage {
     private store = inject(Store);
     private activeRoute = inject(ActivatedRoute);
     private ui = inject(UiService);
-    private destroyRef = inject(DestroyRef)
+    private destroyRef = inject(DestroyRef);
 
     boardId$: Observable<number> = this.activeRoute.paramMap.pipe(
         map((params) => params.get('boardId')),
@@ -37,10 +38,12 @@ export class BoardDetailPage {
     );
 
     constructor() {
-        this.boardId$.pipe(
-            takeUntilDestroyed(this.destroyRef),
-            switchMap((boardId) => this.store.select(selectBoard.byId(boardId))),
-            filter(board => board !== null),
-        ).subscribe((board) => this.ui.setPageTitle(`Board: ${board.title}`))
+        this.boardId$
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                switchMap((boardId) => this.store.select(selectBoard.byId(boardId))),
+                filter((board) => board !== null),
+            )
+            .subscribe((board) => this.ui.setPageTitle(`Board: ${board.title}`));
     }
 }

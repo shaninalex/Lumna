@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MainLayout } from '@core/layout';
 import { UiService } from '@shared/ui';
 import { Store } from '@ngrx/store';
@@ -9,6 +9,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'lu-workspace-entry-page',
     imports: [MainLayout, AsyncPipe],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <lu-main-layout>
             @if (workspace$ | async; as workspace) {
@@ -21,7 +22,7 @@ export class WorkspaceEntryPage {
     private store = inject(Store);
     private ui = inject(UiService);
 
-    workspace$: Observable<WorkspaceModel | null> = this.store.select(selectWorkspaces.currentWorkspace).pipe(
-        tap(workspace => this.ui.setPageTitle(`Workspace: ${workspace?.title}`))
-    );
+    workspace$: Observable<WorkspaceModel | null> = this.store
+        .select(selectWorkspaces.currentWorkspace)
+        .pipe(tap((workspace) => this.ui.setPageTitle(`Workspace: ${workspace?.title}`)));
 }

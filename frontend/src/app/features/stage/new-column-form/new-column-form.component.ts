@@ -1,4 +1,12 @@
-import { OnInit, Component, DestroyRef, inject, Input, signal } from '@angular/core';
+import {
+    OnInit,
+    Component,
+    DestroyRef,
+    inject,
+    Input,
+    signal,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormField, form, required } from '@angular/forms/signals';
 import { actionsColumns } from '@entities/column/model';
@@ -39,11 +47,10 @@ import { tap } from 'rxjs';
                 </div>
             </form>
         } @else {
-            <button class="button button-pill" (click)="openForm()">
-                Create new column
-            </button>
+            <button class="button button-pill" (click)="openForm()">Create new column</button>
         }
     `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     host: { class: 'flex-shrink-0' },
 })
 export class NewColumnFormComponent implements OnInit {

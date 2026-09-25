@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { BoardCreateFeature } from '@features';
 import { MainLayout } from '@core/layout';
 import { UiService } from '@shared/ui';
@@ -6,6 +6,7 @@ import { UiService } from '@shared/ui';
 @Component({
     selector: 'lu-board-create-page',
     imports: [MainLayout, BoardCreateFeature],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <lu-main-layout>
             <div class="container-fluid">
@@ -19,6 +20,6 @@ export class BoardCreatePage {
     private ui = inject(UiService);
 
     constructor() {
-        this.ui.setPageTitle("Create Board");
+        this.ui.setPageTitle('Create Board');
     }
 }
