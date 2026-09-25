@@ -7,6 +7,8 @@ type ScopeView struct {
 	Name        string
 	Description string
 	ProjectId   int
+	StageCount  int
+	IssueCount  int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

@@ -10,7 +10,6 @@ import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Store } from '@ngrx/store';
 import { actionTask, TaskCreateModel } from '@entities/task';
 import { form, FormField } from '@angular/forms/signals';
-import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'lu-create-task-modal',
@@ -47,7 +46,7 @@ export class CreateTaskModalComponent {
             if (!data) {
                 return;
             }
-            this.store.dispatch(actionTask.create({ data }));
+            this.store.dispatch(actionTask.create({data}));
         });
     }
 }
@@ -55,7 +54,7 @@ export class CreateTaskModalComponent {
 @Component({
     selector: 'lu-column-delete-prompt-dialog',
     templateUrl: 'column-delete-prompt.dialog.html',
-    imports: [FormsModule, RouterLink, FormField],
+    imports: [FormsModule, FormField],
 })
 export class CreateTaskModalDialog {
     dialogRef = inject<DialogRef<TaskCreateModel>>(DialogRef<TaskCreateModel>);
