@@ -10,10 +10,14 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'lu-assignment-dropdown',
     imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe],
+
     template: `
-        <div class="text-muted d-inline-flex align-items-center lh-1" [cdkMenuTriggerFor]="assignmentMenu">
+        <div
+            class="text-muted d-inline-flex align-items-center lh-1"
+            [cdkMenuTriggerFor]="assignmentMenu"
+        >
             @if (task.assignees !== null && task.assignees.length > 0) {
-                <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
+                <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
             } @else {
                 <i class="fa-regular fa-circle-user"></i>
             }
@@ -26,31 +30,51 @@ import { AsyncPipe } from '@angular/common';
                         cdkMenuItem
                         (click)="assign(task.id, user.id)"
                     >
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
+                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
                         Assign yourself
                     </button>
                 }
                 <!-- TODO: users list -->
-                <input type="text" class="form-control border-0" placeholder="Search...">
+                <input type="text" class="form-control border-0" placeholder="Search..." />
                 <div class="list-group list-group-flush">
-                    <button type="button" class="list-group-item list-group-item-action" cdkMenuItem>
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
+                    <button
+                        type="button"
+                        class="list-group-item list-group-item-action"
+                        cdkMenuItem
+                    >
+                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
                         Garry Hudini
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action" cdkMenuItem>
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
+                    <button
+                        type="button"
+                        class="list-group-item list-group-item-action"
+                        cdkMenuItem
+                    >
+                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
                         Garry Hudini
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action" cdkMenuItem>
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
+                    <button
+                        type="button"
+                        class="list-group-item list-group-item-action"
+                        cdkMenuItem
+                    >
+                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
                         Garry Hudini
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action" cdkMenuItem>
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
+                    <button
+                        type="button"
+                        class="list-group-item list-group-item-action"
+                        cdkMenuItem
+                    >
+                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
                         Garry Hudini
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action" cdkMenuItem>
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px">
+                    <button
+                        type="button"
+                        class="list-group-item list-group-item-action"
+                        cdkMenuItem
+                    >
+                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
                         Garry Hudini
                     </button>
                 </div>
@@ -62,9 +86,11 @@ export class AssignmentDropdown {
     @Input() task: TaskModel;
 
     private store = inject(Store);
-    readonly user$ = this.store.select(selectUser.user).pipe(filter(user => !!user));
+    readonly user$ = this.store.select(selectUser.user).pipe(filter((user) => !!user));
 
     assign(taskId: number, identityId: number) {
-        this.store.dispatch(actionTask.assignTask({action: {taskId: taskId, identityId: identityId}}))
+        this.store.dispatch(
+            actionTask.assignTask({ action: { taskId: taskId, identityId: identityId } }),
+        );
     }
 }

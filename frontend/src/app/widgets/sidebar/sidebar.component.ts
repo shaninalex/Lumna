@@ -3,7 +3,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { actionToggleSidebar } from '@core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectWorkspaces } from '@entities/workspace';
 import { filter, map, switchMap } from 'rxjs';
@@ -26,20 +26,17 @@ export class SidebarComponent {
     currentProject = this.store.selectSignal(selectProjects.currentProject);
 
     workspace$ = this.store.select(selectWorkspaces.currentWorkspaceId).pipe(
-        filter(workspaceId => workspaceId !== null),
-        switchMap((workspaceId) => 
-            this.store.select(selectProjects.byWorkspaceId(workspaceId)).pipe(
-                map((projects) => ({workspaceId, projects}))
-            )
+        filter((workspaceId) => workspaceId !== null),
+        switchMap((workspaceId) =>
+            this.store
+                .select(selectProjects.byWorkspaceId(workspaceId))
+                .pipe(map((projects) => ({ workspaceId, projects }))),
         ),
     );
 
     constructor() {
         this.actions$
-            .pipe(
-                ofType(actionToggleSidebar),
-                takeUntilDestroyed(this.ref),
-            ).subscribe(() => this.hideSidebar = !this.hideSidebar);
+            .pipe(ofType(actionToggleSidebar), takeUntilDestroyed(this.ref))
+            .subscribe(() => (this.hideSidebar = !this.hideSidebar));
     }
 }
-

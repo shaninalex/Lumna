@@ -9,6 +9,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'lu-workspace-entry-page',
     imports: [MainLayout, AsyncPipe],
+
     template: `
         <lu-main-layout>
             @if (workspace$ | async; as workspace) {
@@ -21,7 +22,7 @@ export class WorkspaceEntryPage {
     private store = inject(Store);
     private ui = inject(UiService);
 
-    workspace$: Observable<WorkspaceModel | null> = this.store.select(selectWorkspaces.currentWorkspace).pipe(
-        tap(workspace => this.ui.setPageTitle(`Workspace: ${workspace?.title}`))
-    );
+    workspace$: Observable<WorkspaceModel | null> = this.store
+        .select(selectWorkspaces.currentWorkspace)
+        .pipe(tap((workspace) => this.ui.setPageTitle(`Workspace: ${workspace?.title}`)));
 }

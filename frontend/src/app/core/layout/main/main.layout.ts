@@ -10,16 +10,17 @@ import { NgClass } from '@angular/common';
     imports: [SidebarComponent, HeaderComponent, NgClass],
     styleUrl: './main.layout.css',
     standalone: true,
+
     template: `
         <div class="dashboard" [ngClass]="{ 'sidebar-closed': hideSidebar }">
             <div class="dashboard-header">
-                <lu-header/>
+                <lu-header />
             </div>
             <div class="dashboard-sidebar">
-                <lu-sidebar/>
+                <lu-sidebar />
             </div>
             <div class="dashboard-content">
-                <ng-content/>
+                <ng-content />
             </div>
         </div>
     `,
@@ -32,9 +33,7 @@ export class MainLayout {
 
     constructor() {
         this.actions$
-            .pipe(
-                ofType(actionToggleSidebar),
-                takeUntilDestroyed(this.ref),
-            ).subscribe(() => this.hideSidebar = !this.hideSidebar);
+            .pipe(ofType(actionToggleSidebar), takeUntilDestroyed(this.ref))
+            .subscribe(() => (this.hideSidebar = !this.hideSidebar));
     }
 }

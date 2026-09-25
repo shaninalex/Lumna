@@ -8,6 +8,7 @@ import { filter, switchMap } from 'rxjs';
 @Component({
     selector: 'lu-board-list-feature',
     imports: [AsyncPipe, BoardListItemComponent],
+
     template: `
         @if (boards$ | async; as boards) {
             @for (board of boards; track $index) {

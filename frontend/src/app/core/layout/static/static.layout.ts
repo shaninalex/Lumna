@@ -4,6 +4,7 @@ import { UiService } from '@shared/ui';
 @Component({
     selector: 'lu-static-layout',
     imports: [],
+
     template: `
         <div class="p-5 d-flex align-items-center justify-content-center">
             <div class="w-100">

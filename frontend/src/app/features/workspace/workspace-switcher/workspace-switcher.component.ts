@@ -1,15 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { Router, RouterLink } from "@angular/router";
+import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectWorkspaces } from '@entities/workspace/model';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { filter, map, switchMap } from 'rxjs';
 
-
 @Component({
     selector: 'lu-workspace-switcher',
     imports: [AsyncPipe, RouterLink],
+
     template: `
         @if (workspace$ | async; as workspace) {
             <button
@@ -29,14 +29,13 @@ import { filter, map, switchMap } from 'rxjs';
                     class="btn btn-sm btn-outline-secondary d-block w-100 text-left bg-body text-body"
                     (click)="openDialog()"
                 >
-                    <span class="d-block text-start">
-                        Select workspace
-                    </span>
+                    <span class="d-block text-start"> Select workspace </span>
                 </button>
             } @else {
-                <a 
+                <a
                     class="btn btn-sm btn-outline-secondary d-block bg-body text-body"
-                    routerLink="/app/workspaces/create">
+                    routerLink="/app/workspaces/create"
+                >
                     Create Workspace
                 </a>
             }
@@ -59,23 +58,24 @@ export class WorkspaceSwitcherComponent {
 @Component({
     selector: 'lu-switch-workspace-modal',
     imports: [AsyncPipe, NgClass],
+
     template: `
         <div class="card">
             @if (data$ | async; as data) {
                 <div class="list-group overflow-y-auto" style="max-height: 20rem">
                     @for (item of data.workspaces; track $index) {
-                        <button 
+                        <button
                             (click)="handleLink(['/app/w', item.id.toString()])"
-                            [ngClass]="{'active': data.currentWorkspace!.id === item.id}"
-                            class="list-group-item list-group-item-action">
-                        {{ item.title }}
-                    </button>
+                            [ngClass]="{ active: data.currentWorkspace!.id === item.id }"
+                            class="list-group-item list-group-item-action"
+                        >
+                            {{ item.title }}
+                        </button>
                     }
                 </div>
             }
             <button (click)="handleLink(['/app/workspaces'])" class="btn btn-link">See all</button>
         </div>
-        
     `,
 })
 export class SwitchWorkspaceModal {
@@ -84,11 +84,11 @@ export class SwitchWorkspaceModal {
     private store = inject(Store);
 
     data$ = this.store.select(selectWorkspaces.all).pipe(
-        filter(workspace => workspace !== null),
-        switchMap((workspaces) => 
-            this.store.select(selectWorkspaces.currentWorkspace).pipe(
-                map((currentWorkspace) => ({workspaces, currentWorkspace}))
-            )
+        filter((workspace) => workspace !== null),
+        switchMap((workspaces) =>
+            this.store
+                .select(selectWorkspaces.currentWorkspace)
+                .pipe(map((currentWorkspace) => ({ workspaces, currentWorkspace }))),
         ),
     );
 

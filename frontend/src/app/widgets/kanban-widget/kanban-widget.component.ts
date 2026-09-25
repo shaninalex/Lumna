@@ -1,6 +1,12 @@
 import { AsyncPipe } from '@angular/common';
 import type { OnInit } from '@angular/core';
-import { Component, DestroyRef, effect, inject, input } from '@angular/core';
+import {
+    Component,
+    DestroyRef,
+    effect,
+    inject,
+    input,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -11,12 +17,7 @@ import { selectBoard, type BoardModel } from '@entities/board';
 import { TaskCardComponent, actionTask } from '@entities/task';
 
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
-import {
-    CdkDrag,
-    CdkDragHandle,
-    CdkDropList,
-    CdkDropListGroup,
-} from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragHandle, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 import type { KanbanCard, KanbanColumn } from './model/kanban.models';
 import { KanbanService } from './service';
 import { AppRoutes } from '@core';
@@ -43,6 +44,7 @@ import { selectProjects } from '@entities/project';
     ],
     templateUrl: './kanban-widget.component.html',
     styleUrl: './kanban-widget.component.css',
+
     providers: [KanbanService],
 })
 export class KanbanBoardWidget implements OnInit {
@@ -63,8 +65,8 @@ export class KanbanBoardWidget implements OnInit {
     }
 
     ngOnInit() {
-        const _q = {boardId: this.boardId()};
-        this.store.dispatch(actionTask.getList({query: _q}));
+        const _q = { boardId: this.boardId() };
+        this.store.dispatch(actionTask.getList({ query: _q }));
         this.store.dispatch(actionsColumns.loadByBoardId(_q));
         this.board$ = this.store
             .select(selectBoard.byId(_q.boardId))

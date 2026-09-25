@@ -32,6 +32,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
             <i class="fa-solid fa-chevron-right text-muted mt-1"></i>
         </a>
     `,
+
     host: {
         class: 'list-group-item list-group-item-action',
     },
@@ -45,8 +46,8 @@ export class TaskListItemComponent implements OnInit {
     column$: Observable<ColumnModel>;
 
     ngOnInit() {
-        this.column$ = this.store.select(selectColumns.byId(this.task.columnId)).pipe(
-            filter(c => c !== undefined),
-        );
+        this.column$ = this.store
+            .select(selectColumns.byId(this.task.columnId))
+            .pipe(filter((c) => c !== undefined));
     }
 }

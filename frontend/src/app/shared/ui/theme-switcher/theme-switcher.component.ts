@@ -8,6 +8,7 @@ import type { Observable } from 'rxjs';
 @Component({
     selector: 'lu-theme-switcher',
     imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe],
+
     template: `
         <button class="btn btn-sm" [cdkMenuTriggerFor]="theme">
             @if (themeMode | async; as themeMode) {
@@ -32,7 +33,8 @@ import type { Observable } from 'rxjs';
                         cdkMenuItem
                         (click)="changeTheme('light')"
                         class="list-group-item list-group-item-action"
-                        [class.active]="currentTheme === 'light'">
+                        [class.active]="currentTheme === 'light'"
+                    >
                         Light
                     </button>
 
@@ -41,7 +43,8 @@ import type { Observable } from 'rxjs';
                         cdkMenuItem
                         (click)="changeTheme('dark')"
                         class="list-group-item list-group-item-action"
-                        [class.active]="currentTheme === 'dark'">
+                        [class.active]="currentTheme === 'dark'"
+                    >
                         Dark
                     </button>
 
@@ -50,7 +53,8 @@ import type { Observable } from 'rxjs';
                         cdkMenuItem
                         (click)="changeTheme('auto')"
                         class="list-group-item list-group-item-action"
-                        [class.active]="currentTheme === 'auto'">
+                        [class.active]="currentTheme === 'auto'"
+                    >
                         Auto
                     </button>
                 }
