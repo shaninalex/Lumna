@@ -29,7 +29,7 @@ export class TaskColumnForm implements OnInit {
 
     boardId = input.required<number>();
     taskCount = input.required<number>();
-    projectId = input<number>();
+    projectId = input<number | null>();
     nextPosition = input.required<number>();
 
     visible = signal(false);
