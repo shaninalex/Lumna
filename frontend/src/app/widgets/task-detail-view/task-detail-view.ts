@@ -6,7 +6,6 @@ import {
     OnInit,
     signal,
     WritableSignal,
-    ChangeDetectionStrategy,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TimeAgoPipe } from '@shared/utils';
@@ -39,7 +38,6 @@ import { defaultToolbar } from '@shared/ui';
         NgxEditorMenuComponent,
         FormsModule,
     ],
-    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './task-detail-view.html',
 })
 export class TaskDetailView implements OnInit, OnDestroy {

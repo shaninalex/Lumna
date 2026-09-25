@@ -1,4 +1,4 @@
-import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { ProjectModel } from '@entities/project/model';
 import { selectWorkspaces } from '@entities/workspace/model';
@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 @Component({
     selector: 'lu-project-card',
     imports: [RouterLink],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <div class="card h-100">
             <div class="card-body">

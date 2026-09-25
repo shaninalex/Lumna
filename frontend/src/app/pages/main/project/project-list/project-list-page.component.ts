@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { UiService } from '@shared/ui';
 import { ProjectCardComponent, selectProjects } from '@entities/project';
@@ -12,7 +12,7 @@ import { GlobalLayout } from '@core/layout';
 @Component({
     selector: 'lu-project-list-page',
     imports: [GlobalLayout, RouterLink, AsyncPipe, ProjectCardComponent],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     templateUrl: './project-list-page.component.html',
 })
 export class ProjectListPage {

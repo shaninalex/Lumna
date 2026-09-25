@@ -4,7 +4,6 @@ import {
     Input,
     signal,
     WritableSignal,
-    ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -16,7 +15,7 @@ import { RouterLink } from '@angular/router';
 @Component({
     selector: 'lu-create-task-modal',
     imports: [],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <button class="button" type="button" (click)="openDialog()">
             <i class="fa-solid fa-plus"></i>
@@ -57,7 +56,7 @@ export class CreateTaskModalComponent {
 @Component({
     selector: 'lu-column-delete-prompt-dialog',
     templateUrl: 'column-delete-prompt.dialog.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     imports: [FormsModule, RouterLink, FormField],
 })
 export class CreateTaskModalDialog {

@@ -1,11 +1,11 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { WorkspaceModel } from '@entities/workspace/model';
 
 @Component({
     selector: 'lu-workspace-card',
     imports: [RouterLink],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <div class="card">
             <div class="card-body">

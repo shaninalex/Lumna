@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { WorkspaceCreateFeature } from '@features/workspace';
 import { GlobalLayout } from '@core/layout';
 import { UiService } from '@shared/ui';
@@ -6,7 +6,7 @@ import { UiService } from '@shared/ui';
 @Component({
     selector: 'lu-workspace-create-page',
     imports: [GlobalLayout, WorkspaceCreateFeature],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <lu-global-layout>
             <div class="container py-4">

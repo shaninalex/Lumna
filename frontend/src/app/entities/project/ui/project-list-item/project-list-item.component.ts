@@ -1,5 +1,5 @@
 import type { OnInit } from '@angular/core';
-import { Component, computed, inject, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, Input } from '@angular/core';
 import type { ProjectModel } from '@entities/project/model';
 import { selectWorkspaces } from '@entities/workspace/model';
 import { Store } from '@ngrx/store';
@@ -12,7 +12,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'lu-project-list-item',
     imports: [RouterLink, TrimPipe, AsyncPipe],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <a
             cdkMenuItem

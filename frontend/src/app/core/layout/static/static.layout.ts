@@ -1,10 +1,10 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UiService } from '@shared/ui';
 
 @Component({
     selector: 'lu-static-layout',
     imports: [],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <div class="p-5 d-flex align-items-center justify-content-center">
             <div class="w-100">

@@ -1,4 +1,4 @@
-import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { StripHtmlPipe, TrimPipe } from '@shared/utils';
 import { DatePipe } from '@angular/common';
@@ -12,7 +12,7 @@ import { Store } from '@ngrx/store';
     selector: 'lu-task-card',
     imports: [RouterLink, TrimPipe, DatePipe, CdkMenu, CdkMenuItem, CdkMenuTrigger, StripHtmlPipe],
     styleUrl: './task-card.component.css',
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <div class="card text-decoration-none text-body">
             <div class="card-body p-2">

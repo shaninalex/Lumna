@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { SidebarComponent, HeaderComponent } from '@widgets';
 import { Actions, ofType } from '@ngrx/effects';
 import { actionToggleSidebar } from '@core';
@@ -10,7 +10,7 @@ import { NgClass } from '@angular/common';
     imports: [SidebarComponent, HeaderComponent, NgClass],
     styleUrl: './main.layout.css',
     standalone: true,
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <div class="dashboard" [ngClass]="{ 'sidebar-closed': hideSidebar }">
             <div class="dashboard-header">

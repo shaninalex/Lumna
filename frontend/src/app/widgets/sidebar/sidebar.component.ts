@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { Actions, ofType } from '@ngrx/effects';
 import { actionToggleSidebar } from '@core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -13,7 +13,6 @@ import { selectProjects } from '@entities/project';
     selector: 'lu-sidebar',
     imports: [NgClass, RouterLink, AsyncPipe],
     styleUrl: './sidebar.component.css',
-    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {

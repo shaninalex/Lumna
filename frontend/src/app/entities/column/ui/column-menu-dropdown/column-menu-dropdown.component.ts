@@ -1,10 +1,10 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 
 @Component({
     selector: 'lu-column-menu-dropdown',
     imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <button [cdkMenuTriggerFor]="taskMenu" class="btn btn-sm p-1 lh-1">
             <i class="fa-solid fa-ellipsis"></i>

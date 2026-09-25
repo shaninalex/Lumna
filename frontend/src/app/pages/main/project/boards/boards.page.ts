@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UiService } from '@shared/ui';
 import { RouterLink } from '@angular/router';
 import { AppRoutes } from '@core';
@@ -8,7 +8,7 @@ import { MainLayout } from '@core/layout';
 @Component({
     selector: 'lu-boards-page',
     imports: [MainLayout, RouterLink, BoardListFeature],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <lu-main-layout>
             <div class="container-fluid py-4">

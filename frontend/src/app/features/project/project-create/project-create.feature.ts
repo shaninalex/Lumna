@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
 import { actionProject, type ProjectCreateModel } from '@entities/project';
@@ -10,7 +10,7 @@ import { filter, tap } from 'rxjs';
 @Component({
     selector: 'lu-project-create-feature',
     imports: [FormField],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <form (submit)="onSubmit($event)">
             <div class="mb-4">

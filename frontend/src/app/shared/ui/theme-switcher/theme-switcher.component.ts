@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { AsyncPipe } from '@angular/common';
 import { UiService } from '../ui.service';
@@ -8,7 +8,7 @@ import type { Observable } from 'rxjs';
 @Component({
     selector: 'lu-theme-switcher',
     imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <button class="btn btn-sm" [cdkMenuTriggerFor]="theme">
             @if (themeMode | async; as themeMode) {

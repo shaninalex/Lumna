@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { Store } from '@ngrx/store';
 import { filter, switchMap, map } from 'rxjs';
@@ -17,7 +17,7 @@ import { ProjectListItemComponent, selectProjects } from '@entities/project';
         ProjectListItemComponent,
         RouterLink,
     ],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     templateUrl: './project-dropdown.component.html',
 })
 export class ProjectDropdownComponent {

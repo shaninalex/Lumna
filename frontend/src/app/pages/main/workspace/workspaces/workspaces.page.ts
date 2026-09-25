@@ -1,5 +1,5 @@
 import type { OnInit } from '@angular/core';
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UiService } from '@shared/ui';
 import { selectWorkspaces, WorkspaceCardComponent } from '@entities/workspace';
 import { RouterLink } from '@angular/router';
@@ -10,7 +10,7 @@ import { GlobalLayout } from '@core/layout';
 @Component({
     selector: 'lu-workspaces-page',
     imports: [GlobalLayout, WorkspaceCardComponent, RouterLink, AsyncPipe],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     templateUrl: 'workspaces.page.html',
 })
 export class WorkspacesPage implements OnInit {

@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, DestroyRef, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, type Observable } from 'rxjs';
@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
     selector: 'lu-board-detail-page',
     imports: [MainLayout, AsyncPipe, KanbanBoardWidget, RouterOutlet],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <lu-main-layout>
             @if (boardId$ | async; as boardId) {

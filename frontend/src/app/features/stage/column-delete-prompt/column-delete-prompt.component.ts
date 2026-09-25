@@ -1,4 +1,4 @@
-import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Store } from '@ngrx/store';
@@ -12,7 +12,7 @@ export interface dialogData {
 @Component({
     selector: 'lu-column-delete-prompt',
     imports: [],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: ` <button type="button" class="btn" (click)="openDialog()">Delete</button> `,
 })
 export class ColumnDeletePromptComponent {
@@ -45,7 +45,7 @@ export class ColumnDeletePromptComponent {
 @Component({
     selector: 'lu-column-delete-prompt-dialog',
     templateUrl: 'column-delete-prompt.dialog.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     imports: [FormsModule],
 })
 export class ColumnDeletePromptComponentDialog {

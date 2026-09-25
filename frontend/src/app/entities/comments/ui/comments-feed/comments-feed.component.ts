@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'lu-comments-feed',
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <h5 class="mb-3">Comments</h5>
         <div class="mb-4">

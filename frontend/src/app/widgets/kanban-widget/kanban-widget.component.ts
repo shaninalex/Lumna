@@ -6,7 +6,6 @@ import {
     effect,
     inject,
     input,
-    ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
@@ -45,7 +44,7 @@ import { selectProjects } from '@entities/project';
     ],
     templateUrl: './kanban-widget.component.html',
     styleUrl: './kanban-widget.component.css',
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     providers: [KanbanService],
 })
 export class KanbanBoardWidget implements OnInit {

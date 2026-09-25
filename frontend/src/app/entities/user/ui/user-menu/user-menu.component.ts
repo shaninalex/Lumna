@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { Store } from '@ngrx/store';
 import { actionSession } from '@core/store/session.actions';
@@ -6,7 +6,7 @@ import { actionSession } from '@core/store/session.actions';
 @Component({
     selector: 'lu-user-menu',
     imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <button [cdkMenuTriggerFor]="menu" class="btn btn-sm">
             <img src="images/7.png" alt="" class="rounded-circle" style="width: 24px" />

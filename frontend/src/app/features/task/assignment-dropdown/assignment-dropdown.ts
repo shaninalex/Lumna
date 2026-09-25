@@ -1,4 +1,4 @@
-import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { Store } from '@ngrx/store';
 import { actionTask } from '@entities/task/model/task.actions';
@@ -10,7 +10,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'lu-assignment-dropdown',
     imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <div
             class="text-muted d-inline-flex align-items-center lh-1"

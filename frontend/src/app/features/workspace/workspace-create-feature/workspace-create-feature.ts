@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { actionWorkspace, type WorkspaceCreateModel } from '@entities/workspace';
@@ -10,7 +10,7 @@ import { filter } from 'rxjs';
 @Component({
     selector: 'lu-workspace-create-feature',
     imports: [FormField],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <form (submit)="onSubmit($event)">
             <div class="mb-4">

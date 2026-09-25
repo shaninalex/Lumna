@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { actionSession } from '@core/store/session.actions';
 import { Store } from '@ngrx/store';
@@ -12,7 +12,7 @@ interface LoginFormPayload {
 @Component({
     selector: 'lu-auth-login-feature',
     imports: [FormsModule, FormField],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     templateUrl: './auth-login.component.html',
 })
 export class AuthLoginFeature {

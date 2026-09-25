@@ -1,4 +1,4 @@
-import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import type { BoardModel } from '../../model/board.model';
 import { RouterLink } from '@angular/router';
 import { AppRoutes } from '@core';
@@ -6,7 +6,7 @@ import { AppRoutes } from '@core';
 @Component({
     selector: 'lu-board-list-item',
     imports: [RouterLink],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <a [routerLink]="appRoutes.board(board.id)" class="text-decoration-none">
             <h5 class="mb-1">{{ board.title }}</h5>

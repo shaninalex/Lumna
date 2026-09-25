@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -9,7 +9,7 @@ import { filter, map, switchMap } from 'rxjs';
 @Component({
     selector: 'lu-workspace-switcher',
     imports: [AsyncPipe, RouterLink],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         @if (workspace$ | async; as workspace) {
             <button
@@ -58,7 +58,7 @@ export class WorkspaceSwitcherComponent {
 @Component({
     selector: 'lu-switch-workspace-modal',
     imports: [AsyncPipe, NgClass],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <div class="card">
             @if (data$ | async; as data) {

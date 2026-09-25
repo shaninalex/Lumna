@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UserMenuComponent } from '@entities/user';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -8,7 +8,7 @@ import { ThemeSwitcherComponent } from '@shared/ui';
 @Component({
     selector: 'lu-global-layout',
     imports: [ThemeSwitcherComponent, UserMenuComponent, RouterLink],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <nav class="navbar navbar-expand-lg border-bottom bg-body">
             <div class="container-fluid">

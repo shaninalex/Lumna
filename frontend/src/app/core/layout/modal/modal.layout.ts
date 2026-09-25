@@ -1,9 +1,9 @@
-import { Component, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, output } from '@angular/core';
 
 @Component({
     selector: 'lu-modal-layout',
     styleUrl: './modal.layout.css',
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <div class="modal-layout">
             <div class="modal-layout-backdrop" (click)="closed.emit()"></div>

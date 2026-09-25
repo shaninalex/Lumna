@@ -5,7 +5,6 @@ import {
     inject,
     Input,
     signal,
-    ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormField, form, required } from '@angular/forms/signals';
@@ -50,7 +49,6 @@ import { tap } from 'rxjs';
             <button class="button button-pill" (click)="openForm()">Create new column</button>
         }
     `,
-    changeDetection: ChangeDetectionStrategy.Eager,
     host: { class: 'flex-shrink-0' },
 })
 export class NewColumnFormComponent implements OnInit {

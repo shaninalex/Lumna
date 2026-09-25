@@ -1,11 +1,11 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import packageJson from '@root/package.json';
 
 @Component({
     selector: 'lu-root',
     imports: [RouterOutlet],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <router-outlet />
         <div class="app-version">v{{ version }}</div>

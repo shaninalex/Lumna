@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, effect, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppRoutes } from '@core';
 import { ModalLayout } from '@core/layout';
@@ -10,7 +10,7 @@ import { selectTasks } from '@entities/task';
 @Component({
     selector: 'lu-task-detail-page',
     imports: [TaskDetailView, ModalLayout],
-    changeDetection: ChangeDetectionStrategy.Eager,
+
     template: `
         <lu-modal-layout (closed)="close()">
             <lu-task-detail-view [taskId]="taskId()" />
