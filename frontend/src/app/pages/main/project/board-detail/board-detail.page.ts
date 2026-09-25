@@ -13,7 +13,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
     selector: 'lu-board-detail-page',
     imports: [MainLayout, AsyncPipe, KanbanBoardWidget, RouterOutlet],
-
     template: `
         <lu-main-layout>
             @if (boardId$ | async; as boardId) {

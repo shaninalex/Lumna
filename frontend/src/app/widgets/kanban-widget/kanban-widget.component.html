@@ -42,16 +42,7 @@
                                 </span>
                             </button>
 
-                            @if (projectId$ | async; as projectId) {
-                                <lu-create-task-modal
-                                    [columnId]="c.id"
-                                    [boardId]="c.boardId"
-                                    [taskCount]="c.tasks.length"
-                                    [projectId]="projectId"
-                                    [nextPosition]="c.tasks.length ? c.tasks[0].position / 2: 1"
-                                />
-                            }
-
+                            <lu-add-task-plus-btn [columnId]="c.id"/>
                             <lu-column-menu-dropdown [stageId]="c.id">
                                 <lu-column-delete-prompt
                                     columnMenuSlot
@@ -65,6 +56,14 @@
                              [cdkDropListData]="c.tasks"
                              (cdkDropListDropped)="dropTask($event, c)"
                         >
+                            <lu-task-column-form
+                                position="top"
+                                [columnId]="c.id"
+                                [boardId]="c.boardId"
+                                [taskCount]="c.tasks.length"
+                                [projectId]="projectId()"
+                                [nextPosition]="c.tasks.length ? c.tasks[0].position / 2: 1"
+                            />
                             @for (task of c.tasks; track task.id) {
                                 <div cdkDrag [cdkDragData]="task">
                                     <lu-task-card [task]="task">
@@ -72,7 +71,17 @@
                                     </lu-task-card>
                                 </div>
                             }
+                            <lu-task-column-form
+                                position="bottom"
+                                [columnId]="c.id"
+                                [boardId]="c.boardId"
+                                [taskCount]="c.tasks.length"
+                                [projectId]="projectId()"
+                                [nextPosition]="c.tasks.length ? c.tasks[c.tasks.length - 1].position + 0.5 : 1"
+                            />
                         </div>
+
+                        <lu-add-task-btn [columnId]="c.id"/>
                     </div>
                 }
             }

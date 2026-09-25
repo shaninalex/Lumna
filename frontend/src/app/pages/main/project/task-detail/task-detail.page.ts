@@ -2,7 +2,7 @@ import { Component, effect, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppRoutes } from '@core';
 import { ModalLayout } from '@core/layout';
-import { TaskDetailView } from '@widgets/task-detail-view';
+import { TaskDetailView } from '@widgets';
 import { UiService } from '@shared/ui';
 import { Store } from '@ngrx/store';
 import { selectTasks } from '@entities/task';
