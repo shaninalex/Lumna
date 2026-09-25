@@ -1,13 +1,11 @@
-import { Component, DestroyRef, inject } from '@angular/core';
-import { Actions, ofType } from '@ngrx/effects';
-import { actionToggleSidebar } from '@core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject, signal } from '@angular/core';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectWorkspaces } from '@entities/workspace';
 import { filter, map, switchMap } from 'rxjs';
 import { selectProjects } from '@entities/project';
+import { selectUI } from "@core/store/ui";
 
 @Component({
     selector: 'lu-sidebar',
@@ -16,30 +14,18 @@ import { selectProjects } from '@entities/project';
     templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
-    private actions$ = inject(Actions);
-    private ref = inject(DestroyRef);
     private store = inject(Store);
 
-    currentWorkspaceId = this.store.selectSignal(selectWorkspaces.currentWorkspaceId);
-    hideSidebar = false;
-
+    hideSidebar = this.store.selectSignal(selectUI.sidebarOpen);
     currentProject = this.store.selectSignal(selectProjects.currentProject);
 
     workspace$ = this.store.select(selectWorkspaces.currentWorkspaceId).pipe(
-        filter(workspaceId => workspaceId !== null),
-        switchMap((workspaceId) => 
-            this.store.select(selectProjects.byWorkspaceId(workspaceId)).pipe(
-                map((projects) => ({workspaceId, projects}))
-            )
+        filter((workspaceId) => workspaceId !== null),
+        switchMap((workspaceId) =>
+            this.store
+                .select(selectProjects.byWorkspaceId(workspaceId))
+                .pipe(map((projects) => ({workspaceId, projects}))),
         ),
     );
 
-    constructor() {
-        this.actions$
-            .pipe(
-                ofType(actionToggleSidebar),
-                takeUntilDestroyed(this.ref),
-            ).subscribe(() => this.hideSidebar = !this.hideSidebar);
-    }
 }
-

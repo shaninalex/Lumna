@@ -1,5 +1,4 @@
-import type { OnDestroy } from '@angular/core';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { selectColumns } from '@entities/column';
 import { selectTasks } from '@entities/task';
 import { Store } from '@ngrx/store';
@@ -30,7 +29,7 @@ export class KanbanService implements OnDestroy {
                         const kolumns: KanbanColumn[] = [];
                         columns.forEach((col) => {
                             const kolumn: KanbanColumn = {...col, tasks: []};
-                            kolumn.tasks = tasks.filter((t) => t.column_id === col.id);
+                            kolumn.tasks = tasks.filter((t) => t.columnId === col.id);
                             kolumn.tasks.sort((a, b) => a.position - b.position);
                             kolumns.push(kolumn);
                         });

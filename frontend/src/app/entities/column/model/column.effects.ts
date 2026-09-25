@@ -16,7 +16,7 @@ export class ColumnEffects {
         this.actions$.pipe(
             ofType(actionsColumns.loadByBoardId),
             switchMap((action) =>
-                this.api.list(action.board_id).pipe(
+                this.api.list(action.boardId).pipe(
                     switchMap((statuses) => of(actionsColumns.loadByBoardIdSuccess({ columns: statuses }))),
                     catchError((err: HttpErrorResponse) =>
                         of(

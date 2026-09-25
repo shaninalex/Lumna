@@ -1,8 +1,8 @@
 export interface UserModel {
     id: number;
-    full_name: string;
+    fullName: string;
     email: string;
     active: boolean;
-    created_at: Date;
-    updated_at: Date;
+    createdAt: Date;
+    updatedAt: Date;
 }

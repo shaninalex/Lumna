@@ -1,11 +1,12 @@
 @if (workspace$ | async; as workspace) {
-    <nav class="sidebar h-100 bg-body-tertiary" [ngClass]="{ 'sidebar-closed': hideSidebar }">
+    <nav class="sidebar h-100 bg-body-tertiary" [ngClass]="{ 'sidebar-closed': !hideSidebar() }">
         <ul class="nav flex-column">
             @if (currentProject(); as project) {
                 <li class="nav-item">
                     <a
                         class="nav-link text-body"
                         [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id, 'inbox']"
+                        title="Inbox"
                     >
                         <i class="fa-solid fa-chart-column"></i>
                         <span class="sidebar-nav-link">Inbox</span>
@@ -15,13 +16,14 @@
                     <a
                         class="nav-link text-body"
                         [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id, 'boards']"
+                        title="Boards"
                     >
                         <i class="fa-solid fa-chart-simple"></i>
                         <span class="sidebar-nav-link">Boards</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled text-secondary" aria-disabled="true" href="#">
+                    <a class="nav-link disabled text-secondary" aria-disabled="true" href="#" >
                         <i class="fa-regular fa-file"></i>
                         <span class="sidebar-nav-link">Tasks</span>
                     </a>

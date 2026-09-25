@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"log/slog"
 	"os"
+	"slices"
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
@@ -31,8 +32,8 @@ type Instance struct {
 // Close clear resources. Required for CLI
 func (a *Instance) Close(ctx context.Context) error {
 	var errs []error
-	for i := len(a.closers) - 1; i >= 0; i-- { // backwards
-		if err := a.closers[i](ctx); err != nil {
+	for _, v := range slices.Backward(a.closers) { // backwards
+		if err := v(ctx); err != nil {
 			errs = append(errs, err)
 		}
 	}

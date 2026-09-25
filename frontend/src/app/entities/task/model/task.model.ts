@@ -4,49 +4,49 @@ export interface TaskModel {
     body?: string;
     completed: boolean;
     meta: string;
-    project_id: number;
-    board_id: number;
-    column_id: number;
+    projectId: number;
+    boardId: number;
+    columnId: number;
     position: number;
-    owner_id: number;
+    ownerId: number;
     assignees: number[];
-    due_to?: Date;
-    created_at: Date;
-    updated_at?: Date;
-    task_events: EntityEvent[];
+    dueTo?: Date;
+    createdAt: Date;
+    updatedAt?: Date;
+    taskEvents: EntityEvent[];
 }
 
 export interface EntityEvent {
     id: number;
-    identity_id?: number;
-    entity_id?: number;
-    entity_type?: string;
-    event_type: string;
+    identityId?: number;
+    entityId?: number;
+    entityType?: string;
+    eventType: string;
     data: string;
-    created_at: Date;
+    createdAt: Date;
 }
 
 export interface TaskCreateModel {
     title: string;
     body: string;
-    project_id: number;
+    projectId: number;
     position: number;
-    column_id: number;
-    board_id: number;
-    due_to?: Date;
+    columnId: number;
+    boardId: number;
+    dueTo?: Date;
 }
 
 export interface TaskListQueryModel {
-    board_id: number;
+    boardId: number;
 }
 
 export interface TaskEditModel {
-    task_id: number;
+    taskId: number;
     title: string;
     body: string;
 }
 
 export interface TaskAssignModel {
-    task_id: number;
-    identity_id: number;
+    taskId: number;
+    identityId: number;
 }

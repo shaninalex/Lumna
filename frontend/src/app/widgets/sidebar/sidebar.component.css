@@ -19,3 +19,8 @@
     gap: 0.5rem;
     align-items: center;
 }
+
+.dashboard-sidebar {
+    grid-area: sidebar;
+    overflow-y: auto;
+}

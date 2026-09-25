@@ -7,31 +7,34 @@ import { Store } from '@ngrx/store';
 @Component({
     selector: 'lu-project-card',
     imports: [RouterLink],
+
     template: `
         <div class="card h-100">
             <div class="card-body">
-
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
                         <h5 class="card-title mb-1">
-                            <a [routerLink]="['/app/w', currentWorkspaceId() || '', 'p', project.id]">
+                            <a
+                                [routerLink]="[
+                                    '/app/w',
+                                    currentWorkspaceId() || '',
+                                    'p',
+                                    project.id,
+                                ]"
+                            >
                                 {{ project.title }}
                             </a>
                         </h5>
 
-                        <div class="text-muted small">
-                            WEB
-                        </div>
+                        <div class="text-muted small">WEB</div>
                     </div>
 
-                    <span class="badge text-bg-success">
-                        Active
-                    </span>
+                    <span class="badge text-bg-success"> Active </span>
                 </div>
 
                 <p class="card-text text-muted">
-                    Placeholder description for the project. Brief summary of
-                    what this project is about.
+                    Placeholder description for the project. Brief summary of what this project is
+                    about.
                 </p>
 
                 <div class="d-flex justify-content-between text-muted small">

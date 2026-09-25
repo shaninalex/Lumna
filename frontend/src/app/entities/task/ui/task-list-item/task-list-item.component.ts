@@ -13,7 +13,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
     imports: [RouterLink, DatePipe, AsyncPipe],
     template: `
         <a
-            [routerLink]="appRoutes.task(task.board_id, task.id)"
+            [routerLink]="appRoutes.task(task.boardId, task.id)"
             class="d-flex justify-content-between align-items-start text-decoration-none"
         >
             <div class="flex-grow-1">
@@ -26,12 +26,13 @@ import { AsyncPipe, DatePipe } from '@angular/common';
                     {{ task.title }}
                 </h6>
                 <div class="small text-muted">
-                    #Feat-123 • Created by Alex • {{ task.created_at | date: standardTime }}
+                    #Feat-123 • Created by Alex • {{ task.createdAt | date: standardTime }}
                 </div>
             </div>
             <i class="fa-solid fa-chevron-right text-muted mt-1"></i>
         </a>
     `,
+
     host: {
         class: 'list-group-item list-group-item-action',
     },
@@ -45,8 +46,8 @@ export class TaskListItemComponent implements OnInit {
     column$: Observable<ColumnModel>;
 
     ngOnInit() {
-        this.column$ = this.store.select(selectColumns.byId(this.task.column_id)).pipe(
-            filter(c => c !== undefined),
-        );
+        this.column$ = this.store
+            .select(selectColumns.byId(this.task.columnId))
+            .pipe(filter((c) => c !== undefined));
     }
 }

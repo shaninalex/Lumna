@@ -7,6 +7,7 @@ import { AppRoutes } from '@core';
 @Component({
     selector: 'lu-project-create-page',
     imports: [GlobalLayout, ProjectCreateFeature],
+
     template: `
         <lu-global-layout>
             <div class="container py-4">
@@ -24,6 +25,6 @@ export class ProjectCreatePage {
     readonly appRoutes = inject(AppRoutes);
 
     constructor() {
-        this.ui.setPageTitle("Create Project");
+        this.ui.setPageTitle('Create Project');
     }
 }

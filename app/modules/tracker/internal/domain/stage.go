@@ -33,7 +33,7 @@ type Stage struct {
 	UpdatedAt time.Time
 }
 
-func (s Stage) UpdatePosition(position float64, timestamp time.Time) {
+func (s *Stage) UpdatePosition(position float64, timestamp time.Time) {
 	s.Position = position
 	s.UpdatedAt = timestamp
 }

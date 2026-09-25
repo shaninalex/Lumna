@@ -14,20 +14,23 @@ type identityRecord struct {
 	FullName  string       `gorm:"column:full_name;not null"`
 	Active    bool         `gorm:"default:true"`
 	CreatedAt time.Time    `gorm:"autoCreateTime"`
-	UpdatedAt sql.NullTime `gorm:"column:updated_at"`
+	UpdatedAt sql.NullTime `gorm:"column:updated_at;default:null"`
 }
 
 func (identityRecord) TableName() string { return "identities" }
 
 func toDomainIdentity(rec identityRecord) domain.Identity {
-	return domain.Identity{
+	i := domain.Identity{
 		ID:       rec.ID,
 		Email:    rec.Email,
 		FullName: rec.FullName,
 		Active:   rec.Active,
 		Created:  rec.CreatedAt,
-		Updated:  rec.UpdatedAt.Time,
 	}
+	if rec.UpdatedAt.Valid {
+		i.Updated = rec.UpdatedAt.Time
+	}
+	return i
 }
 
 // credentialRecord — shape in database

@@ -5,6 +5,7 @@ import type { WorkspaceModel } from '@entities/workspace/model';
 @Component({
     selector: 'lu-workspace-card',
     imports: [RouterLink],
+
     template: `
         <div class="card">
             <div class="card-body">
@@ -14,18 +15,14 @@ import type { WorkspaceModel } from '@entities/workspace/model';
                             <a [routerLink]="['/app/w', workspace.id]">{{ workspace.title }}</a>
                         </h5>
 
-                        <div class="text-muted small">
-                            WEB
-                        </div>
+                        <div class="text-muted small">WEB</div>
                     </div>
 
-                    <span class="badge text-bg-success">
-                        Active
-                    </span>
+                    <span class="badge text-bg-success"> Active </span>
                 </div>
                 <p class="card-text text-muted">
-                    Placeholder description for the project. Brief summary of
-                    what this project is about.
+                    Placeholder description for the project. Brief summary of what this project is
+                    about.
                 </p>
                 <div class="d-flex justify-content-between text-muted small">
                     <span>12 members</span>

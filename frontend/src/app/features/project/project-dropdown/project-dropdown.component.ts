@@ -17,6 +17,7 @@ import { ProjectListItemComponent, selectProjects } from '@entities/project';
         ProjectListItemComponent,
         RouterLink,
     ],
+
     templateUrl: './project-dropdown.component.html',
 })
 export class ProjectDropdownComponent {

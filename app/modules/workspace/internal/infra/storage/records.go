@@ -13,7 +13,7 @@ type workspaceRecord struct {
 	Active     bool         `gorm:"column:active;not null;default:false"`
 	OwnerEmail string       `gorm:"column:owner_email;not null"`
 	CreatedAt  time.Time    `gorm:"column:created_at;autoCreateTime"`
-	UpdatedAt  sql.NullTime `gorm:"column:updated_at"`
+	UpdatedAt  sql.NullTime `gorm:"column:updated_at;default:null"`
 }
 
 func (workspaceRecord) TableName() string { return "workspaces" }
@@ -44,7 +44,7 @@ type projectRecord struct {
 	OwnerId     int            `gorm:"column:owner_id;not null"`
 	Meta        sql.NullString `gorm:"column:meta"`
 	CreatedAt   time.Time      `gorm:"column:created_at;autoCreateTime"`
-	UpdatedAt   sql.NullTime   `gorm:"column:updated_at"`
+	UpdatedAt   sql.NullTime   `gorm:"column:updated_at;default:null"`
 }
 
 func (projectRecord) TableName() string { return "projects" }
