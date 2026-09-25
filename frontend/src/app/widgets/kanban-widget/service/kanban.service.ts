@@ -1,5 +1,4 @@
-import type { OnDestroy } from '@angular/core';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { selectColumns } from '@entities/column';
 import { selectTasks } from '@entities/task';
 import { Store } from '@ngrx/store';
