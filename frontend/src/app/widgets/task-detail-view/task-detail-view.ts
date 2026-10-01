@@ -1,5 +1,5 @@
 import {
-    Component, effect,
+    Component,
     inject,
     input,
     OnDestroy,

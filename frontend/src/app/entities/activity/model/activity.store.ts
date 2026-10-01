@@ -1,5 +1,4 @@
-import { EntityState } from '@ngrx/entity';
-import { createEntityAdapter } from '@ngrx/entity';
+import { EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
 import { ActivityModel } from './activity.model';
 import { actionActivity } from '@entities/activity/model/activity.actions';
