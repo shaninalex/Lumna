@@ -158,16 +158,18 @@ func (a taskAssignmentDTO) Verify() error {
 	)
 }
 
-type workItemActivityDTO struct {
+type activityDTO struct {
 	Id        int       `json:"id"`
 	Message   string    `json:"message"`
+	EventType string    `json:"event_type"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func toWorkItemActivityDTO(s contract.WorkItemActivityView) workItemActivityDTO {
-	return workItemActivityDTO{
+func toWorkItemActivityDTO(s contract.ActivityView) activityDTO {
+	return activityDTO{
 		Id:        s.Id,
 		Message:   s.Message,
+		EventType: s.EventType,
 		CreatedAt: s.CreatedAt,
 	}
 }

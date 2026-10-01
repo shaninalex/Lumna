@@ -51,7 +51,7 @@ func New(d Deps) *Module {
 	scopeRepo := storage.NewScopeRepo(d.DB)
 	stageRepo := storage.NewStageRepo(d.DB)
 	workItemRepo := storage.NewWorkingItemRepo(d.DB, d.Clock)
-	activityRepo := storage.NewActivityRepo(d.DB)
+	activityRepo := storage.NewActivityRepo(d.DB, d.Clock)
 
 	return &Module{
 		deps: d,
@@ -65,9 +65,9 @@ func New(d Deps) *Module {
 		createWorkItem:     handlers.NewWorkItemCreate(workItemRepo, d.Clock),
 		workItemList:       handlers.NewWorkItemList(workItemRepo, d.Clock),
 		workItemMove:       handlers.NewWorkItemMove(workItemRepo, d.Clock),
-		workItemTransfer:   handlers.NewWorkItemTransfer(workItemRepo, stageRepo, d.Clock, d.EventBus),
-		workItemUpdate:     handlers.NewWorkItemUpdate(workItemRepo, d.Clock),
-		workItemAssignment: handlers.NewWorkItemAssignment(workItemRepo, d.Clock),
+		workItemTransfer:   handlers.NewWorkItemTransfer(workItemRepo, stageRepo, activityRepo, d.Clock, d.EventBus),
+		workItemUpdate:     handlers.NewWorkItemUpdate(workItemRepo, activityRepo, d.Clock),
+		workItemAssignment: handlers.NewWorkItemAssignment(workItemRepo, activityRepo, d.Clock),
 		workItemDelete:     handlers.NewWorkItemDelete(workItemRepo),
 		activityList:       handlers.NewActivityList(activityRepo),
 	}

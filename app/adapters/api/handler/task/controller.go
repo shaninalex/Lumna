@@ -213,7 +213,7 @@ func handleTaskActivities(resolve core.Resolve) gin.HandlerFunc {
 			httpx.Fail(c, err)
 			return
 		}
-		items := make([]workItemActivityDTO, len(activities))
+		items := make([]activityDTO, len(activities))
 		for i, activity := range activities {
 			items[i] = toWorkItemActivityDTO(activity)
 		}

@@ -47,5 +47,6 @@ type WorkItemView struct {
 type ActivityView struct {
 	Id        int
 	Message   string
+	EventType string
 	CreatedAt time.Time
 }

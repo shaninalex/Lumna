@@ -95,27 +95,28 @@ func (s *WorkingItemRepo) ListByScope(ctx context.Context, scopeId int) ([]domai
 	return workItemsToDomain(records), nil
 }
 
-func (s *WorkingItemRepo) Assignment(ctx context.Context, identity, itemId int) error {
+func (s *WorkingItemRepo) Assignment(ctx context.Context, identity, itemId int) (bool, error) {
 	_, err := gorm.G[workItemAssignRecord](s.db.From(ctx)).
 		Where("work_item_id = ? and identity_id = ?", itemId, identity).
 		First(ctx)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		record := workItemAssignRecord{WorkItemID: itemId, IdentityID: identity}
-		return gorm.G[workItemAssignRecord](s.db.From(ctx)).Create(ctx, &record)
+		err = gorm.G[workItemAssignRecord](s.db.From(ctx)).Create(ctx, &record)
+		return err == nil, err
 	}
 	if err != nil {
-		return err
+		return false, err
 	}
 	r, err := gorm.G[workItemAssignRecord](s.db.From(ctx)).
 		Where("work_item_id = ? and identity_id = ?", itemId, identity).
 		Delete(ctx)
 	if err != nil {
-		return err
+		return false, err
 	}
 	if r == 0 {
-		return errs.NotFound("work_item_assignment_not_found", "work item assignment not found")
+		return false, errs.NotFound("work_item_assignment_not_found", "work item assignment not found")
 	}
-	return nil
+	return false, nil
 }
 
 func (s *WorkingItemRepo) Delete(ctx context.Context, itemId int) error {

@@ -4,25 +4,29 @@ import (
 	"context"
 
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
+	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 	"gorm.io/gorm"
 )
 
 type ActivityRepo struct {
-	db *database.DB
+	db    *database.DB
+	clock clock.Clock
 }
 
 var _ domain.ActivityRepo = (*ActivityRepo)(nil)
 
-func NewActivityRepo(db *database.DB) *ActivityRepo {
+func NewActivityRepo(db *database.DB, clock clock.Clock) *ActivityRepo {
 	return &ActivityRepo{
-		db: db,
+		db:    db,
+		clock: clock,
 	}
 }
 
 func (s *ActivityRepo) Create(ctx context.Context, activity domain.Activity) (domain.Activity, error) {
 	record := activityToRecord(activity)
 	record.ID = 0
+	record.CreatedAt = s.clock.Now()
 	if err := gorm.G[activityRecord](s.db.From(ctx)).Create(ctx, &record); err != nil {
 		return domain.Activity{}, err
 	}
