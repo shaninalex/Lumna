@@ -1,5 +1,5 @@
 import {
-    Component,
+    Component, effect,
     inject,
     input,
     OnDestroy,
@@ -25,6 +25,12 @@ import {
 } from 'ngx-editor';
 import { FormsModule } from '@angular/forms';
 import { defaultToolbar } from '@shared/ui';
+import {
+    actionActivity,
+    ActivityListComponent,
+    ActivityModel,
+    selectActivity
+} from '@entities/activity';
 
 @Component({
     selector: 'lu-task-detail-view',
@@ -37,6 +43,7 @@ import { defaultToolbar } from '@shared/ui';
         NgxEditorComponent,
         NgxEditorMenuComponent,
         FormsModule,
+        ActivityListComponent
     ],
     templateUrl: './task-detail-view.html',
 })
@@ -50,12 +57,14 @@ export class TaskDetailView implements OnInit, OnDestroy {
         body: '',
     });
     taskEditForm = form(this.taskEditFormModel, (schemaPath) => {
-        required(schemaPath.taskId, { message: 'Task ID is required' });
-        required(schemaPath.title, { message: 'Title is required' });
+        required(schemaPath.taskId, {message: 'Task ID is required'});
+        required(schemaPath.title, {message: 'Title is required'});
     });
     editor: Editor;
     toolbar: Toolbar = defaultToolbar;
     html: Record<string, unknown> | string = '';
+    activities: Observable<ActivityModel[]>;
+
     private store = inject(Store);
 
     ngOnInit(): void {
@@ -71,6 +80,8 @@ export class TaskDetailView implements OnInit, OnDestroy {
                 this.html = toDoc(task.body || '', this.editor.schema);
             }),
         );
+        this.store.dispatch(actionActivity.getList({entityId: this.taskId(), entityType: "work_item"}));
+        this.activities = this.store.select(selectActivity.byIdAndType(this.taskId(), "work_item"));
     }
 
     ngOnDestroy(): void {

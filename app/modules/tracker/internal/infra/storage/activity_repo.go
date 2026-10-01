@@ -35,7 +35,7 @@ func (s *ActivityRepo) Create(ctx context.Context, activity domain.Activity) (do
 
 func (s *ActivityRepo) ListById(ctx context.Context, entityId int, entityType string) ([]domain.Activity, error) {
 	records, err := gorm.G[activityRecord](s.db.From(ctx)).
-		Where("entity_id = ? and entity_type", entityId, entityType).
+		Where("entity_id = ? and entity_type = ?", entityId, entityType).
 		Find(ctx)
 	if err != nil {
 		return nil, err

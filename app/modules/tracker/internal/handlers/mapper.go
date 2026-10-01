@@ -72,9 +72,12 @@ func toStageViews(stages []domain.Stage) []contract.StageView {
 
 func toActivityView(a domain.Activity) contract.ActivityView {
 	return contract.ActivityView{
-		Id:        a.ID,
-		Message:   a.Content,
-		CreatedAt: a.CreatedAt,
+		Id:         a.ID,
+		Message:    a.Content,
+		EventType:  a.EventType,
+		EntityId:   a.EntityID,
+		EntityType: a.EntityType,
+		CreatedAt:  a.CreatedAt,
 	}
 }
 

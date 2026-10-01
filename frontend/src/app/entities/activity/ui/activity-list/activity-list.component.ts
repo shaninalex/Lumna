@@ -1,0 +1,25 @@
+import { Component, input } from '@angular/core';
+import { ActivityModel } from '../../model/activity.model';
+import { ActivityListGroupItemComponent } from '../activity-list-group-item';
+
+@Component({
+    selector: 'lu-activity-list',
+    imports: [
+        ActivityListGroupItemComponent,
+    ],
+    template: `
+        <div class="card">
+            <div class="card-header">
+                Activity
+            </div>
+            <div class="list-group list-group-flush">
+                @for (activity of activities(); track activity.id) {
+                    <lu-activity-list-group-item [activity]="activity"/>
+                }
+            </div>
+        </div>
+    `
+})
+export class ActivityListComponent {
+    activities = input.required<ActivityModel[]>()
+}

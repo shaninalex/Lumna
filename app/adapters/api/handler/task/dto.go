@@ -159,17 +159,21 @@ func (a taskAssignmentDTO) Verify() error {
 }
 
 type activityDTO struct {
-	Id        int       `json:"id"`
-	Message   string    `json:"message"`
-	EventType string    `json:"event_type"`
-	CreatedAt time.Time `json:"created_at"`
+	Id         int       `json:"id"`
+	Message    string    `json:"message"`
+	EventType  string    `json:"event_type"`
+	EntityId   int       `json:"entity_id"`
+	EntityType string    `json:"entity_type"`
+	CreatedAt  time.Time `json:"created_at"`
 }
 
 func toWorkItemActivityDTO(s contract.ActivityView) activityDTO {
 	return activityDTO{
-		Id:        s.Id,
-		Message:   s.Message,
-		EventType: s.EventType,
-		CreatedAt: s.CreatedAt,
+		Id:         s.Id,
+		Message:    s.Message,
+		EventType:  s.EventType,
+		EntityId:   s.EntityId,
+		EntityType: s.EntityType,
+		CreatedAt:  s.CreatedAt,
 	}
 }

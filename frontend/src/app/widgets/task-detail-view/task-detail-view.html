@@ -114,38 +114,10 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    Activity
-                </div>
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item">
-                        <small class="text-muted">
-                            Today 10:14
-                        </small>
-                        <div>
-                            Status changed to
-                            <strong>In Progress</strong>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <small class="text-muted">
-                            Yesterday
-                        </small>
-                        <div>
-                            Alex assigned the task.
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <small class="text-muted">
-                            Aug 5, 2026
-                        </small>
-                        <div>
-                            Task created.
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @if (activities | async; as activities) {
+                <lu-activity-list [activities]="activities" />
+            }
+
         </div>
     </div>
 }

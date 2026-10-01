@@ -17,6 +17,8 @@ import { ColumnApi, columnFeature } from '@entities/column';
 import { BoardApi, boardFeature } from '@entities/board';
 import { KanbanApi } from '@widgets/kanban-widget/api';
 import { WebSocketService } from './websocket.service';
+import { ActivityApi } from '@entities/activity/api';
+import { activityFeature } from '@entities/activity';
 
 
 export const routes: Routes = [
@@ -34,6 +36,7 @@ export const routes: Routes = [
             ColumnApi,
             KanbanApi,
             WebSocketService,
+            ActivityApi,
 
             provideEffects(mainEffects),
 
@@ -43,6 +46,7 @@ export const routes: Routes = [
             provideState(taskFeature),
             provideState(boardFeature),
             provideState(columnFeature),
+            provideState(activityFeature),
         ],
         children: [
             ...workspaceRoutes,
