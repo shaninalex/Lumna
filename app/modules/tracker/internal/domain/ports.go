@@ -21,7 +21,12 @@ type WorkingItemRepo interface {
 	Update(ctx context.Context, wi WorkItem) error
 	Get(ctx context.Context, itemId int) (WorkItem, error)
 	ListByScope(ctx context.Context, scopeId int) ([]WorkItem, error)
-	Assignment(ctx context.Context, identity, itemId int) error
+	Assignment(ctx context.Context, identity, itemId int) (bool, error)
 	Delete(ctx context.Context, itemId int) error
 	BatchDelete(ctx context.Context, itemIds []int) error
+}
+
+type ActivityRepo interface {
+	Create(ctx context.Context, activity Activity) (Activity, error)
+	ListById(ctx context.Context, entityId int, entityType string) ([]Activity, error)
 }

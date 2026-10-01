@@ -36,3 +36,14 @@ func (WorkItemList) Permission() (action string, scope int) { return "", 0 }
 func AskWorkItemList(ctx context.Context, a *core.App, q WorkItemList) ([]WorkItemView, error) {
 	return bus.Ask[WorkItemList, []WorkItemView](ctx, a.Queries, q)
 }
+
+type ActivityList struct {
+	EntityId   int
+	EntityType string
+}
+
+func (ActivityList) Permission() (action string, scope int) { return "", 0 }
+
+func AskActivityList(ctx context.Context, a *core.App, q ActivityList) ([]ActivityView, error) {
+	return bus.Ask[ActivityList, []ActivityView](ctx, a.Queries, q)
+}
