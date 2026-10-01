@@ -1,3 +1,47 @@
+## 0.39.0 (2026-10-01)
+
+### Feat
+
+- activity UI
+- activity record work items updates
+- activity backend
+- setup websocket notification channel ( no ui )
+- **app**: pub event about new notification
+- **app**: save notification from event
+- **app**: complete event bus
+- **ui**: add ngx-editor
+- stage delete
+- stage delete command
+- set titles on a page
+- delete task command and ui
+
+### Fix
+
+- activity UI empty state
+- **frontend**: split domain models with dto
+- **db**: update_at default null
+- update stage position pointer receiver
+- assignees ui bug
+- **ui**: assigned current user icon after creation
+- **ui**: logout not working
+- **ui**: new tasks goes first
+- **design**: start custom design
+- cards amount on board
+- late theme config applying
+- remove duplications with mapper
+
+### Refactor
+
+- simpler form
+- use slices.Backwards
+- adapters
+- **ui**: remove angular modules
+- **modules**: stop using pointers meaningless
+- **tracker**: stop using pointers meaningless
+- use sql.Null types for nullable fields
+- backend adapters package names
+- create frontend DTO types for board and project
+
 ## 0.38.0 (2026-09-19)
 
 ### Fix
