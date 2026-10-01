@@ -81,7 +81,6 @@ func scopeRecordToDomain(record scopeRecord) domain.Scope {
 type workItemAssignRecord struct {
 	IdentityID int `gorm:"primaryKey"`
 	WorkItemID int `gorm:"primaryKey"`
-	//WorkItem workItemRecord `gorm:"foreignKey:WorkItemID;references:ID"`
 }
 
 func (workItemAssignRecord) TableName() string { return "work_items_assignees" }
@@ -147,4 +146,37 @@ func workItemsToDomain(records []workItemRecord) []domain.WorkItem {
 		workItems[i] = workItemToDomain(record)
 	}
 	return workItems
+}
+
+type activityRecord struct {
+	ID           int `gorm:"primaryKey;autoIncrement"`
+	IdentityID   int
+	EntityID     int
+	IdentityType int
+	Content      string
+	CreatedAt    time.Time `gorm:"autoCreateTime"`
+}
+
+func (activityRecord) TableName() string { return "activities" }
+
+func activityToDomain(record activityRecord) domain.Activity {
+	return domain.Activity{
+		ID:           record.ID,
+		IdentityID:   record.IdentityID,
+		EntityID:     record.EntityID,
+		IdentityType: record.IdentityType,
+		Content:      record.Content,
+		CreatedAt:    record.CreatedAt,
+	}
+}
+
+func activityToRecord(record domain.Activity) activityRecord {
+	return activityRecord{
+		ID:           record.ID,
+		IdentityID:   record.IdentityID,
+		EntityID:     record.EntityID,
+		IdentityType: record.IdentityType,
+		Content:      record.Content,
+		CreatedAt:    record.CreatedAt,
+	}
 }

@@ -43,3 +43,9 @@ type WorkItemView struct {
 	UpdatedAt   time.Time
 	Assignees   []int
 }
+
+type ActivityView struct {
+	Id        int
+	Message   string
+	CreatedAt time.Time
+}

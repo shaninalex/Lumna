@@ -25,3 +25,8 @@ type WorkingItemRepo interface {
 	Delete(ctx context.Context, itemId int) error
 	BatchDelete(ctx context.Context, itemIds []int) error
 }
+
+type ActivityRepo interface {
+	Create(ctx context.Context, activity Activity) (Activity, error)
+	ListById(ctx context.Context, entityId int, entityType string) ([]Activity, error)
+}

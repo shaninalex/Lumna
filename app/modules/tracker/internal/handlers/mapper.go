@@ -69,3 +69,19 @@ func toStageViews(stages []domain.Stage) []contract.StageView {
 	}
 	return views
 }
+
+func toActivityView(a domain.Activity) contract.ActivityView {
+	return contract.ActivityView{
+		Id:        a.ID,
+		Message:   a.Content,
+		CreatedAt: a.CreatedAt,
+	}
+}
+
+func toActivityViews(activities []domain.Activity) []contract.ActivityView {
+	views := make([]contract.ActivityView, len(activities))
+	for i, stage := range activities {
+		views[i] = toActivityView(stage)
+	}
+	return views
+}

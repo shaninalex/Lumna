@@ -18,6 +18,7 @@ func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.POST("move", handleBoardAction(resolve))
 	router.PATCH(":task_id", handleTaskUpdate(resolve))
 	router.PATCH(":task_id/assign", handleTaskAssignment(resolve))
+	router.GET(":task_id/activities", handleTaskActivities(resolve))
 	router.DELETE(":task_id", handleTaskDelete(resolve))
 }
 
@@ -194,5 +195,28 @@ func handleTaskDelete(resolve core.Resolve) gin.HandlerFunc {
 			return
 		}
 		httpx.Success(c, true, fmt.Sprintf("Task [%d] deleted.", taskId))
+	}
+}
+
+func handleTaskActivities(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		taskId, err := strconv.Atoi(c.Param("task_id"))
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		activities, err := contract.AskActivityList(c.Request.Context(), resolve(), contract.ActivityList{
+			EntityId:   taskId,
+			EntityType: "work_item",
+		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		items := make([]workItemActivityDTO, len(activities))
+		for i, activity := range activities {
+			items[i] = toWorkItemActivityDTO(activity)
+		}
+		httpx.Success(c, items)
 	}
 }

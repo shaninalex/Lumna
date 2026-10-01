@@ -157,3 +157,17 @@ func (a taskAssignmentDTO) Verify() error {
 		validation.Field(&a.IdentityId, validation.Required),
 	)
 }
+
+type workItemActivityDTO struct {
+	Id        int       `json:"id"`
+	Message   string    `json:"message"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+func toWorkItemActivityDTO(s contract.WorkItemActivityView) workItemActivityDTO {
+	return workItemActivityDTO{
+		Id:        s.Id,
+		Message:   s.Message,
+		CreatedAt: s.CreatedAt,
+	}
+}
