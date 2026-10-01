@@ -13,8 +13,14 @@ import { ActivityListGroupItemComponent } from '../activity-list-group-item';
                 Activity
             </div>
             <div class="list-group list-group-flush">
-                @for (activity of activities(); track activity.id) {
-                    <lu-activity-list-group-item [activity]="activity"/>
+                @if (activities().length > 0) {
+                    @for (activity of activities(); track activity.id) {
+                        <lu-activity-list-group-item [activity]="activity"/>
+                    }
+                }   @else {
+                    <div class="list-group-item">
+                        No activities yet.
+                    </div>
                 }
             </div>
         </div>
