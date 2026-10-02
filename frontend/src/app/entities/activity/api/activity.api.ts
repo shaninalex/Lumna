@@ -14,7 +14,7 @@ export class ActivityApi {
         params = params.set('entity_id', entityId)
         params = params.set('entity_type', entityType);
         return this.http
-            .get<APIResponse<activityDTO[]>>(`/api/v1/tasks/${entityId}/activities`, {params, withCredentials: true})
+            .get<APIResponse<activityDTO[]>>(`/api/v1/activities`, {params, withCredentials: true})
             .pipe(map((res) => toActivityModels(res.data)));
     }
 }

@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/activity"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/auth"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/board"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/column"
@@ -37,4 +38,5 @@ func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier, cfg Config
 	board.Register(resolve, private.Group("boards"))
 	column.Register(resolve, private.Group("columns"))
 	task.Register(resolve, private.Group("tasks"))
+	activity.Register(resolve, private.Group("activities"))
 }
