@@ -42,3 +42,13 @@ func (AddIdentityToWorkspace) Permission() (action string, scope int) { return "
 func ExecAddIdentityToWorkspace(ctx context.Context, a *core.App, cmd AddIdentityToWorkspace) (bool, error) {
 	return bus.Execute[AddIdentityToWorkspace, bool](ctx, a.Commands, cmd)
 }
+
+type CreateInvitation struct {
+	Invitation InvitationView
+}
+
+func (CreateInvitation) Permission() (action string, scope int) { return "admin", 0 }
+
+func ExecCreateInvitation(ctx context.Context, a *core.App, cmd CreateInvitation) (InvitationView, error) {
+	return bus.Execute[CreateInvitation, InvitationView](ctx, a.Commands, cmd)
+}

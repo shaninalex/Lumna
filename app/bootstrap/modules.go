@@ -71,9 +71,10 @@ func buildModules(
 	})
 
 	workspaceModule := workspace.New(workspace.Deps{
-		DB:    db,
-		Log:   log,
-		Clock: clk,
+		DB:     db,
+		Log:    log,
+		Clock:  clk,
+		Secret: secret,
 	})
 
 	notificationsModule := notifications.New(notifications.Deps{

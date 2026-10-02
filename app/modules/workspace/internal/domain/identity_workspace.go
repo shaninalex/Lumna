@@ -6,4 +6,5 @@ type IdentityWorkspace struct {
 	IdentityID  int
 	WorkspaceID int
 	CreatedAt   time.Time
+	Role        string
 }

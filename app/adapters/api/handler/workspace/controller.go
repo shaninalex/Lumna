@@ -10,6 +10,7 @@ import (
 func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET("", handlerList(resolve))
 	router.POST("", handlerCreate(resolve))
+	router.POST("invitations", handlerCreateInvitation(resolve))
 }
 
 func handlerList(resolve core.Resolve) gin.HandlerFunc {
@@ -65,5 +66,26 @@ func handlerCreate(resolve core.Resolve) gin.HandlerFunc {
 			OwnerEmail: workspace.OwnerEmail,
 			CreatedAt:  workspace.CreatedAt,
 		})
+	}
+}
+
+func handlerCreateInvitation(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var data invitationDTO
+		if err := c.ShouldBindJSON(&data); err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		if err := data.Validate(); err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		invitation, err := contract.ExecCreateInvitation(c.Request.Context(), resolve(), contract.CreateInvitation{})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		httpx.Success(c, toInvitationDTO(invitation))
 	}
 }

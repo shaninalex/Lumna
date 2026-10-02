@@ -5,7 +5,6 @@ import "context"
 type Actor struct {
 	IdentityID  int
 	WorkspaceID int
-	Roles       []string
 	IsSystem    bool // CLI, migrations, outbox-relay
 }
 

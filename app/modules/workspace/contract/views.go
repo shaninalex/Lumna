@@ -20,3 +20,16 @@ type ProjectView struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
+
+type InvitationView struct {
+	ID          int
+	WorkspaceID int
+	Email       string
+	Role        string
+	TokenHash   string
+	InvitedBy   *int
+	ExpiresAt   time.Time
+	AcceptedAt  *time.Time
+	RevokedAt   *time.Time
+	CreatedAt   time.Time
+}

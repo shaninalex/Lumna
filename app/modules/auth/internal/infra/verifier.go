@@ -26,5 +26,7 @@ func (v *Verifier) Verify(_ context.Context, accessToken string) (actor.Actor, e
 		return actor.Actor{}, domain.ErrBadAccessToken
 	}
 
-	return actor.Actor{IdentityID: identityID}, nil
+	return actor.Actor{
+		IdentityID: identityID,
+	}, nil
 }

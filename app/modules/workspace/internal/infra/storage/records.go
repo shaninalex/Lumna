@@ -33,6 +33,7 @@ type identityWorkspaceRecord struct {
 	IdentityID  int       `gorm:"primaryKey"`
 	WorkspaceID int       `gorm:"primaryKey"`
 	CreatedAt   time.Time `gorm:"column:created_at;autoCreateTime"`
+	Role        string    `gorm:"column:role;not null"`
 }
 
 func (identityWorkspaceRecord) TableName() string { return "identity_workspaces" }
@@ -59,4 +60,17 @@ func toDomainProject(project projectRecord) domain.Project {
 		CreatedAt:   project.CreatedAt,
 		UpdatedAt:   project.UpdatedAt.Time,
 	}
+}
+
+type workspaceInvitationRecord struct {
+	ID          int           `gorm:"primaryKey;autoIncrement"`
+	WorkspaceID int           `gorm:"column:workspace_id"`
+	Email       string        `gorm:"column:email"`
+	Role        string        `gorm:"column:role"`
+	TokenHash   string        `gorm:"column:token_hash"`
+	InvitedBy   sql.NullInt32 `gorm:"column:invited_by"`
+	ExpiresAt   time.Time     `gorm:"column:expires_at"`
+	AcceptedAt  sql.NullTime  `gorm:"column:accepted_at"`
+	RevokedAt   sql.NullTime  `gorm:"column:accepted_at"`
+	CreatedAt   time.Time     `gorm:"column:created_at;autoCreateTime"`
 }

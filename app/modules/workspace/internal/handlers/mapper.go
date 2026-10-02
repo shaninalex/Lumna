@@ -27,3 +27,33 @@ func toWorkspaceView(workspace domain.Workspace) contract.WorkspaceView {
 		UpdatedAt:  workspace.UpdatedAt,
 	}
 }
+
+func toInvitationDomain(invitation contract.InvitationView) domain.Invitation {
+	return domain.Invitation{
+		ID:          invitation.ID,
+		WorkspaceID: invitation.WorkspaceID,
+		Email:       invitation.Email,
+		Role:        invitation.Role,
+		TokenHash:   invitation.TokenHash,
+		InvitedBy:   invitation.InvitedBy,
+		ExpiresAt:   invitation.ExpiresAt,
+		AcceptedAt:  invitation.AcceptedAt,
+		RevokedAt:   invitation.RevokedAt,
+		CreatedAt:   invitation.CreatedAt,
+	}
+}
+
+func toInvitationView(invitation domain.Invitation) contract.InvitationView {
+	return contract.InvitationView{
+		ID:          invitation.ID,
+		WorkspaceID: invitation.WorkspaceID,
+		Email:       invitation.Email,
+		Role:        invitation.Role,
+		TokenHash:   invitation.TokenHash,
+		InvitedBy:   invitation.InvitedBy,
+		ExpiresAt:   invitation.ExpiresAt,
+		AcceptedAt:  invitation.AcceptedAt,
+		RevokedAt:   invitation.RevokedAt,
+		CreatedAt:   invitation.CreatedAt,
+	}
+}

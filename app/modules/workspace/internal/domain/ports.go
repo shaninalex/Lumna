@@ -1,6 +1,8 @@
 package domain
 
-import "context"
+import (
+	"context"
+)
 
 type WorkspaceRepo interface {
 	Save(ctx context.Context, w Workspace) (Workspace, error)
@@ -17,4 +19,14 @@ type IdentityWorkspaceRepo interface {
 type ProjectRepo interface {
 	Save(ctx context.Context, p Project) (Project, error)
 	ByWorkspaceId(ctx context.Context, workspaceId int) ([]Project, error)
+}
+
+type InvitationRepo interface {
+	Save(ctx context.Context, i Invitation) (Invitation, error)
+	GetByHash(ctx context.Context, hash string) (Invitation, error)
+	ListByWorkspaceId(ctx context.Context, workspaceId int) ([]Invitation, error)
+}
+
+type TokenHasher interface {
+	CreateToken() (string, string, error)
 }
