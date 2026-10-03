@@ -20,7 +20,7 @@ func NewListProfiles(
 
 func (u *ListProfiles) Handle(ctx context.Context, q contract.ListProfiles) (contract.ListProfilesView, error) {
 	var zero contract.ListProfilesView
-	identities, err := u.identities.List(ctx, q.Limit, q.Offset)
+	identities, err := u.identities.List(ctx, q.Limit, q.Offset, nil)
 	if err != nil {
 		return zero, err
 	}

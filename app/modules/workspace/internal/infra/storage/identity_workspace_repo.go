@@ -5,6 +5,7 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
+	"gorm.io/gorm"
 )
 
 type IdentityWorkspaceRepo struct {
@@ -33,4 +34,21 @@ func (s *IdentityWorkspaceRepo) Save(ctx context.Context, t domain.IdentityWorks
 		CreatedAt:   record.CreatedAt,
 		Role:        t.Role,
 	}, nil
+}
+
+func (s *IdentityWorkspaceRepo) ByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.IdentityWorkspace, error) {
+	records, err := gorm.G[identityWorkspaceRecord](s.db.From(ctx)).Where("workspace_id = ?", workspaceId).Find(ctx)
+	if err != nil {
+		return []domain.IdentityWorkspace{}, err
+	}
+	identities := make([]domain.IdentityWorkspace, len(records))
+	for i, record := range records {
+		identities[i] = domain.IdentityWorkspace{
+			IdentityID:  record.IdentityID,
+			WorkspaceID: record.WorkspaceID,
+			CreatedAt:   record.CreatedAt,
+			Role:        record.Role,
+		}
+	}
+	return identities, nil
 }

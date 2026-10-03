@@ -33,3 +33,13 @@ type InvitationView struct {
 	RevokedAt   *time.Time
 	CreatedAt   time.Time
 }
+
+type MemberView struct {
+	ID          int
+	Email       string
+	FullName    string
+	Image       *string
+	Role        string
+	DateJoined  time.Time
+	WorkspaceId int
+}

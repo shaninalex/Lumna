@@ -70,10 +70,13 @@ func (r *IdentityRepo) DisplayNames(ctx context.Context, ids []int) (map[int]str
 	return out, nil
 }
 
-func (r *IdentityRepo) List(ctx context.Context, limit, offset int) ([]domain.Identity, error) {
+func (r *IdentityRepo) List(ctx context.Context, limit, offset int, filter *domain.Identity) ([]domain.Identity, error) {
 	q := gorm.G[identityRecord](r.db.From(ctx)).Offset(offset)
 	if limit > 0 {
 		q = q.Limit(limit)
+	}
+	if filter != nil {
+		q = q.Where(filter)
 	}
 	recs, err := q.Find(ctx)
 	if err != nil {
@@ -83,5 +86,24 @@ func (r *IdentityRepo) List(ctx context.Context, limit, offset int) ([]domain.Id
 	for _, rec := range recs {
 		result = append(result, toDomainIdentity(rec))
 	}
+	return result, nil
+}
+
+func (r *IdentityRepo) ListByIDs(ctx context.Context, ids []int) ([]domain.Identity, error) {
+	if len(ids) == 0 {
+		return []domain.Identity{}, nil
+	}
+	recs, err := gorm.G[identityRecord](r.db.From(ctx)).
+		Where("id IN ?", ids).
+		Find(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]domain.Identity, 0, len(recs))
+	for _, rec := range recs {
+		result = append(result, toDomainIdentity(rec))
+	}
+
 	return result, nil
 }

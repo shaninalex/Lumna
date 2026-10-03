@@ -18,6 +18,11 @@ type Provisioner interface {
 	EnsureIdentityByEmail(ctx context.Context, email, fullName string) (int, error)
 }
 
+type Profiler interface {
+	ByID(ctx context.Context, id int) (ProfileView, error)
+	ByIDs(ctx context.Context, id []int) ([]ProfileView, error)
+}
+
 type Mailer interface {
 	Send(ctx context.Context, to, template string, data map[string]any) error
 }

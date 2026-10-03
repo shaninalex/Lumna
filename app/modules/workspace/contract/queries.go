@@ -24,3 +24,13 @@ func (ProjectList) Permission() (action string, scope int) { return "", 0 }
 func AskProjectList(ctx context.Context, a *core.App, q ProjectList) ([]ProjectView, error) {
 	return bus.Ask[ProjectList, []ProjectView](ctx, a.Queries, q)
 }
+
+type MembersList struct {
+	WorkspaceId int
+}
+
+func (MembersList) Permission() (action string, scope int) { return "", 0 }
+
+func AskMembersList(ctx context.Context, a *core.App, q MembersList) ([]MemberView, error) {
+	return bus.Ask[MembersList, []MemberView](ctx, a.Queries, q)
+}

@@ -7,7 +7,8 @@ type IdentityRepo interface {
 	ByID(ctx context.Context, id int) (Identity, error)
 	ByEmail(ctx context.Context, email string) (Identity, error)
 	DisplayNames(ctx context.Context, ids []int) (map[int]string, error)
-	List(ctx context.Context, limit, offset int) ([]Identity, error)
+	List(ctx context.Context, limit, offset int, filter *Identity) ([]Identity, error)
+	ListByIDs(ctx context.Context, ids []int) ([]Identity, error)
 }
 
 type CredentialRepo interface {

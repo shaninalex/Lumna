@@ -79,3 +79,25 @@ func toInvitationDTO(inv contract.InvitationView) invitationDTO {
 		CreatedAt:   inv.CreatedAt,
 	}
 }
+
+type memberDTO struct {
+	ID          int       `json:"id"`
+	Email       string    `json:"email"`
+	FullName    string    `json:"full_name"`
+	Image       *string   `json:"image,omitempty"`
+	Role        string    `json:"role"`
+	DateJoined  time.Time `json:"date_joined"`
+	WorkspaceId int       `json:"workspace_id"`
+}
+
+func toMemberDTO(m contract.MemberView) memberDTO {
+	return memberDTO{
+		ID:          m.ID,
+		Email:       m.Email,
+		FullName:    m.FullName,
+		Image:       m.Image,
+		Role:        m.Role,
+		DateJoined:  m.DateJoined,
+		WorkspaceId: m.WorkspaceId,
+	}
+}

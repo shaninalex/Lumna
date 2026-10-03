@@ -33,6 +33,7 @@ type Module struct {
 	//reader        *infra.Reader
 	authenticator *infra.Authenticator
 	provisioner   *infra.Provisioner
+	profiler      *infra.Profiler
 
 	// commands
 	register *handlers.Register
@@ -54,6 +55,7 @@ func New(d Deps) *Module {
 
 		authenticator: infra.NewAuthenticator(identities, credentials, hasher),
 		provisioner:   infra.NewProvisioner(identities, d.Clock),
+		profiler:      infra.NewProfiler(identities),
 
 		register:    handlers.NewRegister(identities, credentials, hasher, d.Mailer, d.Clock),
 		profileList: handlers.NewListProfiles(identities),
@@ -71,6 +73,11 @@ func (m *Module) Authenticator() contract.Authenticator {
 // Provisioner — bridge. Create-if-missing, inside the caller's transaction.
 func (m *Module) Provisioner() contract.Provisioner {
 	return m.provisioner
+}
+
+// Profiler — bridge. Used in other modules to ask profile information
+func (m *Module) Profiler() contract.Profiler {
+	return m.profiler
 }
 
 // Register — subscribe on commands/queries/events. With error awareness

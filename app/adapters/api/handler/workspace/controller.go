@@ -1,6 +1,8 @@
 package workspace
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/core"
@@ -8,12 +10,13 @@ import (
 )
 
 func Register(resolve core.Resolve, router *gin.RouterGroup) {
-	router.GET("", handlerList(resolve))
-	router.POST("", handlerCreate(resolve))
-	router.POST("invitations", handlerCreateInvitation(resolve))
+	router.GET("", handleWorkspaceList(resolve))
+	router.POST("", handleCreateWorkspace(resolve))
+	router.GET(":workspace_id/members", handleWorkspaceMembers(resolve))
+	router.POST(":workspace_id/invitations", handleCreateInvitation(resolve))
 }
 
-func handlerList(resolve core.Resolve) gin.HandlerFunc {
+func handleWorkspaceList(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		result, err := contract.AskWorkspaceList(c.Request.Context(), resolve(), contract.WorkspaceList{})
 		if err != nil {
@@ -36,7 +39,7 @@ func handlerList(resolve core.Resolve) gin.HandlerFunc {
 	}
 }
 
-func handlerCreate(resolve core.Resolve) gin.HandlerFunc {
+func handleCreateWorkspace(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data workspaceCreateDTO
 		if err := c.ShouldBindJSON(&data); err != nil {
@@ -69,7 +72,7 @@ func handlerCreate(resolve core.Resolve) gin.HandlerFunc {
 	}
 }
 
-func handlerCreateInvitation(resolve core.Resolve) gin.HandlerFunc {
+func handleCreateInvitation(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data invitationDTO
 		if err := c.ShouldBindJSON(&data); err != nil {
@@ -87,5 +90,27 @@ func handlerCreateInvitation(resolve core.Resolve) gin.HandlerFunc {
 			return
 		}
 		httpx.Success(c, toInvitationDTO(invitation))
+	}
+}
+
+func handleWorkspaceMembers(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Param("workspace_id"))
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		memberDomains, err := contract.AskMembersList(c.Request.Context(), resolve(), contract.MembersList{
+			WorkspaceId: id,
+		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		members := make([]memberDTO, len(memberDomains))
+		for i, m := range memberDomains {
+			members[i] = toMemberDTO(m)
+		}
+		httpx.Success(c, members)
 	}
 }

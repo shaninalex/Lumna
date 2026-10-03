@@ -6,7 +6,8 @@ import { TaskEffects } from "@entities/task";
 import { BoardEffects } from "@entities/board";
 import { ColumnEffects } from "@entities/column";
 import { KanbanEffects } from "@widgets/kanban-widget"
-import { ActivityEffects } from '@entities/activity/model/activity.effects';
+import { ActivityEffects } from '@entities/activity/model';
+import { MemberEffects } from '@entities/member/model';
 
 export const mainEffects = [
     TaskEffects,
@@ -17,6 +18,7 @@ export const mainEffects = [
     BoardEffects,
     ColumnEffects,
     ActivityEffects,
+    MemberEffects,
 
     KanbanEffects,
 ];

@@ -6,6 +6,7 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/handlers"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/infra"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/infra/storage"
@@ -18,6 +19,8 @@ type Deps struct {
 	Log    *slog.Logger
 	Clock  clock.Clock
 	Secret []byte
+
+	Profiler contract.Profiler
 }
 
 type Module struct {
@@ -32,6 +35,7 @@ type Module struct {
 	// query handlers
 	workspaceList *handlers.WorkspaceList
 	projectList   *handlers.ProjectList
+	membersList   *handlers.MembersList
 }
 
 func (m *Module) Name() string { return "workspace" }
@@ -53,6 +57,7 @@ func New(d Deps) *Module {
 
 		workspaceList: handlers.NewWorkspaceList(workspaceRepo),
 		projectList:   handlers.NewProjectList(projectRepo),
+		membersList:   handlers.NewMembersList(identityWorkspaceRepo, d.Profiler),
 	}
 }
 
@@ -64,5 +69,6 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.createInvitation.Handle),
 		bus.RegisterQuery(a.Queries, m.workspaceList.Handle),
 		bus.RegisterQuery(a.Queries, m.projectList.Handle),
+		bus.RegisterQuery(a.Queries, m.membersList.Handle),
 	)
 }
