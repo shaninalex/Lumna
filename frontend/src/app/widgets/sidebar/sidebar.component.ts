@@ -6,6 +6,7 @@ import { selectWorkspaces } from '@entities/workspace';
 import { filter, map, switchMap } from 'rxjs';
 import { selectProjects } from '@entities/project';
 import { selectUI } from "@core/store/ui";
+import { AppRoutes } from '@core';
 
 @Component({
     selector: 'lu-sidebar',
@@ -15,6 +16,7 @@ import { selectUI } from "@core/store/ui";
 })
 export class SidebarComponent {
     private store = inject(Store);
+    readonly appRoutes = inject(AppRoutes);
 
     hideSidebar = this.store.selectSignal(selectUI.sidebarOpen);
     currentProject = this.store.selectSignal(selectProjects.currentProject);
@@ -27,5 +29,4 @@ export class SidebarComponent {
                 .pipe(map((projects) => ({workspaceId, projects}))),
         ),
     );
-
 }

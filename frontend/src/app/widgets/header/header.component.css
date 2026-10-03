@@ -1,0 +1,22 @@
+.logo-button {
+    width: 2rem;
+    height: 2rem;
+    position: relative;
+    font-size: 1.2rem;
+}
+
+.logo-button img {
+    width: inherit;
+    height: inherit;
+}
+
+.logo-button:not(.logo-button-closed) i {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.logo-button:not(.logo-button-closed):hover i { display: block }
+.logo-button:not(.logo-button-closed):hover img { display: none }

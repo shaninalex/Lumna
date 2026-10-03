@@ -1,18 +1,15 @@
-import type { OnInit } from '@angular/core';
-import { Component, computed, inject, Input } from '@angular/core';
-import type { ProjectModel } from '@entities/project/model';
+import { OnInit, Component, computed, inject, Input } from '@angular/core';
+import { ProjectModel } from '@entities/project/model';
 import { selectWorkspaces } from '@entities/workspace/model';
 import { Store } from '@ngrx/store';
 import { RouterLink } from '@angular/router';
-import { TrimPipe } from '@shared/utils';
 import { selectTasks } from '@entities/task/model/task.selectors';
-import type { Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'lu-project-list-item',
-    imports: [RouterLink, TrimPipe, AsyncPipe],
-
+    imports: [RouterLink, AsyncPipe],
     template: `
         <a
             cdkMenuItem
@@ -20,7 +17,7 @@ import { AsyncPipe } from '@angular/common';
             class="d-flex justify-content-between align-items-center gap-2"
         >
             <div class="project-icon">
-                {{ project.title | trim: 1 }}
+                {{ project.title[0] }}
             </div>
             <div class="me-auto">
                 {{ project.title }}

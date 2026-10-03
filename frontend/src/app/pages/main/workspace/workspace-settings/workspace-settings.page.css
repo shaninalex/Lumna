@@ -1,0 +1,18 @@
+.workspace-settings-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    list-style-type: none;
+    padding: 0 0 1rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e4e4e4;
+}
+
+.workspace-settings-menu a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.workspace-settings-menu a.active {
+    text-decoration: underline;
+}

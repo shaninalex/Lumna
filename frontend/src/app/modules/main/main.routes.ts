@@ -6,7 +6,6 @@ import { provideEffects } from '@ngrx/effects';
 import { AppRoutes } from '@core';
 import { activeWorkspaceGuard } from './workspace.guard';
 import { lastRouteRedirect } from './lastRouteRedirect';
-import { projectRoutes, workspaceRoutes } from "@pages";
 import { MainComponent } from './main.component';
 import { mainEffects } from './store';
 import { WorkspaceApi, workspaceFeature } from '@entities/workspace';
@@ -19,7 +18,9 @@ import { KanbanApi } from '@widgets/kanban-widget/api';
 import { WebSocketService } from './websocket.service';
 import { ActivityApi } from '@entities/activity/api';
 import { activityFeature } from '@entities/activity';
-
+import { routes as workspacesRoutes } from '@pages/main/workspaces';
+import { routes as workspaceRoutes } from '@pages/main/workspace';
+import { routes as projectRoutes } from '@pages/main/project';
 
 export const routes: Routes = [
     {
@@ -49,11 +50,14 @@ export const routes: Routes = [
             provideState(activityFeature),
         ],
         children: [
-            ...workspaceRoutes,
+            ...workspacesRoutes,
             {
                 path: 'w/:workspaceId',
                 canActivate: [activeWorkspaceGuard],
-                children: projectRoutes,
+                children: [
+                    ...workspaceRoutes,
+                    ...projectRoutes,
+                ],
             },
             {
                 path: '',

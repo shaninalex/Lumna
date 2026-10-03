@@ -6,6 +6,7 @@ import { ThemeSwitcherComponent } from '@shared/ui';
 import { ProjectDropdownComponent } from '@features/project';
 import { WorkspaceSwitcherComponent } from '@features';
 import { actionUI, selectUI } from '@core/store/ui';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'lu-header',
@@ -15,18 +16,21 @@ import { actionUI, selectUI } from '@core/store/ui';
         NotificationsDropdownComponent,
         ProjectDropdownComponent,
         WorkspaceSwitcherComponent,
+        NgClass,
     ],
     styleUrl: './header.component.css',
-
     template: `
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
                 <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-sm btn-outline-secondary" (click)="toggleSidebar()">
+                    <button class="button logo-button"
+                            [ngClass]="{'logo-button-closed': !sidebarOpen()}"
+                            (click)="toggleSidebar()">
                         @if (!sidebarOpen()) {
                             <i class="fa-solid fa-chevron-right"></i>
                         } @else {
                             <i class="fa-solid fa-bars"></i>
+                            <img src="images/logo-icon.svg">
                         }
                     </button>
                     <lu-project-dropdown />

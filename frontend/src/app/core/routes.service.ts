@@ -43,4 +43,8 @@ export class AppRoutes {
     task(boardId: number, taskId: number): unknown[] {
         return [...this.board(boardId), 'task', taskId];
     }
+
+    workspaceRoot(end: unknown[]): unknown[] {
+        return ['/app', 'w', this.workspaceId(), ...end]
+    }
 }

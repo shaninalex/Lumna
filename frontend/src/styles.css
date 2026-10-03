@@ -1,3 +1,5 @@
+@import url('./styles/menu.css');
+
 html, body {
     font-size: 0.9rem;
 }
@@ -15,8 +17,8 @@ html, body {
     border-radius: 0.2rem;
     background-color: rgba(var(--bs-success-rgb), 1);
     color: rgba(var(--bs-body-color-rgb), 1);
-    width: 1rem;
-    height: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
