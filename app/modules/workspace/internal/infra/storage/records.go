@@ -74,3 +74,35 @@ type workspaceInvitationRecord struct {
 	RevokedAt   sql.NullTime  `gorm:"column:accepted_at"`
 	CreatedAt   time.Time     `gorm:"column:created_at;autoCreateTime"`
 }
+
+func (workspaceInvitationRecord) TableName() string { return "workspace_invitations" }
+
+func toInvitationDomain(r workspaceInvitationRecord) domain.Invitation {
+	return domain.Invitation{
+		ID:          r.ID,
+		WorkspaceID: r.WorkspaceID,
+		Email:       r.Email,
+		Role:        r.Role,
+		TokenHash:   r.TokenHash,
+		InvitedBy:   int(r.InvitedBy.Int32),
+		ExpiresAt:   r.ExpiresAt,
+		AcceptedAt:  r.AcceptedAt.Time,
+		RevokedAt:   r.RevokedAt.Time,
+		CreatedAt:   r.CreatedAt,
+	}
+}
+
+func toInvitationRecord(d domain.Invitation) workspaceInvitationRecord {
+	return workspaceInvitationRecord{
+		ID:          d.ID,
+		WorkspaceID: d.WorkspaceID,
+		Email:       d.Email,
+		Role:        d.Role,
+		TokenHash:   d.TokenHash,
+		InvitedBy:   sql.NullInt32{Int32: int32(d.InvitedBy), Valid: d.InvitedBy > 0},
+		ExpiresAt:   d.ExpiresAt,
+		AcceptedAt:  sql.NullTime{Time: d.AcceptedAt, Valid: d.AcceptedAt.IsZero()},
+		RevokedAt:   sql.NullTime{Time: d.RevokedAt, Valid: d.RevokedAt.IsZero()},
+		CreatedAt:   d.CreatedAt,
+	}
+}

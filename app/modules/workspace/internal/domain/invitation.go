@@ -10,9 +10,9 @@ type Invitation struct {
 	Email       string
 	Role        string
 	TokenHash   string
-	InvitedBy   *int
+	InvitedBy   int
 	ExpiresAt   time.Time
-	AcceptedAt  *time.Time
-	RevokedAt   *time.Time
+	AcceptedAt  time.Time
+	RevokedAt   time.Time
 	CreatedAt   time.Time
 }

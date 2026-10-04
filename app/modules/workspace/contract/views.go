@@ -26,11 +26,10 @@ type InvitationView struct {
 	WorkspaceID int
 	Email       string
 	Role        string
-	TokenHash   string
-	InvitedBy   *int
+	InvitedBy   int
 	ExpiresAt   time.Time
-	AcceptedAt  *time.Time
-	RevokedAt   *time.Time
+	AcceptedAt  time.Time
+	RevokedAt   time.Time
 	CreatedAt   time.Time
 }
 
@@ -38,7 +37,7 @@ type MemberView struct {
 	ID          int
 	Email       string
 	FullName    string
-	Image       *string
+	Image       string
 	Role        string
 	DateJoined  time.Time
 	WorkspaceId int

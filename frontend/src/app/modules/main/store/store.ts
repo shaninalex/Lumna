@@ -8,6 +8,7 @@ import { ColumnEffects } from "@entities/column";
 import { KanbanEffects } from "@widgets/kanban-widget"
 import { ActivityEffects } from '@entities/activity/model';
 import { MemberEffects } from '@entities/member/model';
+import { InvitationEffects } from '@entities/invitation/model';
 
 export const mainEffects = [
     TaskEffects,
@@ -19,6 +20,7 @@ export const mainEffects = [
     ColumnEffects,
     ActivityEffects,
     MemberEffects,
+    InvitationEffects,
 
     KanbanEffects,
 ];

@@ -28,8 +28,9 @@ func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvita
 	if err != nil {
 		return contract.InvitationView{}, err
 	}
-	cmd.Invitation.TokenHash = hash
-	inv, err := s.repo.Save(ctx, toInvitationDomain(cmd.Invitation))
+	domainInvitation := toInvitationDomain(cmd.Invitation)
+	domainInvitation.TokenHash = hash
+	inv, err := s.repo.Create(ctx, domainInvitation)
 	if err != nil {
 		return contract.InvitationView{}, err
 	}

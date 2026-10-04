@@ -23,6 +23,8 @@ import { routes as workspaceRoutes } from '@pages/main/workspace';
 import { routes as projectRoutes } from '@pages/main/project';
 import { MemberApi } from '@entities/member/api/member.api';
 import { memberFeature } from '@entities/member/provider';
+import { InvitationApi } from '@entities/invitation/api';
+import { invitationFeature } from '@entities/invitation';
 
 export const routes: Routes = [
     {
@@ -41,6 +43,7 @@ export const routes: Routes = [
             WebSocketService,
             ActivityApi,
             MemberApi,
+            InvitationApi,
 
             provideEffects(mainEffects),
 
@@ -52,6 +55,7 @@ export const routes: Routes = [
             provideState(columnFeature),
             provideState(activityFeature),
             provideState(memberFeature),
+            provideState(invitationFeature),
         ],
         children: [
             ...workspacesRoutes,

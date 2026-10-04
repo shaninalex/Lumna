@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/actor"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 )
 
@@ -14,6 +15,7 @@ func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.POST("", handleCreateWorkspace(resolve))
 	router.GET(":workspace_id/members", handleWorkspaceMembers(resolve))
 	router.POST(":workspace_id/invitations", handleCreateInvitation(resolve))
+	router.GET(":workspace_id/invitations", handleInvitationsList(resolve))
 }
 
 func handleWorkspaceList(resolve core.Resolve) gin.HandlerFunc {
@@ -79,12 +81,19 @@ func handleCreateInvitation(resolve core.Resolve) gin.HandlerFunc {
 			httpx.Fail(c, err)
 			return
 		}
+
+		if a, ok := actor.From(c.Request.Context()); ok {
+			data.InvitedBy = a.IdentityID
+		}
+
 		if err := data.Validate(); err != nil {
 			httpx.Fail(c, err)
 			return
 		}
 
-		invitation, err := contract.ExecCreateInvitation(c.Request.Context(), resolve(), contract.CreateInvitation{})
+		invitation, err := contract.ExecCreateInvitation(c.Request.Context(), resolve(), contract.CreateInvitation{
+			Invitation: toInvitationView(data),
+		})
 		if err != nil {
 			httpx.Fail(c, err)
 			return
@@ -112,5 +121,28 @@ func handleWorkspaceMembers(resolve core.Resolve) gin.HandlerFunc {
 			members[i] = toMemberDTO(m)
 		}
 		httpx.Success(c, members)
+	}
+}
+
+func handleInvitationsList(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Param("workspace_id"))
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		invitationViews, err := contract.AskInvitationList(c.Request.Context(), resolve(), contract.InvitationList{
+			WorkspaceId: id,
+		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		invitations := make([]invitationDTO, len(invitationViews))
+		for i, inv := range invitationViews {
+			invitations[i] = toInvitationDTO(inv)
+		}
+		httpx.Success(c, invitations)
 	}
 }

@@ -18,21 +18,36 @@ func NewInvitationRepo(db *database.DB, clock clock.Clock) *InvitationRepo {
 	return &InvitationRepo{db: db, clock: clock}
 }
 
-func (s *InvitationRepo) Save(ctx context.Context, invitation domain.Invitation) (domain.Invitation, error) {
+func (s *InvitationRepo) Create(ctx context.Context, invitation domain.Invitation) (domain.Invitation, error) {
 	invitation.ID = 0
 	invitation.CreatedAt = s.clock.Now()
-	if err := gorm.G[domain.Invitation](s.db.From(ctx)).Create(ctx, &invitation); err != nil {
+	record := toInvitationRecord(invitation)
+	if err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).Create(ctx, &record); err != nil {
 		return domain.Invitation{}, err
 	}
-	return domain.Invitation{}, nil
+	return toInvitationDomain(record), nil
 }
 
 func (s *InvitationRepo) GetByHash(ctx context.Context, hash string) (domain.Invitation, error) {
-	return gorm.G[domain.Invitation](s.db.From(ctx)).
+	record, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).
 		Where("token_hash = ?", hash).
 		First(ctx)
+	if err != nil {
+		return domain.Invitation{}, err
+	}
+	return toInvitationDomain(record), err
 }
 
 func (s *InvitationRepo) ListByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.Invitation, error) {
-	return gorm.G[domain.Invitation](s.db.From(ctx)).Where("workspace_id = ?", workspaceId).Find(ctx)
+	records, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).
+		Where("workspace_id = ?", workspaceId).
+		Find(ctx)
+	if err != nil {
+		return []domain.Invitation{}, err
+	}
+	invitations := make([]domain.Invitation, len(records))
+	for i, inv := range records {
+		invitations[i] = toInvitationDomain(inv)
+	}
+	return invitations, nil
 }

@@ -22,7 +22,7 @@ type ProjectRepo interface {
 }
 
 type InvitationRepo interface {
-	Save(ctx context.Context, i Invitation) (Invitation, error)
+	Create(ctx context.Context, i Invitation) (Invitation, error)
 	GetByHash(ctx context.Context, hash string) (Invitation, error)
 	ListByWorkspaceId(ctx context.Context, workspaceId int) ([]Invitation, error)
 }

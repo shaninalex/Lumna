@@ -29,16 +29,15 @@ func (a workspaceCreateDTO) Validate() error {
 }
 
 type invitationDTO struct {
-	ID          int        `json:"id"`
-	WorkspaceID int        `json:"workspace_id"`
-	Email       string     `json:"email"`
-	Role        string     `json:"role"`
-	TokenHash   string     `json:"token_hash"`
-	InvitedBy   *int       `json:"invited_by,omitempty"`
-	ExpiresAt   time.Time  `json:"expires_at"`
-	AcceptedAt  *time.Time `json:"accepted_at,omitzero"`
-	RevokedAt   *time.Time `json:"revoked_at,omitzero"`
-	CreatedAt   time.Time  `json:"created_at"`
+	ID          int       `json:"id"`
+	WorkspaceID int       `json:"workspace_id"`
+	Email       string    `json:"email"`
+	Role        string    `json:"role"`
+	InvitedBy   int       `json:"invited_by,omitempty"`
+	ExpiresAt   time.Time `json:"expires_at"`
+	AcceptedAt  time.Time `json:"accepted_at,omitzero"`
+	RevokedAt   time.Time `json:"revoked_at,omitzero"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 func (a invitationDTO) Validate() error {
@@ -56,7 +55,6 @@ func toInvitationView(inv invitationDTO) contract.InvitationView {
 		WorkspaceID: inv.WorkspaceID,
 		Email:       inv.Email,
 		Role:        inv.Role,
-		TokenHash:   inv.TokenHash,
 		InvitedBy:   inv.InvitedBy,
 		ExpiresAt:   inv.ExpiresAt,
 		AcceptedAt:  inv.AcceptedAt,
@@ -71,7 +69,6 @@ func toInvitationDTO(inv contract.InvitationView) invitationDTO {
 		WorkspaceID: inv.WorkspaceID,
 		Email:       inv.Email,
 		Role:        inv.Role,
-		TokenHash:   inv.TokenHash,
 		InvitedBy:   inv.InvitedBy,
 		ExpiresAt:   inv.ExpiresAt,
 		AcceptedAt:  inv.AcceptedAt,
@@ -84,7 +81,7 @@ type memberDTO struct {
 	ID          int       `json:"id"`
 	Email       string    `json:"email"`
 	FullName    string    `json:"full_name"`
-	Image       *string   `json:"image,omitempty"`
+	Image       string    `json:"image,omitempty"`
 	Role        string    `json:"role"`
 	DateJoined  time.Time `json:"date_joined"`
 	WorkspaceId int       `json:"workspace_id"`

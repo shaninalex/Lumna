@@ -1,0 +1,18 @@
+<div class="card">
+    <div class="card-body">
+        <h1>Invite</h1>
+
+        <div>
+            <input type="email" [(ngModel)]="data.email" placeholder="Email"/>
+        </div>
+
+        <div>
+            <input type="text" [(ngModel)]="data.role" placeholder="Role"/>
+        </div>
+
+        <div>
+            <button (click)="submit()">Invite</button>
+            <button (click)="close()">Cancel</button>
+        </div>
+    </div>
+</div>

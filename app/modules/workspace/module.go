@@ -33,9 +33,10 @@ type Module struct {
 	createInvitation       *handlers.CreateInvitation
 
 	// query handlers
-	workspaceList *handlers.WorkspaceList
-	projectList   *handlers.ProjectList
-	membersList   *handlers.MembersList
+	workspaceList  *handlers.WorkspaceList
+	projectList    *handlers.ProjectList
+	membersList    *handlers.MembersList
+	invitationList *handlers.InvitationList
 }
 
 func (m *Module) Name() string { return "workspace" }
@@ -55,9 +56,10 @@ func New(d Deps) *Module {
 		createProject:          handlers.NewCreateProject(projectRepo, d.Clock),
 		createInvitation:       handlers.NewCreateInvitation(invitationRepo, hasher, d.Clock),
 
-		workspaceList: handlers.NewWorkspaceList(workspaceRepo),
-		projectList:   handlers.NewProjectList(projectRepo),
-		membersList:   handlers.NewMembersList(identityWorkspaceRepo, d.Profiler),
+		workspaceList:  handlers.NewWorkspaceList(workspaceRepo),
+		projectList:    handlers.NewProjectList(projectRepo),
+		membersList:    handlers.NewMembersList(identityWorkspaceRepo, d.Profiler),
+		invitationList: handlers.NewInvitationList(invitationRepo),
 	}
 }
 
@@ -70,5 +72,6 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterQuery(a.Queries, m.workspaceList.Handle),
 		bus.RegisterQuery(a.Queries, m.projectList.Handle),
 		bus.RegisterQuery(a.Queries, m.membersList.Handle),
+		bus.RegisterQuery(a.Queries, m.invitationList.Handle),
 	)
 }
