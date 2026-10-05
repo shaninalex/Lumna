@@ -18,8 +18,6 @@ bin/*
 __debug_*
 cover.out
 
-.claude
-
 !.git/hooks/post-tag
 resources/frontend_build/*
 !resources/frontend_build/.gitkeep

@@ -27,6 +27,7 @@ import { Dialog } from '@angular/cdk/dialog';
                     <th>Accepted At</th>
                     <th>Revoked At</th>
                     <th>Created At</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -34,7 +35,7 @@ import { Dialog } from '@angular/cdk/dialog';
                         <tr>
                             <td>{{ invitation.email }}</td>
                             <td>{{ invitation.role }}</td>
-                            <td><img src="images/7.png" style="width:1.5rem; height: 1.5rem; border-radius: 1.5rem"></td>
+                            <td><img alt="" src="images/7.png" style="width:1.5rem; height: 1.5rem; border-radius: 1.5rem" /></td>
                             <td>{{ invitation.expiresAt | date }}</td>
                             <td>
                                 @if(invitation.acceptedAt){
@@ -44,7 +45,6 @@ import { Dialog } from '@angular/cdk/dialog';
                                 }
                             </td>
                             <td>
-
                                 @if(invitation.revokedAt){
                                     {{ invitation.revokedAt | date }}
                                 } @else {
@@ -52,6 +52,9 @@ import { Dialog } from '@angular/cdk/dialog';
                                 }
                             </td>
                             <td>{{ invitation.createdAt | date }}</td>
+                            <td>
+                                <button type="button" class="button">Revoke</button>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -75,7 +78,7 @@ export class MembersInvitationsPage {
         const dialogRef = this.dialog.open<InviteData>(MembersInvitationsDialogComponent, {
             data: {
                 email: '',
-                role: '',
+                role: 'member',
             },
         });
 
