@@ -18,6 +18,7 @@ type Interface interface {
 	CORSOrigins() []string
 	SecureCookies() bool
 	EmbedSPA() bool
+	EmailConfig() EmailerConfig
 }
 
 type Environment string

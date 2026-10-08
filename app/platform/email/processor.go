@@ -133,7 +133,7 @@ func (s *Processor) send(entry Entry) error {
 
 	err := m.Send(
 		fmt.Sprintf("%s:%v", smtpHost, smtpPort),
-		smtp.PlainAuth("", smtpUser, smtpPass.String(), smtpHost),
+		smtp.PlainAuth("", smtpUser, smtpPass.Reveal(), smtpHost),
 	)
 	if err != nil {
 		return errs.Platform(
