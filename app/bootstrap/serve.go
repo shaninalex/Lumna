@@ -62,6 +62,8 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 				}
 			}()
 
+			app().Email.Process(cmd.Context())
+
 			quit := make(chan os.Signal, 1)
 			signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 			<-quit
