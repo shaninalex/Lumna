@@ -51,6 +51,10 @@ func (s *Processor) ScheduleEmail(ctx context.Context, entry Entry) {
 }
 
 func (s *Processor) Process(ctx context.Context) {
+	if !s.cfg.Process {
+		return
+	}
+
 	ticker := time.NewTicker(ProcessLoopDuration)
 	defer ticker.Stop()
 
