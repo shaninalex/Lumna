@@ -3,11 +3,14 @@
         <h1>Invite</h1>
 
         <div>
-            <input type="email" [(ngModel)]="data.email" placeholder="Email"/>
+            <input type="email" [(ngModel)]="data.email" placeholder="Email" autocomplete="off"/>
         </div>
 
         <div>
-            <input type="text" [(ngModel)]="data.role" placeholder="Role"/>
+            <select [(ngModel)]="data.role">
+                <option value="member" selected>Member</option>
+                <option value="admin">Admin</option>
+            </select>
         </div>
 
         <div>

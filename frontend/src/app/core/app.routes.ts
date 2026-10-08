@@ -15,6 +15,10 @@ export const routes: Routes = [
         redirectTo: 'app',
     },
     {
+        path: 'ui-system',
+        loadComponent: () => import('../pages/system/ui-system/ui-system.page').then((m) => m.UiSystemPage),
+    },
+    {
         path: '404',
         loadComponent: () => import('../pages/system/page-404').then((m) => m.Page404),
     },

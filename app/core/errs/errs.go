@@ -12,6 +12,7 @@ const (
 	KindForbidden
 	KindUnauthenticated
 	KindRateLimited
+	KindPlatform
 )
 
 type Error struct {
@@ -95,6 +96,16 @@ func FieldsOf(err error) map[string]string {
 func Unauthenticated(code, msg string) *Error {
 	return &Error{
 		Kind:    KindUnauthenticated,
+		Code:    code,
+		Message: msg,
+		Fields:  nil,
+		cause:   errors.New(msg),
+	}
+}
+
+func Platform(code, msg string) *Error {
+	return &Error{
+		Kind:    KindPlatform,
 		Code:    code,
 		Message: msg,
 		Fields:  nil,

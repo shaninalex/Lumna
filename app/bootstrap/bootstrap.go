@@ -14,6 +14,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
+	"gitlab.com/shaninalex/lumna/app/platform/email"
 	pmw "gitlab.com/shaninalex/lumna/app/platform/middleware"
 	"gitlab.com/shaninalex/lumna/app/platform/realtime"
 )
@@ -27,12 +28,13 @@ type Instance struct {
 
 	closers  []func(context.Context) error
 	Realtime *realtime.Hub
+	Email    *email.Processor
 }
 
 // Close clear resources. Required for CLI
 func (a *Instance) Close(ctx context.Context) error {
 	var errs []error
-	for _, v := range slices.Backward(a.closers) { // backwards
+	for _, v := range slices.Backward(a.closers) {
 		if err := v(ctx); err != nil {
 			errs = append(errs, err)
 		}
@@ -53,6 +55,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	db := database.New(cfg)
 	clk := clock.System()
 	hub := realtime.NewHub(64)
+	eml := email.NewSender(cfg.EmailConfig(), log, clk, email.NewRepository(db))
 
 	// ======= Core =======
 	write := []bus.Middleware{
@@ -78,7 +81,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	}
 
 	// ======= Modules =======
-	mods, bridges, err := buildModules(cfg, db, log, clk, c.Events, hub)
+	mods, bridges, err := buildModules(cfg, db, log, clk, c.Events, hub, eml)
 	if err != nil {
 		return nil, err
 	}
@@ -100,5 +103,6 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 		Bridges:  bridges,
 		modules:  mods,
 		Realtime: hub,
+		Email:    eml,
 	}, nil
 }
