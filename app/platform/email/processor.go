@@ -4,10 +4,15 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"net/mail"
+	"net/smtp"
 	"runtime/debug"
 	"time"
 
+	_ "github.com/jordan-wright/email"
+	elib "github.com/jordan-wright/email"
 	"github.com/pkg/errors"
+	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
@@ -18,14 +23,24 @@ var (
 )
 
 type Processor struct {
-	cfg   *config.Config
+	cfg   config.EmailerConfig
 	log   *slog.Logger
 	clock clock.Clock
 	repo  Repository
 }
 
-func NewSender(cfg *config.Config, log *slog.Logger, clock clock.Clock, repo Repository) *Processor {
-	s := &Processor{cfg: cfg, log: log, clock: clock, repo: repo}
+func NewSender(
+	cfg config.EmailerConfig,
+	log *slog.Logger,
+	clock clock.Clock,
+	repo Repository,
+) *Processor {
+	s := &Processor{
+		cfg:   cfg,
+		log:   log,
+		clock: clock,
+		repo:  repo,
+	}
 	return s
 }
 
@@ -81,7 +96,7 @@ func (s *Processor) processEntry(ctx context.Context, entry Entry) {
 		}
 	}()
 
-	if err := s.send(ctx, entry); err != nil {
+	if err := s.send(entry); err != nil {
 		msg := err.Error()
 		s.log.Error(msg)
 
@@ -102,7 +117,43 @@ func (s *Processor) processEntry(ctx context.Context, entry Entry) {
 	}
 }
 
-func (s *Processor) send(ctx context.Context, entry Entry) error {
+func (s *Processor) send(entry Entry) error {
 	fmt.Printf("Sending email: %s\n", entry.Type)
+	m := elib.NewEmail()
+	m.From = s.cfg.From
+	m.Subject = entry.Subject
+	m.To = s.emailsToSlice(entry.Receivers)
+	m.HTML = []byte(entry.Content)
+	m.Text = []byte(entry.Content)
+
+	smtpHost := s.cfg.Host
+	smtpPort := s.cfg.Port
+	smtpUser := s.cfg.User
+	smtpPass := s.cfg.Password
+
+	err := m.Send(
+		fmt.Sprintf("%s:%v", smtpHost, smtpPort),
+		smtp.PlainAuth("", smtpUser, smtpPass.String(), smtpHost),
+	)
+	if err != nil {
+		return errs.Platform(
+			"EML03",
+			fmt.Sprintf(
+				"failed to send email: email_id=%d, subject=%q, to=%v: %s",
+				entry.ID, entry.Subject, entry.Receivers, err.Error(),
+			),
+		)
+	}
 	return nil
+}
+
+func (s *Processor) emailsToSlice(emails []mail.Address) []string {
+	var toS []string
+	for _, value := range emails {
+		if value.Address == "" {
+			continue
+		}
+		toS = append(toS, value.String())
+	}
+	return toS
 }

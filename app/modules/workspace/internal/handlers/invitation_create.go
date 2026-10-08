@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"net/mail"
 	"time"
 
 	"gitlab.com/shaninalex/lumna/app/core/errs"
@@ -67,7 +68,7 @@ func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvita
 		Subject:   "invitation in workspace",
 		Content:   "Email content with invitation link",
 		Type:      "invitation",
-		Receivers: []string{domainInvitation.Email},
+		Receivers: []mail.Address{{Address: domainInvitation.Email}},
 	}
 	s.emlSender.ScheduleEmail(ctx, eml)
 

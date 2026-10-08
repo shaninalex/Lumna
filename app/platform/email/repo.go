@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"net/mail"
 	"time"
 
 	"github.com/pkg/errors"
@@ -54,7 +55,7 @@ func toDomainEntry(r recordEmail) Entry {
 		SendAt:    r.SendAt.Time,
 		CreatedAt: r.CreatedAt,
 	}
-	var receivers []string
+	var receivers []mail.Address
 	if err := json.Unmarshal([]byte(r.Receivers), &receivers); err == nil {
 		e.Receivers = receivers
 	}

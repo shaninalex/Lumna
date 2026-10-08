@@ -2,6 +2,7 @@ package email
 
 import (
 	"context"
+	"net/mail"
 	"time"
 )
 
@@ -12,7 +13,7 @@ type Entry struct {
 	Type      string
 	Status    string
 	Attempts  int16
-	Receivers []string // TODO: make proper validation/append/remove entry methods, or do emailString type properly
+	Receivers []mail.Address
 	Message   string
 	SendAt    time.Time
 	CreatedAt time.Time

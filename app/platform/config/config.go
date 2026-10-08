@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
+	"gitlab.com/shaninalex/lumna/app/core/bus"
 )
 
 type Interface interface {
@@ -54,6 +55,17 @@ func (s *Config) SecureCookies() bool { return s.v.GetBool("serve.secure_cookies
 // EmbedSPA include route with embedded SPA build or not
 func (s *Config) EmbedSPA() bool { return s.v.GetBool("serve.embed_spa") }
 
+// EmailConfig return email everything email sender need to send and process emails
+func (s *Config) EmailConfig() EmailerConfig {
+	return EmailerConfig{
+		From:     s.v.GetString("smtp.from"),
+		Host:     s.v.GetString("smtp.host"),
+		Port:     s.v.GetInt("smtp.port"),
+		User:     s.v.GetString("smtp.user"),
+		Password: bus.Secret(s.v.GetString("smtp.password")),
+	}
+}
+
 func ReadConfig(path string) *Config {
 	s := &Config{
 		v: viper.New(),
@@ -70,4 +82,12 @@ func ReadConfig(path string) *Config {
 
 func ProvideConfig(configPath string) *Config {
 	return ReadConfig(configPath)
+}
+
+type EmailerConfig struct {
+	From     string
+	Host     string
+	Port     int
+	User     string
+	Password bus.Secret
 }

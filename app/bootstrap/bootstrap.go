@@ -55,7 +55,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	db := database.New(cfg)
 	clk := clock.System()
 	hub := realtime.NewHub(64)
-	eml := email.NewSender(cfg, log, clk, email.NewRepository(db))
+	eml := email.NewSender(cfg.EmailConfig(), log, clk, email.NewRepository(db))
 
 	// ======= Core =======
 	write := []bus.Middleware{
