@@ -16,7 +16,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
-	"gitlab.com/shaninalex/lumna/app/platform/email"
+	"gitlab.com/shaninalex/lumna/app/platform/mail"
 	"gitlab.com/shaninalex/lumna/app/platform/realtime"
 )
 
@@ -48,7 +48,7 @@ func buildModules(
 	clk clock.Clock,
 	e *bus.EventBus,
 	hub *realtime.Hub,
-	emlSender email.Sender,
+	emlSender mail.Sender,
 ) ([]core.Module, Bridges, error) {
 	secret := []byte(cfg.AuthSecret())
 	if len(secret) == 0 {
@@ -88,6 +88,7 @@ func buildModules(
 		Secret:      secret,
 		Profiler:    identityModule.Profiler(),
 		EmailSender: emlSender,
+		EventBus:    e,
 	})
 
 	notificationsModule := notifications.New(notifications.Deps{

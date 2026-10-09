@@ -22,6 +22,7 @@ smtp:
   user:
   password:
   from: "org@lumna.com"
+  server_url: "http://localhost:8080"
 
 # token lifetimes in minutes (defaults: 15 / 43200)
 auth:

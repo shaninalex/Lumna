@@ -1,4 +1,4 @@
-package email
+package mail
 
 import (
 	"context"
@@ -48,7 +48,7 @@ func toDomainEntry(r recordEmail) Entry {
 		ID:        r.ID,
 		Subject:   r.Subject,
 		Content:   r.Content,
-		Type:      r.Type,
+		Type:      EntryType(r.Type),
 		Status:    r.Status,
 		Attempts:  r.Attempts.Int16,
 		Message:   r.Message.String,
@@ -67,7 +67,7 @@ func toRecordEntry(d Entry) recordEmail {
 		ID:        d.ID,
 		Subject:   d.Subject,
 		Content:   d.Content,
-		Type:      d.Type,
+		Type:      string(d.Type),
 		Status:    d.Status,
 		Attempts:  sql.NullInt16{Int16: d.Attempts, Valid: d.Attempts > 0},
 		Message:   sql.NullString{String: d.Message, Valid: d.Message != ""},

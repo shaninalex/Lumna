@@ -1,4 +1,4 @@
-package email
+package mail
 
 import (
 	"context"
@@ -6,11 +6,17 @@ import (
 	"time"
 )
 
+type EntryType string
+
+var (
+	InvitationEntryType EntryType = "invitation"
+)
+
 type Entry struct {
 	ID        int
 	Subject   string
 	Content   string
-	Type      string
+	Type      EntryType
 	Status    string
 	Attempts  int16
 	Receivers []mail.Address

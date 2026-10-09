@@ -1,4 +1,4 @@
-package email
+package mail
 
 import (
 	"context"
@@ -100,14 +100,14 @@ func (s *Processor) processEntry(ctx context.Context, entry Entry) {
 		}
 	}()
 
-	if err := s.send(entry); err != nil {
+	if err := s.send(ctx, entry); err != nil {
 		msg := err.Error()
 		s.log.Error(msg)
 
 		if entry.Attempts == MaxSendAttemptsAmount {
-			entry.Retry(msg)
-		} else {
 			entry.Failed(msg)
+		} else {
+			entry.Retry(msg)
 		}
 		if err = s.repo.Update(ctx, entry); err != nil {
 			s.log.Error(err.Error())
@@ -121,21 +121,27 @@ func (s *Processor) processEntry(ctx context.Context, entry Entry) {
 	}
 }
 
-func (s *Processor) send(entry Entry) error {
+func (s *Processor) send(ctx context.Context, entry Entry) error {
 	fmt.Printf("Sending email: %s\n", entry.Type)
 	m := elib.NewEmail()
 	m.From = s.cfg.From
 	m.Subject = entry.Subject
 	m.To = s.emailsToSlice(entry.Receivers)
-	m.HTML = []byte(entry.Content)
-	m.Text = []byte(entry.Content)
+
+	builder, err := MakeEntry(&entry, s.cfg)
+	if err != nil {
+		return err
+	}
+	html, txt := builder.GenerateTemplates(ctx)
+	m.HTML = html
+	m.Text = txt
 
 	smtpHost := s.cfg.Host
 	smtpPort := s.cfg.Port
 	smtpUser := s.cfg.User
 	smtpPass := s.cfg.Password
 
-	err := m.Send(
+	err = m.Send(
 		fmt.Sprintf("%s:%v", smtpHost, smtpPort),
 		smtp.PlainAuth("", smtpUser, smtpPass.Reveal(), smtpHost),
 	)

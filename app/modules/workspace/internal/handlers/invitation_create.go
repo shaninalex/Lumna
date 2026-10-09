@@ -5,26 +5,29 @@ import (
 	"net/mail"
 	"time"
 
+	"gitlab.com/shaninalex/lumna/app/core/actor"
+	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
-	"gitlab.com/shaninalex/lumna/app/platform/email"
 )
 
 type CreateInvitation struct {
 	repo      domain.InvitationRepo
 	hasher    domain.TokenHasher
 	clock     clock.Clock
-	emlSender email.Sender
+	emlSender mail.Sender
+	bus       *bus.EventBus
 }
 
-func NewCreateInvitation(repo domain.InvitationRepo, hasher domain.TokenHasher, clk clock.Clock, emlSender email.Sender) *CreateInvitation {
+func NewCreateInvitation(repo domain.InvitationRepo, hasher domain.TokenHasher, clk clock.Clock, emlSender mail.Sender, bus *bus.EventBus) *CreateInvitation {
 	return &CreateInvitation{
 		repo:      repo,
 		hasher:    hasher,
 		clock:     clk,
 		emlSender: emlSender,
+		bus:       bus,
 	}
 }
 
@@ -33,7 +36,7 @@ var CreateInvitationAlreadyAcceptedError = errs.Conflict("WSP02", "user already 
 var CreateInvitationAlreadyRevokedError = errs.Conflict("WSP03", "invitation was revoked for this user")
 
 func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvitation) (contract.InvitationView, error) {
-	_, hash, err := s.hasher.CreateToken()
+	publicToken, hash, err := s.hasher.CreateToken()
 	if err != nil {
 		return contract.InvitationView{}, err
 	}
@@ -63,14 +66,18 @@ func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvita
 		return contract.InvitationView{}, err
 	}
 
-	// TODO: use constructor
-	eml := email.Entry{
-		Subject:   "invitation in workspace",
-		Content:   "Email content with invitation link",
-		Type:      "invitation",
-		Receivers: []mail.Address{{Address: domainInvitation.Email}},
+	invitationEvent := contract.InvitationCreated{
+		Receiver:           mail.Address{Address: cmd.Invitation.Email},
+		Role:               cmd.Invitation.Role,
+		InvitationLinkHash: publicToken,
 	}
-	s.emlSender.ScheduleEmail(ctx, eml)
+	if a, ok := actor.From(ctx); ok {
+		invitationEvent.InitiatorId = a.IdentityID
+	}
+	err = s.bus.Publish(ctx, invitationEvent)
+	if err != nil {
+		return contract.InvitationView{}, err
+	}
 
 	return toInvitationView(inv), nil
 }

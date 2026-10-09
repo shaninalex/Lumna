@@ -14,7 +14,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
-	"gitlab.com/shaninalex/lumna/app/platform/email"
+	"gitlab.com/shaninalex/lumna/app/platform/mail"
 	pmw "gitlab.com/shaninalex/lumna/app/platform/middleware"
 	"gitlab.com/shaninalex/lumna/app/platform/realtime"
 )
@@ -28,7 +28,7 @@ type Instance struct {
 
 	closers  []func(context.Context) error
 	Realtime *realtime.Hub
-	Email    *email.Processor
+	Email    *mail.Processor
 }
 
 // Close clear resources. Required for CLI
@@ -55,7 +55,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	db := database.New(cfg)
 	clk := clock.System()
 	hub := realtime.NewHub(64)
-	eml := email.NewSender(cfg.EmailConfig(), log, clk, email.NewRepository(db))
+	eml := mail.NewSender(cfg.EmailConfig(), log, clk, mail.NewRepository(db))
 
 	// ======= Core =======
 	write := []bus.Middleware{
