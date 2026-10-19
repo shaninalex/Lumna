@@ -1,6 +1,7 @@
 package notifications
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 
@@ -8,6 +9,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications/internal/handlers"
+	"gitlab.com/shaninalex/lumna/app/modules/notifications/internal/infra"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications/internal/infra/storage"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -24,6 +26,9 @@ type Deps struct {
 type Module struct {
 	deps Deps
 
+	// worker
+	emailQueue contract.EmailQueue
+
 	// event handlers
 	workItemStageChanged *handlers.WorkItemStageChanged
 	invitationCreated    *handlers.InvitationCreated
@@ -34,6 +39,8 @@ func New(d Deps) *Module {
 	emailRepo := storage.NewEmailRepo(d.DB)
 	return &Module{
 		deps: d,
+
+		emailQueue: infra.NewEmailQueue(),
 
 		workItemStageChanged: handlers.NewWorkItemStageChanged(notificationsRepo, d.Clock, d.EventBus, d.Pusher),
 		invitationCreated:    handlers.NewInvitationCreated(emailRepo, d.Clock),
@@ -48,3 +55,6 @@ func (s *Module) Register(a *core.App) error {
 		bus.Subscribe(a.Events, s.invitationCreated.Handle),
 	)
 }
+
+// RunEmailQueue sends pending emails until ctx is cancelled. Blocks.
+func (m *Module) RunEmailQueue(ctx context.Context) { m.emailQueue.RunEmailQueue(ctx) }
