@@ -12,7 +12,6 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/infra/storage"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
-	"gitlab.com/shaninalex/lumna/app/platform/email"
 )
 
 type Deps struct {
@@ -21,8 +20,8 @@ type Deps struct {
 	Clock  clock.Clock
 	Secret []byte
 
-	Profiler    contract.Profiler
-	EmailSender email.Sender
+	Profiler contract.Profiler
+	EventBus *bus.EventBus
 }
 
 type Module struct {
@@ -56,7 +55,7 @@ func New(d Deps) *Module {
 		createWorkspace:        handlers.NewCreateWorkspace(workspaceRepo, d.Clock),
 		addIdentityToWorkspace: handlers.NewAddIdentityToWorkspace(identityWorkspaceRepo, d.Clock),
 		createProject:          handlers.NewCreateProject(projectRepo, d.Clock),
-		createInvitation:       handlers.NewCreateInvitation(invitationRepo, hasher, d.Clock, d.EmailSender),
+		createInvitation:       handlers.NewCreateInvitation(invitationRepo, hasher, d.Clock, d.EventBus),
 
 		workspaceList:  handlers.NewWorkspaceList(workspaceRepo),
 		projectList:    handlers.NewProjectList(projectRepo),

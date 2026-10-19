@@ -16,12 +16,12 @@ database:
 secret_key: "a-string-secret-at-least-256-bits-long"
 
 smtp:
-  process: false
   host: localhost
   port: 1025
   user:
   password:
   from: "org@lumna.com"
+  server_url: "http://localhost:8080"
 
 # token lifetimes in minutes (defaults: 15 / 43200)
 auth:

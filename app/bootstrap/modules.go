@@ -11,12 +11,13 @@ import (
 	authc "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/identity"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications"
+	notificationsc "gitlab.com/shaninalex/lumna/app/modules/notifications/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
-	"gitlab.com/shaninalex/lumna/app/platform/email"
+	"gitlab.com/shaninalex/lumna/app/platform/mail"
 	"gitlab.com/shaninalex/lumna/app/platform/realtime"
 )
 
@@ -30,6 +31,12 @@ const (
 // going through the bus. It's basically a "library call" without side effects
 type Bridges struct {
 	AuthVerifier authc.Verifier
+}
+
+// Workers are module-provided background processes. Each one blocks until its
+// context is cancelled. Bootstrap decides which of them run in this process.
+type Workers struct {
+	EmailDispatcher notificationsc.EmailDispatcher
 }
 
 type modulesDeps struct {
@@ -48,11 +55,10 @@ func buildModules(
 	clk clock.Clock,
 	e *bus.EventBus,
 	hub *realtime.Hub,
-	emlSender email.Sender,
-) ([]core.Module, Bridges, error) {
+) ([]core.Module, Bridges, Workers, error) {
 	secret := []byte(cfg.AuthSecret())
 	if len(secret) == 0 {
-		return nil, Bridges{}, errors.New("bootstrap: secret_key is empty, cannot sign tokens")
+		return nil, Bridges{}, Workers{}, errors.New("bootstrap: secret_key is empty, cannot sign tokens")
 	}
 
 	identityModule := identity.New(identity.Deps{
@@ -82,12 +88,12 @@ func buildModules(
 	})
 
 	workspaceModule := workspace.New(workspace.Deps{
-		DB:          db,
-		Log:         log,
-		Clock:       clk,
-		Secret:      secret,
-		Profiler:    identityModule.Profiler(),
-		EmailSender: emlSender,
+		DB:       db,
+		Log:      log,
+		Clock:    clk,
+		Secret:   secret,
+		Profiler: identityModule.Profiler(),
+		EventBus: e,
 	})
 
 	notificationsModule := notifications.New(notifications.Deps{
@@ -96,6 +102,7 @@ func buildModules(
 		Clock:    clk,
 		EventBus: e,
 		Pusher:   notificationPusher{hub: hub},
+		Sender:   mail.NewSender(cfg.EmailConfig()),
 	})
 
 	modules := []core.Module{
@@ -110,7 +117,11 @@ func buildModules(
 		AuthVerifier: authModule.Verifier(),
 	}
 
-	return modules, bridges, nil
+	workers := Workers{
+		EmailDispatcher: notificationsModule.EmailDispatcher(),
+	}
+
+	return modules, bridges, workers, nil
 }
 
 func minutesOr(minutes int, fallback time.Duration) time.Duration {

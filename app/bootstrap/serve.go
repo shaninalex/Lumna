@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -32,6 +32,18 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			path, _ := cmd.Flags().GetString("config")
 			cfg := config.ReadConfig(path)
+
+			ctx, stop := signal.NotifyContext(cmd.Context(), syscall.SIGINT, syscall.SIGTERM)
+			defer stop()
+
+			// workers
+			var workers sync.WaitGroup
+			if on, _ := cmd.Flags().GetBool("email-queue"); on {
+				fmt.Println("Email queue started")
+				workers.Go(func() {
+					app().Workers.EmailDispatcher.Run(ctx)
+				})
+			}
 
 			// router and routes registration
 			router := gin.Default()
@@ -62,22 +74,32 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 				}
 			}()
 
-			app().Email.Process(cmd.Context())
+			<-ctx.Done()
 
-			quit := make(chan os.Signal, 1)
-			signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-			<-quit
-
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 
-			if err := srv.Shutdown(ctx); err != nil {
-				log.Fatal("Server forced to shutdown:", err)
+			if err := srv.Shutdown(shutdownCtx); err != nil {
+				log.Println("Server forced to shutdown:", err)
+			}
+
+			workersDone := make(chan struct{})
+			go func() {
+				workers.Wait()
+				close(workersDone)
+			}()
+
+			select {
+			case <-workersDone:
+			case <-shutdownCtx.Done():
+				log.Println("Workers did not stop in time")
 			}
 
 			log.Println("Server exiting")
 		},
 	}
+
+	cmd.Flags().Bool("email-queue", false, "Send queued emails from this process. Run it in exactly one process at a time")
 
 	return cmd
 }

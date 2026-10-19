@@ -59,12 +59,12 @@ func (s *Config) EmbedSPA() bool { return s.v.GetBool("serve.embed_spa") }
 // EmailConfig return email everything email sender need to send and process emails
 func (s *Config) EmailConfig() EmailerConfig {
 	return EmailerConfig{
-		Process:  s.v.GetBool("smtp.process"),
-		From:     s.v.GetString("smtp.from"),
-		Host:     s.v.GetString("smtp.host"),
-		Port:     s.v.GetInt("smtp.port"),
-		User:     s.v.GetString("smtp.user"),
-		Password: bus.Secret(s.v.GetString("smtp.password")),
+		From:      s.v.GetString("smtp.from"),
+		Host:      s.v.GetString("smtp.host"),
+		Port:      s.v.GetInt("smtp.port"),
+		User:      s.v.GetString("smtp.user"),
+		Password:  bus.Secret(s.v.GetString("smtp.password")),
+		ServerUrl: s.v.GetString("smtp.server_url"),
 	}
 }
 
@@ -87,10 +87,10 @@ func ProvideConfig(configPath string) *Config {
 }
 
 type EmailerConfig struct {
-	Process  bool
-	From     string
-	Host     string
-	Port     int
-	User     string
-	Password bus.Secret
+	From      string
+	Host      string
+	Port      int
+	User      string
+	Password  bus.Secret
+	ServerUrl string
 }
