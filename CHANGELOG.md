@@ -1,3 +1,27 @@
+## 0.40.0 (2026-10-19)
+
+### Feat
+
+- **email**: sending email
+- **email**: actual send basic emails
+- **email**: basic email sender structure
+- **members**: create member invitation
+- **members**: workspace settings members list page
+- **members**: pages, urls
+- invitation creation logic
+
+### Fix
+
+- **email**: proper modules and facades
+- **email**: saving entry
+- **email**: smtp.process config
+- **email**: reveal email pswd
+- **api**: separate route for activity
+
+### Refactor
+
+- **email**: expose service
+
 ## 0.39.0 (2026-10-01)
 
 ### Feat
