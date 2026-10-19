@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -36,8 +37,12 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 			defer stop()
 
 			// workers
+			var workers sync.WaitGroup
 			if on, _ := cmd.Flags().GetBool("email-queue"); on {
-				go app().Workers.EmailDispatcher.Run(ctx)
+				fmt.Println("Email queue started")
+				workers.Go(func() {
+					app().Workers.EmailDispatcher.Run(ctx)
+				})
 			}
 
 			// router and routes registration
@@ -75,7 +80,19 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 			defer cancel()
 
 			if err := srv.Shutdown(shutdownCtx); err != nil {
-				log.Fatal("Server forced to shutdown:", err)
+				log.Println("Server forced to shutdown:", err)
+			}
+
+			workersDone := make(chan struct{})
+			go func() {
+				workers.Wait()
+				close(workersDone)
+			}()
+
+			select {
+			case <-workersDone:
+			case <-shutdownCtx.Done():
+				log.Println("Workers did not stop in time")
 			}
 
 			log.Println("Server exiting")

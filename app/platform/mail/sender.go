@@ -11,23 +11,32 @@ import (
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
 
-func Send(
-	ctx context.Context,
-	cfg config.EmailerConfig,
-	from, subject, html, txt string,
-	receivers []mail.Address,
-) error {
+type Sender interface {
+	Send(ctx context.Context, subject, html, txt string, receivers []mail.Address) error
+}
+
+type sender struct {
+	cfg config.EmailerConfig
+}
+
+var _ Sender = (*sender)(nil)
+
+func NewSender(cfg config.EmailerConfig) Sender {
+	return &sender{cfg: cfg}
+}
+
+func (s *sender) Send(ctx context.Context, subject, html, txt string, receivers []mail.Address) error {
 	m := elib.NewEmail()
-	m.From = from
+	m.From = s.cfg.From
 	m.Subject = subject
 	m.To = emailsToSlice(receivers)
 	m.HTML = []byte(html)
 	m.Text = []byte(txt)
 
-	smtpHost := cfg.Host
-	smtpPort := cfg.Port
-	smtpUser := cfg.User
-	smtpPass := cfg.Password
+	smtpHost := s.cfg.Host
+	smtpPort := s.cfg.Port
+	smtpUser := s.cfg.User
+	smtpPass := s.cfg.Password
 
 	emailServerAddr := fmt.Sprintf("%s:%v", smtpHost, smtpPort)
 	if err := m.Send(emailServerAddr, smtp.PlainAuth("", smtpUser, smtpPass.Reveal(), smtpHost)); err != nil {

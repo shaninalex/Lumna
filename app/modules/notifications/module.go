@@ -12,6 +12,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/notifications/internal/infra/storage"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
+	"gitlab.com/shaninalex/lumna/app/platform/mail"
 )
 
 type Deps struct {
@@ -20,6 +21,7 @@ type Deps struct {
 	Clock    clock.Clock
 	EventBus *bus.EventBus
 	Pusher   contract.Pusher
+	Sender   mail.Sender
 }
 
 type Module struct {
@@ -39,8 +41,10 @@ func New(d Deps) *Module {
 	return &Module{
 		deps: d,
 
-		emailDispatcher: infra.NewEmailDispatcher(),
+		// workers
+		emailDispatcher: infra.NewEmailDispatcher(emailRepo, d.Log, d.Sender, d.Clock),
 
+		// event handlers
 		workItemStageChanged: handlers.NewWorkItemStageChanged(notificationsRepo, d.Clock, d.EventBus, d.Pusher),
 		invitationCreated:    handlers.NewInvitationCreated(emailRepo, d.Clock),
 	}

@@ -17,6 +17,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
+	"gitlab.com/shaninalex/lumna/app/platform/mail"
 	"gitlab.com/shaninalex/lumna/app/platform/realtime"
 )
 
@@ -101,6 +102,7 @@ func buildModules(
 		Clock:    clk,
 		EventBus: e,
 		Pusher:   notificationPusher{hub: hub},
+		Sender:   mail.NewSender(cfg.EmailConfig()),
 	})
 
 	modules := []core.Module{
