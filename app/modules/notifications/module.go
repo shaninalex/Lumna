@@ -1,7 +1,6 @@
 package notifications
 
 import (
-	"context"
 	"errors"
 	"log/slog"
 
@@ -26,8 +25,8 @@ type Deps struct {
 type Module struct {
 	deps Deps
 
-	// worker
-	emailQueue contract.EmailQueue
+	// workers
+	emailDispatcher contract.EmailDispatcher
 
 	// event handlers
 	workItemStageChanged *handlers.WorkItemStageChanged
@@ -40,7 +39,7 @@ func New(d Deps) *Module {
 	return &Module{
 		deps: d,
 
-		emailQueue: infra.NewEmailQueue(),
+		emailDispatcher: infra.NewEmailDispatcher(),
 
 		workItemStageChanged: handlers.NewWorkItemStageChanged(notificationsRepo, d.Clock, d.EventBus, d.Pusher),
 		invitationCreated:    handlers.NewInvitationCreated(emailRepo, d.Clock),
@@ -56,5 +55,4 @@ func (s *Module) Register(a *core.App) error {
 	)
 }
 
-// RunEmailQueue sends pending emails until ctx is cancelled. Blocks.
-func (m *Module) RunEmailQueue(ctx context.Context) { m.emailQueue.RunEmailQueue(ctx) }
+func (m *Module) EmailDispatcher() contract.EmailDispatcher { return m.emailDispatcher }

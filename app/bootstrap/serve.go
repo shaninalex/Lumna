@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"os/signal"
 	"syscall"
 	"time"
@@ -32,6 +31,14 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			path, _ := cmd.Flags().GetString("config")
 			cfg := config.ReadConfig(path)
+
+			ctx, stop := signal.NotifyContext(cmd.Context(), syscall.SIGINT, syscall.SIGTERM)
+			defer stop()
+
+			// workers
+			if on, _ := cmd.Flags().GetBool("email-queue"); on {
+				go app().Workers.EmailDispatcher.Run(ctx)
+			}
 
 			// router and routes registration
 			router := gin.Default()
@@ -62,20 +69,20 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 				}
 			}()
 
-			quit := make(chan os.Signal, 1)
-			signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-			<-quit
+			<-ctx.Done()
 
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 
-			if err := srv.Shutdown(ctx); err != nil {
+			if err := srv.Shutdown(shutdownCtx); err != nil {
 				log.Fatal("Server forced to shutdown:", err)
 			}
 
 			log.Println("Server exiting")
 		},
 	}
+
+	cmd.Flags().Bool("email-queue", false, "Send queued emails from this process. Run it in exactly one process at a time")
 
 	return cmd
 }

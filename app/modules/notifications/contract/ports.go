@@ -6,6 +6,7 @@ type Pusher interface {
 	Push(ctx context.Context, identityIDs []int, v NotificationView)
 }
 
-type EmailQueue interface {
-	RunEmailQueue(ctx context.Context)
+type EmailDispatcher interface {
+	// Run sends pending emails until ctx is cancelled. Blocks.
+	Run(ctx context.Context)
 }

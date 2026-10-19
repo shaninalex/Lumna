@@ -11,6 +11,7 @@ import (
 	authc "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/identity"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications"
+	notificationsc "gitlab.com/shaninalex/lumna/app/modules/notifications/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
@@ -31,6 +32,12 @@ type Bridges struct {
 	AuthVerifier authc.Verifier
 }
 
+// Workers are module-provided background processes. Each one blocks until its
+// context is cancelled. Bootstrap decides which of them run in this process.
+type Workers struct {
+	EmailDispatcher notificationsc.EmailDispatcher
+}
+
 type modulesDeps struct {
 	cfg *config.Config
 	db  *database.DB
@@ -47,10 +54,10 @@ func buildModules(
 	clk clock.Clock,
 	e *bus.EventBus,
 	hub *realtime.Hub,
-) ([]core.Module, Bridges, error) {
+) ([]core.Module, Bridges, Workers, error) {
 	secret := []byte(cfg.AuthSecret())
 	if len(secret) == 0 {
-		return nil, Bridges{}, errors.New("bootstrap: secret_key is empty, cannot sign tokens")
+		return nil, Bridges{}, Workers{}, errors.New("bootstrap: secret_key is empty, cannot sign tokens")
 	}
 
 	identityModule := identity.New(identity.Deps{
@@ -108,7 +115,11 @@ func buildModules(
 		AuthVerifier: authModule.Verifier(),
 	}
 
-	return modules, bridges, nil
+	workers := Workers{
+		EmailDispatcher: notificationsModule.EmailDispatcher(),
+	}
+
+	return modules, bridges, workers, nil
 }
 
 func minutesOr(minutes int, fallback time.Duration) time.Duration {
