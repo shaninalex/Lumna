@@ -14,20 +14,18 @@ import (
 )
 
 type CreateInvitation struct {
-	repo      domain.InvitationRepo
-	hasher    domain.TokenHasher
-	clock     clock.Clock
-	emlSender mail.Sender
-	bus       *bus.EventBus
+	repo   domain.InvitationRepo
+	hasher domain.TokenHasher
+	clock  clock.Clock
+	bus    *bus.EventBus
 }
 
-func NewCreateInvitation(repo domain.InvitationRepo, hasher domain.TokenHasher, clk clock.Clock, emlSender mail.Sender, bus *bus.EventBus) *CreateInvitation {
+func NewCreateInvitation(repo domain.InvitationRepo, hasher domain.TokenHasher, clk clock.Clock, bus *bus.EventBus) *CreateInvitation {
 	return &CreateInvitation{
-		repo:      repo,
-		hasher:    hasher,
-		clock:     clk,
-		emlSender: emlSender,
-		bus:       bus,
+		repo:   repo,
+		hasher: hasher,
+		clock:  clk,
+		bus:    bus,
 	}
 }
 

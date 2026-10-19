@@ -1,0 +1,11 @@
+package email_templates
+
+templ (s *EntryInvitation) template() {
+	<html xmlns="http://www.w3.org/1999/xhtml">
+		<head></head>
+		<body>
+			<h1>Invitation email</h1>
+			<a href={ templ.URL(s.invitationLink()) }>Invitation link</a>
+		</body>
+	</html>
+}

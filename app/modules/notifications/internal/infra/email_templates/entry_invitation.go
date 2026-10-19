@@ -1,4 +1,4 @@
-package mail
+package email_templates
 
 import (
 	"bytes"
@@ -14,7 +14,6 @@ import (
 var entryInvitationTxt string
 
 type EntryInvitation struct {
-	entry       *Entry
 	baseUrl     string
 	txtTemplate string
 }
@@ -23,9 +22,8 @@ func (s *EntryInvitation) GenerateTemplates(ctx context.Context) ([]byte, []byte
 	return s.generateHTML(ctx), s.generateTXT()
 }
 
-func NewEntryInvitation(e *Entry, baseUrl string) EntryContentBuilder {
+func NewEntryInvitation(baseUrl string) *EntryInvitation {
 	return &EntryInvitation{
-		entry:       e,
 		baseUrl:     baseUrl,
 		txtTemplate: entryInvitationTxt,
 	}

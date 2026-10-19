@@ -17,3 +17,18 @@ type notificationRecord struct {
 }
 
 func (notificationRecord) TableName() string { return "notifications" }
+
+type recordEmail struct {
+	ID        int `gorm:"primaryKey;autoIncrement"`
+	Subject   string
+	Content   string
+	Type      string
+	Status    string `gorm:"default:pending"`
+	Attempts  sql.NullInt16
+	Receivers string
+	Message   sql.NullString
+	SendAt    sql.NullTime `gorm:"column:send_at;default:null"`
+	CreatedAt time.Time    `gorm:"autoCreateTime"`
+}
+
+func (recordEmail) TableName() string { return "email_queue" }

@@ -30,12 +30,13 @@ type Module struct {
 }
 
 func New(d Deps) *Module {
-	repo := storage.NewNotificationRepo(d.DB)
+	notificationsRepo := storage.NewNotificationRepo(d.DB)
+	emailRepo := storage.NewEmailRepo(d.DB)
 	return &Module{
 		deps: d,
 
-		workItemStageChanged: handlers.NewWorkItemStageChanged(repo, d.Clock, d.EventBus, d.Pusher),
-		invitationCreated:    handlers.NewInvitationCreated(),
+		workItemStageChanged: handlers.NewWorkItemStageChanged(notificationsRepo, d.Clock, d.EventBus, d.Pusher),
+		invitationCreated:    handlers.NewInvitationCreated(emailRepo, d.Clock),
 	}
 }
 
