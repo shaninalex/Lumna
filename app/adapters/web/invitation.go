@@ -2,6 +2,7 @@ package web
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/a-h/templ"
@@ -9,11 +10,13 @@ import (
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/adapters/web/templates"
 	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/actor"
 	authContract "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 )
 
 var ConfirmInvitationEmptyKey = errors.New("invalid invitation key")
+var TempSessionCookieAccessToken = "invitation_access_token"
 
 func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -43,7 +46,7 @@ func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) 
 		}
 
 		c.SetCookie(
-			"invitation_access_token",
+			TempSessionCookieAccessToken,
 			tempSession.AccessToken,
 			int(tempSession.AccessTokenDuration.Seconds()),
 			"/invirarion/password", "",
@@ -56,10 +59,24 @@ func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) 
 	}
 }
 
-func confirmInvitationMiddleware(app core.Resolve) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		// TODO: validate temp session
-		ctx.Next()
+func confirmInvitationMiddleware(verifier authContract.Verifier) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		accessToken, err := c.Cookie(TempSessionCookieAccessToken)
+		if err != nil {
+			log.Println(err)
+			c.Data(http.StatusForbidden, "text/html; charset=utf-8", []byte(ConfirmInvitationEmptyKey.Error()))
+			return
+		}
+
+		a, err := verifier.Verify(c.Request.Context(), accessToken)
+		if err != nil {
+			log.Println(err)
+			c.Data(http.StatusForbidden, "text/html; charset=utf-8", []byte(ConfirmInvitationEmptyKey.Error()))
+			return
+		}
+
+		c.Request = c.Request.WithContext(actor.With(c.Request.Context(), a))
+		c.Next()
 	}
 }
 

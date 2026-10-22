@@ -7,10 +7,11 @@ import (
 	"gitlab.com/shaninalex/lumna"
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/core"
+	authc "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
 
-func RegisterWebRoutes(cfg *config.Config, resolve core.Resolve, router *gin.Engine) {
+func RegisterWebRoutes(cfg *config.Config, resolve core.Resolve, authVerifier authc.Verifier, router *gin.Engine) {
 	cookies := httpx.CookieConfig{Secure: cfg.SecureCookies()}
 
 	if cfg.SetupEnabled() {
@@ -27,6 +28,6 @@ func RegisterWebRoutes(cfg *config.Config, resolve core.Resolve, router *gin.Eng
 		router.StaticFS("/api-docs", http.FS(docsFS))
 	}
 	router.GET("/invitation/confirm", handleConfirmInvitation(resolve, cookies))
-	router.GET("/invitation/password", confirmInvitationMiddleware(resolve), handleCreatePassword())
+	router.GET("/invitation/password", confirmInvitationMiddleware(authVerifier), handleCreatePassword())
 	router.POST("/invitation/accept", handleAcceptInvitation())
 }
