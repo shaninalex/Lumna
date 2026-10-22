@@ -6,7 +6,7 @@ import { AppRoutes } from '@core';
 @Component({
     selector: 'lu-workspace-settings',
     imports: [MainLayout, RouterOutlet, RouterLink, RouterLinkActive],
-    styleUrl: './workspace-settings.page.css',
+    styleUrl: './workspace-settings.page.scss',
     template: `
         <lu-main-layout>
             <ul class="workspace-settings-menu">

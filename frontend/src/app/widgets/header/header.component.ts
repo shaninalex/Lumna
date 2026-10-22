@@ -18,7 +18,7 @@ import { NgClass } from '@angular/common';
         WorkspaceSwitcherComponent,
         NgClass,
     ],
-    styleUrl: './header.component.css',
+    styleUrl: './header.component.scss',
     template: `
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">

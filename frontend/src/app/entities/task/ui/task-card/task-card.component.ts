@@ -11,7 +11,7 @@ import { Store } from '@ngrx/store';
 @Component({
     selector: 'lu-task-card',
     imports: [RouterLink, TrimPipe, DatePipe, CdkMenu, CdkMenuItem, CdkMenuTrigger, StripHtmlPipe],
-    styleUrl: './task-card.component.css',
+    styleUrl: './task-card.component.scss',
 
     template: `
         <div class="card text-decoration-none text-body">

@@ -13,7 +13,7 @@ import { isAfter } from 'date-fns';
 @Component({
     selector: 'lu-members-invitations',
     imports: [AsyncPipe, DatePipe, NgClass],
-    styleUrl: './members-invitations.page.css',
+    styleUrl: './members-invitations.page.scss',
     template: `
         <button class="btn" (click)="openInviteModal()">
             Invite

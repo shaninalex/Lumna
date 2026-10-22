@@ -20,7 +20,7 @@ import { Store } from '@ngrx/store';
 @Component({
     imports: [FormField],
     selector: 'lu-task-column-form',
-    styleUrl: './task-column-form.css',
+    styleUrl: './task-column-form.scss',
     templateUrl: './task-column-form.html',
 })
 export class TaskColumnForm implements OnInit {

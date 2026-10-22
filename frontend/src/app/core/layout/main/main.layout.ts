@@ -7,7 +7,7 @@ import { selectUI } from '@core/store/ui';
 @Component({
     selector: 'lu-main-layout',
     imports: [SidebarComponent, HeaderComponent, NgClass],
-    styleUrl: './main.layout.css',
+    styleUrl: './main.layout.scss',
     standalone: true,
 
     template: `

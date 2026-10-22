@@ -44,7 +44,7 @@ import { selectProjects } from '@entities/project';
         ColumnDeletePromptComponent,
     ],
     templateUrl: './kanban-widget.component.html',
-    styleUrl: './kanban-widget.component.css',
+    styleUrl: './kanban-widget.component.scss',
     providers: [KanbanService],
 })
 export class KanbanBoardWidget implements OnInit {

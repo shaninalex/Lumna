@@ -11,7 +11,7 @@ import { AppRoutes } from '@core';
 @Component({
     selector: 'lu-sidebar',
     imports: [NgClass, RouterLink, AsyncPipe],
-    styleUrl: './sidebar.component.css',
+    styleUrl: './sidebar.component.scss',
     templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {

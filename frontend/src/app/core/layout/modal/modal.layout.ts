@@ -2,7 +2,7 @@ import { Component, output } from '@angular/core';
 
 @Component({
     selector: 'lu-modal-layout',
-    styleUrl: './modal.layout.css',
+    styleUrl: './modal.layout.scss',
 
     template: `
         <div class="modal-layout">
