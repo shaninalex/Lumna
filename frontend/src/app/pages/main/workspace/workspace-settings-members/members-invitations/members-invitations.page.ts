@@ -15,11 +15,8 @@ import { isAfter } from 'date-fns';
     imports: [AsyncPipe, DatePipe, NgClass],
     styleUrl: './members-invitations.page.scss',
     template: `
-        <button class="btn" (click)="openInviteModal()">
-            Invite
-        </button>
         @if (invitations$ | async; as invitations) {
-            <table class="table">
+            <table class="table mb-4">
                 <thead>
                 <tr>
                     <th>Email</th>
@@ -72,6 +69,11 @@ import { isAfter } from 'date-fns';
                 </tbody>
             </table>
         }
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary" (click)="openInviteModal()">
+                Invite
+            </button>
+        </div>
     `,
 })
 export class MembersInvitationsPage {

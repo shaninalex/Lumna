@@ -1,21 +1,21 @@
 <div class="card">
     <div class="card-body">
-        <h1>Invite</h1>
-
-        <div>
-            <input type="email" [(ngModel)]="data.email" placeholder="Email" autocomplete="off"/>
+        <h5 class="card-title">Invite</h5>
+        <div class="mb-3">
+            <input type="email" [(ngModel)]="data.email" name="email" placeholder="Email" autocomplete="off" class="form-control" />
         </div>
 
-        <div>
-            <select [(ngModel)]="data.role">
+        <div class="mb-3">
+            <select [(ngModel)]="data.role" class="form-control">
                 <option value="member" selected>Member</option>
                 <option value="admin">Admin</option>
             </select>
         </div>
 
-        <div>
-            <button (click)="submit()">Invite</button>
-            <button (click)="close()">Cancel</button>
+        <div class="d-flex gap-2 justify-content-end">
+            <button class="btn btn-outline-secondary" (click)="close()">Cancel</button>
+            <button class="btn btn-primary" (click)="submit()">Invite</button>
         </div>
+
     </div>
 </div>
