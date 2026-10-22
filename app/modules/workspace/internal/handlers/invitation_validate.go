@@ -9,20 +9,22 @@ import (
 )
 
 type InvitationValidate struct {
-	repo  domain.InvitationRepo
-	clock clock.Clock
+	repo   domain.InvitationRepo
+	clock  clock.Clock
+	hasher domain.TokenHasher
 }
 
-func NewInvitationValidate(repo domain.InvitationRepo, clk clock.Clock) *InvitationValidate {
+func NewInvitationValidate(repo domain.InvitationRepo, hasher domain.TokenHasher, clk clock.Clock) *InvitationValidate {
 	return &InvitationValidate{
-		repo:  repo,
-		clock: clk,
+		repo:   repo,
+		clock:  clk,
+		hasher: hasher,
 	}
 }
 
 func (s *InvitationValidate) Handle(ctx context.Context, q contract.InvitationValidate) (bool, error) {
 	// The invitation exists.
-	invitation, err := s.repo.GetByHash(ctx, q.Hash)
+	invitation, err := s.repo.GetByHash(ctx, s.hasher.q.Hash)
 	if err != nil {
 		return false, err
 	}

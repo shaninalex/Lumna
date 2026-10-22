@@ -66,7 +66,7 @@ func New(d Deps) *Module {
 		projectList:        handlers.NewProjectList(projectRepo),
 		membersList:        handlers.NewMembersList(identityWorkspaceRepo, d.Profiler),
 		invitationList:     handlers.NewInvitationList(invitationRepo),
-		invitationValidate: handlers.NewInvitationValidate(invitationRepo, d.Clock),
+		invitationValidate: handlers.NewInvitationValidate(invitationRepo, hasher, d.Clock),
 	}
 }
 

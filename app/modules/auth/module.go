@@ -47,7 +47,6 @@ type Module struct {
 func New(d Deps) *Module {
 	refreshRepo := storage.NewRefreshTokenRepo(d.DB)
 	tokens := infra.NewTokens(d.Secret, d.AccessTTL, d.RefreshTTL, d.Issuer)
-
 	tempTokens := infra.NewTokens(d.Secret, d.TempAccessTTL, 0, d.Issuer)
 
 	return &Module{

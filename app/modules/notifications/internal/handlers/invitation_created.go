@@ -30,7 +30,7 @@ func NewInvitationCreated(
 }
 
 func (s *InvitationCreated) Handle(ctx context.Context, event workspaceContract.InvitationCreated) error {
-	url := fmt.Sprintf("%s%s%s", s.redirectUrl, "/confirm-invitation?key=", event.InvitationLinkHash)
+	url := fmt.Sprintf("%s%s%s", s.redirectUrl, "/invitation/confirm?key=", event.InvitationLinkHash)
 	emailBody := email_templates.NewEntryInvitation(url)
 	html, text := emailBody.GenerateTemplates(ctx)
 	email := domain.Email{

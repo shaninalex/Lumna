@@ -22,7 +22,7 @@ func handleSetup() gin.HandlerFunc {
 
 func setupIdentityMiddleware(app core.Resolve) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// NOTE: potential secure issue
+		// NOTE: potential secure issue!
 		response, err := contract.AskListProfiles(ctx, app(), contract.ListProfiles{Limit: 1, Offset: 0})
 		if err != nil {
 			ctx.AbortWithStatus(http.StatusInternalServerError)
