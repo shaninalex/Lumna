@@ -22,3 +22,15 @@ func (s *Invitation) Revoke(t time.Time) {
 	s.RevokedAt = t
 	s.TokenHash = ""
 }
+
+func (s *Invitation) IsExpired(t time.Time) bool {
+	return t.After(s.ExpiresAt)
+}
+
+func (s *Invitation) IsRevoked() bool {
+	return s.RevokedAt.IsZero()
+}
+
+func (s *Invitation) IsAccepted() bool {
+	return s.AcceptedAt.IsZero()
+}

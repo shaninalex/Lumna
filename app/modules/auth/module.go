@@ -27,12 +27,12 @@ type Deps struct {
 
 	Identities  contract.IdentityAuthenticator
 	Provisioner contract.IdentityProvisioner
+
+	TempAccessTTL time.Duration
 }
 
 type Module struct {
 	deps Deps
-
-	refresh *storage.RefreshTokenRepo
 
 	// bridges — what this module exposes to adapters and other modules
 	verifier *infra.Verifier
@@ -41,21 +41,26 @@ type Module struct {
 	emailLogin     *handlers.EmailLogin
 	refreshSession *handlers.RefreshSession
 	logout         *handlers.Logout
+	tempSession    *handlers.TempSession
 }
 
 func New(d Deps) *Module {
-	refresh := storage.NewRefreshTokenRepo(d.DB)
+	refreshRepo := storage.NewRefreshTokenRepo(d.DB)
 	tokens := infra.NewTokens(d.Secret, d.AccessTTL, d.RefreshTTL, d.Issuer)
 
-	return &Module{
-		deps:    d,
-		refresh: refresh,
+	tempTokens := infra.NewTokens(d.Secret, d.TempAccessTTL, 0, d.Issuer)
 
+	return &Module{
+		deps: d,
+
+		// bridge
 		verifier: infra.NewVerifier(tokens),
 
-		emailLogin:     handlers.NewEmailLogin(d.Identities, tokens, refresh, d.Clock),
-		refreshSession: handlers.NewRefreshSession(tokens, refresh, d.Clock),
-		logout:         handlers.NewLogout(tokens, refresh, d.Clock),
+		// commands
+		emailLogin:     handlers.NewEmailLogin(d.Identities, tokens, refreshRepo, d.Clock),
+		refreshSession: handlers.NewRefreshSession(tokens, refreshRepo, d.Clock),
+		logout:         handlers.NewLogout(tokens, refreshRepo, d.Clock),
+		tempSession:    handlers.NewTempSession(tempTokens, d.Clock),
 	}
 }
 
@@ -70,5 +75,6 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.emailLogin.Handle),
 		bus.RegisterCommand(a.Commands, m.refreshSession.Handle),
 		bus.RegisterCommand(a.Commands, m.logout.Handle),
+		bus.RegisterCommand(a.Commands, m.tempSession.Handle),
 	)
 }

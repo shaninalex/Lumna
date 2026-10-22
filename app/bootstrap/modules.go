@@ -69,15 +69,16 @@ func buildModules(
 	})
 
 	authModule := auth.New(auth.Deps{
-		DB:          db,
-		Log:         log,
-		Clock:       clk,
-		Secret:      secret,
-		AccessTTL:   minutesOr(cfg.Int("auth.access_ttl"), defaultAccessTTL),
-		RefreshTTL:  minutesOr(cfg.Int("auth.refresh_ttl"), defaultRefreshTTL),
-		Issuer:      tokenIssuer,
-		Identities:  identityModule.Authenticator(),
-		Provisioner: identityModule.Provisioner(),
+		DB:            db,
+		Log:           log,
+		Clock:         clk,
+		Secret:        secret,
+		AccessTTL:     minutesOr(cfg.Int("auth.access_ttl"), defaultAccessTTL),
+		RefreshTTL:    minutesOr(cfg.Int("auth.refresh_ttl"), defaultRefreshTTL),
+		Issuer:        tokenIssuer,
+		Identities:    identityModule.Authenticator(),
+		Provisioner:   identityModule.Provisioner(),
+		TempAccessTTL: time.Duration(15) * time.Minute,
 	})
 
 	trackerModule := tracker.New(tracker.Deps{

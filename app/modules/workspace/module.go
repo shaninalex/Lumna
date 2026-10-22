@@ -36,10 +36,11 @@ type Module struct {
 	revokeInvitation       *handlers.InvitationRevoke
 
 	// query handlers
-	workspaceList  *handlers.WorkspaceList
-	projectList    *handlers.ProjectList
-	membersList    *handlers.MembersList
-	invitationList *handlers.InvitationList
+	workspaceList      *handlers.WorkspaceList
+	projectList        *handlers.ProjectList
+	membersList        *handlers.MembersList
+	invitationList     *handlers.InvitationList
+	invitationValidate *handlers.InvitationValidate
 }
 
 func (m *Module) Name() string { return "workspace" }
@@ -61,10 +62,11 @@ func New(d Deps) *Module {
 		deleteInvitation:       handlers.NewInvitationDelete(invitationRepo),
 		revokeInvitation:       handlers.NewInvitationRevoke(invitationRepo, d.Clock),
 
-		workspaceList:  handlers.NewWorkspaceList(workspaceRepo),
-		projectList:    handlers.NewProjectList(projectRepo),
-		membersList:    handlers.NewMembersList(identityWorkspaceRepo, d.Profiler),
-		invitationList: handlers.NewInvitationList(invitationRepo),
+		workspaceList:      handlers.NewWorkspaceList(workspaceRepo),
+		projectList:        handlers.NewProjectList(projectRepo),
+		membersList:        handlers.NewMembersList(identityWorkspaceRepo, d.Profiler),
+		invitationList:     handlers.NewInvitationList(invitationRepo),
+		invitationValidate: handlers.NewInvitationValidate(invitationRepo, d.Clock),
 	}
 }
 
@@ -80,5 +82,6 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterQuery(a.Queries, m.projectList.Handle),
 		bus.RegisterQuery(a.Queries, m.membersList.Handle),
 		bus.RegisterQuery(a.Queries, m.invitationList.Handle),
+		bus.RegisterQuery(a.Queries, m.invitationValidate.Handle),
 	)
 }

@@ -76,3 +76,17 @@ func (t *Tokens) ParseAccess(accessToken string) (int, error) {
 
 	return identityID, nil
 }
+
+func (t *Tokens) IssueTempAccess(email, role string, now time.Time) (string, time.Duration, error) {
+	claims := jwt.RegisteredClaims{
+		Subject:   fmt.Sprintf("%s:%s", email, role),
+		Issuer:    t.issuer,
+		IssuedAt:  jwt.NewNumericDate(now),
+		ExpiresAt: jwt.NewNumericDate(now.Add(t.accessTTL)),
+	}
+	signed, err := t.hasher.Sign(claims)
+	if err != nil {
+		return "", 0, fmt.Errorf("auth: sign access token: %w", err)
+	}
+	return signed, t.accessTTL, nil
+}

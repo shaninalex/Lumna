@@ -57,7 +57,7 @@ func (s *InvitationRepo) Delete(ctx context.Context, invitationId int) error {
 		Where("id = ?", invitationId).
 		Delete(ctx)
 	if rows < 1 {
-		return domain.InvitationNotFound
+		return domain.InvitationNotFoundError
 	}
 	if err != nil {
 		return err
@@ -78,7 +78,7 @@ func (s *InvitationRepo) Update(ctx context.Context, invitation domain.Invitatio
 		return err
 	}
 	if rowsAffected == 0 {
-		return domain.InvitationNotFound
+		return domain.InvitationNotFoundError
 	}
 	return nil
 }

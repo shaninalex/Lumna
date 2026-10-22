@@ -5,11 +5,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna"
+	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
 
 func RegisterWebRoutes(cfg *config.Config, resolve core.Resolve, router *gin.Engine) {
+	cookies := httpx.CookieConfig{Secure: cfg.SecureCookies()}
+
 	if cfg.SetupEnabled() {
 		router.GET("/setup", setupIdentityMiddleware(resolve), handleSetup())
 		router.POST("/setup", setupIdentityMiddleware(resolve), handleSetupSubmit(resolve))
@@ -23,8 +26,7 @@ func RegisterWebRoutes(cfg *config.Config, resolve core.Resolve, router *gin.Eng
 	if docsFS != nil {
 		router.StaticFS("/api-docs", http.FS(docsFS))
 	}
-	router.GET("/invitation/confirm", handleConfirmInvitation())
-	router.GET("/invitation/password", handleCreatePassword())
+	router.GET("/invitation/confirm", handleConfirmInvitation(resolve, cookies))
+	router.GET("/invitation/password", confirmInvitationMiddleware(resolve), handleCreatePassword())
 	router.POST("/invitation/accept", handleAcceptInvitation())
-
 }

@@ -5,6 +5,8 @@ import "time"
 // SessionView is what a successful authentication produces: tokens, and the
 // id they belong to.
 type SessionView struct {
+	Email                string
+	Role                 string
 	IdentityID           int
 	AccessToken          string
 	AccessTokenDuration  time.Duration

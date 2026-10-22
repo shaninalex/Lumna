@@ -44,3 +44,13 @@ func (InvitationList) Permission() (action string, scope int) { return "", 0 }
 func AskInvitationList(ctx context.Context, a *core.App, q InvitationList) ([]InvitationView, error) {
 	return bus.Ask[InvitationList, []InvitationView](ctx, a.Queries, q)
 }
+
+type InvitationValidate struct {
+	Hash string
+}
+
+func (InvitationValidate) Permission() (action string, scope int) { return "", 0 }
+
+func AskInvitationValidate(ctx context.Context, a *core.App, q InvitationValidate) (InvitationView, error) {
+	return bus.Ask[InvitationValidate, InvitationView](ctx, a.Queries, q)
+}
