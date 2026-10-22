@@ -47,14 +47,7 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 
 			// router and routes registration
 			router := gin.Default()
-			if cfg.SetupEnabled() {
-				web.RegisterSetupRoute(resolve, router)
-			}
-			if cfg.EmbedSPA() {
-				web.RegisterSPA(router)
-			}
-
-			web.RegisterDocsRoute(router)
+			web.RegisterWebRoutes(cfg, resolve, router)
 			ws.RegisterWebsocketRoute(app().Realtime, app().Bridges.AuthVerifier, router)
 			api.RegisterApiRoutes(resolve, app().Bridges.AuthVerifier, api.Config{
 				CORSOrigins:   cfg.CORSOrigins(),

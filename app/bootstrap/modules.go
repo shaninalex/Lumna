@@ -103,6 +103,7 @@ func buildModules(
 		EventBus: e,
 		Pusher:   notificationPusher{hub: hub},
 		Sender:   mail.NewSender(cfg.EmailConfig()),
+		BaseUrl:  cfg.String("serve.url"),
 	})
 
 	modules := []core.Module{

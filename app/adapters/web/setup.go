@@ -14,11 +14,6 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
 )
 
-func RegisterSetupRoute(app core.Resolve, router *gin.Engine) {
-	router.GET("/setup", setupIdentityMiddleware(app), handleSetup())
-	router.POST("/setup", setupIdentityMiddleware(app), handleSetupSubmit(app))
-}
-
 func handleSetup() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		templ.Handler(templates.SetupView(templates.SetupViewData{})).ServeHTTP(c.Writer, c.Request)

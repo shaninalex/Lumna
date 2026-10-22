@@ -22,6 +22,7 @@ type Deps struct {
 	EventBus *bus.EventBus
 	Pusher   contract.Pusher
 	Sender   mail.Sender
+	BaseUrl  string
 }
 
 type Module struct {
@@ -46,7 +47,7 @@ func New(d Deps) *Module {
 
 		// event handlers
 		workItemStageChanged: handlers.NewWorkItemStageChanged(notificationsRepo, d.Clock, d.EventBus, d.Pusher),
-		invitationCreated:    handlers.NewInvitationCreated(emailRepo, d.Clock),
+		invitationCreated:    handlers.NewInvitationCreated(emailRepo, d.Clock, d.BaseUrl),
 	}
 }
 

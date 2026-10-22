@@ -5,7 +5,7 @@ templ (s *EntryInvitation) template() {
 		<head></head>
 		<body>
 			<h1>Invitation email</h1>
-			<a href={ templ.URL(s.invitationLink()) }>Invitation link</a>
+			<a href={ templ.URL(s.invitationUrl) }>Invitation link</a>
 		</body>
 	</html>
 }
