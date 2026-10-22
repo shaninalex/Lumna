@@ -9,5 +9,8 @@ export const actionInvitation = createActionGroup({
 
         'create': props<{ workspaceId: number, data: { email: string; role: string } }>(),
         'set': props<{ invitation: Invitation }>(),
+
+        'delete': props<{ invitationId: number }>(),
+        'revoke': props<{ invitationId: number }>(),
     },
 });

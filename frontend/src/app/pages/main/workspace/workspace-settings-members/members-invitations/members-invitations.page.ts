@@ -4,16 +4,18 @@ import { filter, Observable, tap } from 'rxjs';
 import { selectWorkspaces } from '@entities/workspace';
 import { switchMap } from 'rxjs/operators';
 import { actionInvitation, Invitation, selectInvitation } from '@entities/invitation';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { AppRoutes } from '@core';
 import { InviteData, MembersInvitationsDialogComponent } from './members-invitations.dialog';
 import { Dialog } from '@angular/cdk/dialog';
+import { isAfter } from 'date-fns';
 
 @Component({
     selector: 'lu-members-invitations',
-    imports: [AsyncPipe, DatePipe],
+    imports: [AsyncPipe, DatePipe, NgClass],
+    styleUrl: './members-invitations.page.css',
     template: `
-        <button class="button button-pill" (click)="openInviteModal()">
+        <button class="btn" (click)="openInviteModal()">
             Invite
         </button>
         @if (invitations$ | async; as invitations) {
@@ -32,20 +34,23 @@ import { Dialog } from '@angular/cdk/dialog';
                 </thead>
                 <tbody>
                     @for (invitation of invitations; track invitation.id) {
-                        <tr>
+                        <tr [ngClass]="{
+                            'disabled-invitation': isExpired(invitation),
+                        }">
                             <td>{{ invitation.email }}</td>
                             <td>{{ invitation.role }}</td>
-                            <td><img alt="" src="images/7.png" style="width:1.5rem; height: 1.5rem; border-radius: 1.5rem" /></td>
+                            <td><img alt="" src="images/7.png"
+                                     style="width:1.5rem; height: 1.5rem; border-radius: 1.5rem"/></td>
                             <td>{{ invitation.expiresAt | date }}</td>
                             <td>
-                                @if(invitation.acceptedAt){
+                                @if (invitation.acceptedAt) {
                                     {{ invitation.acceptedAt | date }}
                                 } @else {
                                     ---
                                 }
                             </td>
                             <td>
-                                @if(invitation.revokedAt){
+                                @if (invitation.revokedAt) {
                                     {{ invitation.revokedAt | date }}
                                 } @else {
                                     ---
@@ -53,7 +58,14 @@ import { Dialog } from '@angular/cdk/dialog';
                             </td>
                             <td>{{ invitation.createdAt | date }}</td>
                             <td>
-                                <button type="button" class="button">Revoke</button>
+                                <div class="btn-group" role="group" aria-label="Invitation actions">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            (click)="invitationRevoke(invitation.id)">Revoke
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            (click)="invitationDelete(invitation.id)">Delete
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -64,9 +76,10 @@ import { Dialog } from '@angular/cdk/dialog';
 })
 export class MembersInvitationsPage {
     readonly appRoutes = inject(AppRoutes);
-    dialog = inject(Dialog);
     private store = inject(Store);
     private workspaceId: number;
+
+    dialog = inject(Dialog);
     invitations$: Observable<Invitation[]> = this.store.select(selectWorkspaces.currentWorkspaceId).pipe(
         filter(workspaceId => workspaceId !== null),
         tap((workspaceId) => this.store.dispatch(actionInvitation.getList({workspaceId}))),
@@ -92,5 +105,17 @@ export class MembersInvitationsPage {
                 }
             }))
         });
+    }
+
+    isExpired(invitation: Invitation): boolean {
+        return isAfter(new Date(), new Date(invitation.expiresAt))
+    }
+
+    invitationDelete(invitationId: number): void {
+        this.store.dispatch(actionInvitation.delete({ invitationId }))
+    }
+
+    invitationRevoke(invitationId: number): void {
+        this.store.dispatch(actionInvitation.revoke({ invitationId }))
     }
 }
