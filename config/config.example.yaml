@@ -1,18 +1,15 @@
-# Application working mode:
-# development - additional logging, things can work in mock or local way
-# production - more
-# testing - most of the things working in mocking way
-env: development
+env: dev
 
 serve:
-  # port of the server
   port: 8000
   setup: true
+  embed_spa: true
   # allow a SPA on another origin to call the API with cookies;
   # empty = same-origin only
   cors_origins: []
   # false only for plain-http local development
   secure_cookies: false
+  url: http://localhost:8080
 
 database:
   # instead of providing explicit db type we can detect type from connection url

@@ -21,7 +21,8 @@ func (notificationRecord) TableName() string { return "notifications" }
 type recordEmail struct {
 	ID        int `gorm:"primaryKey;autoIncrement"`
 	Subject   string
-	Content   string
+	Html      string
+	Text      string
 	Type      string
 	Status    string `gorm:"default:pending"`
 	Attempts  sql.NullInt16

@@ -25,7 +25,8 @@ var (
 type Email struct {
 	ID        int
 	Subject   string
-	Content   string
+	Html      string
+	Text      string
 	Type      EntryType
 	Status    EmailStatus
 	Attempts  int16

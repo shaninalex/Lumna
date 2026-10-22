@@ -30,7 +30,7 @@ func (s *InvitationCreated) Handle(ctx context.Context, event workspaceContract.
 	html, _ := email_body.GenerateTemplates(ctx)
 	email := domain.Email{
 		Subject:   "Invitation in Lumna workspace!",
-		Content:   string(html),
+		Html:      string(html),
 		Type:      "invitation",
 		Status:    domain.EmailStatusPending,
 		Receivers: []mail.Address{event.Receiver},

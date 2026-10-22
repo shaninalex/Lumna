@@ -26,6 +26,7 @@ type Environment string
 const (
 	EnvironmentDev  Environment = "dev"
 	EnvironmentTest Environment = "testing"
+	EnvironmentProd Environment = "prod"
 )
 
 type Config struct {

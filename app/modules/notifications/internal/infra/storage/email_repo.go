@@ -60,7 +60,8 @@ func toDomainEntry(r recordEmail) domain.Email {
 	e := domain.Email{
 		ID:        r.ID,
 		Subject:   r.Subject,
-		Content:   r.Content,
+		Html:      r.Html,
+		Text:      r.Text,
 		Type:      domain.EntryType(r.Type),
 		Status:    domain.EmailStatus(r.Status),
 		Attempts:  r.Attempts.Int16,
@@ -79,7 +80,8 @@ func toRecordEntry(d domain.Email) recordEmail {
 	r := recordEmail{
 		ID:        d.ID,
 		Subject:   d.Subject,
-		Content:   d.Content,
+		Html:      d.Html,
+		Text:      d.Text,
 		Type:      string(d.Type),
 		Status:    string(d.Status),
 		Attempts:  sql.NullInt16{Int16: d.Attempts, Valid: d.Attempts > 0},

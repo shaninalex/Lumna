@@ -92,7 +92,7 @@ func (s *EmailDispatcher) processEntry(ctx context.Context, entry domain.Email) 
 		}
 	}()
 
-	if err := s.sender.Send(ctx, entry.Subject, entry.Content, "--- not implemented yet ---", entry.Receivers); err != nil {
+	if err := s.sender.Send(ctx, entry.Subject, entry.Html, entry.Text, entry.Receivers); err != nil {
 		msg := err.Error()
 		s.log.Error(msg)
 		if entry.Attempts == MaxSendAttemptsAmount {
