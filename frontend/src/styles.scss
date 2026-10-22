@@ -2,8 +2,8 @@
 @use './styles/input';
 
 // overwrite bootstrap variables here or earlier;
-
-//@import "bootstrap/scss/bootstrap";
+$border-radius: 1rem;
+$border-radius-sm: 1rem;
 
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";

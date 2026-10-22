@@ -7,7 +7,6 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/core/actor"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
-	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
@@ -29,10 +28,6 @@ func NewCreateInvitation(repo domain.InvitationRepo, hasher domain.TokenHasher, 
 	}
 }
 
-var CreateInvitationAlreadyExistsError = errs.Conflict("WSP01", "user already invited in this workspace")
-var CreateInvitationAlreadyAcceptedError = errs.Conflict("WSP02", "user already accepted in this workspace")
-var CreateInvitationAlreadyRevokedError = errs.Conflict("WSP03", "invitation was revoked for this user")
-
 func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvitation) (contract.InvitationView, error) {
 	publicToken, hash, err := s.hasher.CreateToken()
 	if err != nil {
@@ -46,12 +41,12 @@ func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvita
 	for _, inv := range invitations {
 		if inv.Email == cmd.Invitation.Email {
 			if !inv.AcceptedAt.IsZero() {
-				return contract.InvitationView{}, CreateInvitationAlreadyAcceptedError
+				return contract.InvitationView{}, domain.CreateInvitationAlreadyAcceptedError
 			} else if !inv.RevokedAt.IsZero() {
-				return contract.InvitationView{}, CreateInvitationAlreadyRevokedError
+				return contract.InvitationView{}, domain.CreateInvitationAlreadyRevokedError
 			}
 
-			return contract.InvitationView{}, CreateInvitationAlreadyExistsError
+			return contract.InvitationView{}, domain.CreateInvitationAlreadyExistsError
 		}
 	}
 

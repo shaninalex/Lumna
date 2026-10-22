@@ -29,6 +29,13 @@
                                 "input": "public"
                             }
                         ],
+                        "stylePreprocessorOptions": {
+                            "sass": {
+                                "silenceDeprecations": [
+                                    "import"
+                                ]
+                            }
+                        },
                         "styles": [
                             "src/styles.scss"
                         ]

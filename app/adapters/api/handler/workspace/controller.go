@@ -16,6 +16,8 @@ func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET(":workspace_id/members", handleWorkspaceMembers(resolve))
 	router.POST(":workspace_id/invitations", handleCreateInvitation(resolve))
 	router.GET(":workspace_id/invitations", handleInvitationsList(resolve))
+	router.DELETE("invitations/:invitation_id", handleInvitationDelete(resolve))
+	router.POST("invitations/:invitation_id/revoke", handleInvitationRevoke(resolve))
 }
 
 func handleWorkspaceList(resolve core.Resolve) gin.HandlerFunc {
@@ -144,5 +146,42 @@ func handleInvitationsList(resolve core.Resolve) gin.HandlerFunc {
 			invitations[i] = toInvitationDTO(inv)
 		}
 		httpx.Success(c, invitations)
+	}
+}
+
+func handleInvitationDelete(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		invitationId, err := strconv.Atoi(c.Param("invitation_id"))
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		result, err := contract.ExecDeleteInvitation(c.Request.Context(), resolve(), contract.DeleteInvitation{
+			InvitationId: invitationId,
+		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		httpx.Success(c, result)
+	}
+}
+
+func handleInvitationRevoke(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		invitationId, err := strconv.Atoi(c.Param("invitation_id"))
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		invitation, err := contract.ExecRevokeInvitation(c.Request.Context(), resolve(), contract.RevokeInvitation{
+			InvitationId: invitationId,
+		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		httpx.Success(c, toInvitationDTO(invitation))
+
 	}
 }

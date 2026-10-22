@@ -16,3 +16,9 @@ type Invitation struct {
 	RevokedAt   time.Time
 	CreatedAt   time.Time
 }
+
+// Revoke - revoke invitation. Also removes TokenHash
+func (s *Invitation) Revoke(t time.Time) {
+	s.RevokedAt = t
+	s.TokenHash = ""
+}

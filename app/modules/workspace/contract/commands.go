@@ -52,3 +52,23 @@ func (CreateInvitation) Permission() (action string, scope int) { return "admin"
 func ExecCreateInvitation(ctx context.Context, a *core.App, cmd CreateInvitation) (InvitationView, error) {
 	return bus.Execute[CreateInvitation, InvitationView](ctx, a.Commands, cmd)
 }
+
+type DeleteInvitation struct {
+	InvitationId int
+}
+
+func (DeleteInvitation) Permission() (action string, scope int) { return "", 0 }
+
+func ExecDeleteInvitation(ctx context.Context, a *core.App, cmd DeleteInvitation) (bool, error) {
+	return bus.Execute[DeleteInvitation, bool](ctx, a.Commands, cmd)
+}
+
+type RevokeInvitation struct {
+	InvitationId int
+}
+
+func (RevokeInvitation) Permission() (action string, scope int) { return "", 0 }
+
+func ExecRevokeInvitation(ctx context.Context, a *core.App, cmd RevokeInvitation) (InvitationView, error) {
+	return bus.Execute[RevokeInvitation, InvitationView](ctx, a.Commands, cmd)
+}

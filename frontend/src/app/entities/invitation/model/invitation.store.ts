@@ -13,4 +13,6 @@ export const invitationReducer = createReducer(
     initialState,
     on(actionInvitation.setList, (state, { invitations }) => invitationAdapter.addMany(invitations, state)),
     on(actionInvitation.set, (state, { invitation }) => invitationAdapter.addOne(invitation, state)),
+    on(actionInvitation.deleteSuccess, (state, { invitationId }) => invitationAdapter.removeOne(invitationId, state)),
+    on(actionInvitation.revokeSuccess, (state, { invitation }) => invitationAdapter.updateOne({ id: invitation.id, changes: { ...invitation }}, state)),
 );

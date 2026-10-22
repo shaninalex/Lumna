@@ -24,7 +24,10 @@ type ProjectRepo interface {
 type InvitationRepo interface {
 	Create(ctx context.Context, i Invitation) (Invitation, error)
 	GetByHash(ctx context.Context, hash string) (Invitation, error)
+	GetById(ctx context.Context, invitationId int) (Invitation, error)
 	ListByWorkspaceId(ctx context.Context, workspaceId int) ([]Invitation, error)
+	Delete(ctx context.Context, invitationId int) error
+	Update(ctx context.Context, i Invitation) error
 }
 
 type TokenHasher interface {

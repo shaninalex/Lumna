@@ -29,5 +29,22 @@ export class InvitationApi {
                 {withCredentials: true},
             ).pipe(map((res) => toInvitationModel(res.data)));
     }
+
+    delete(invitationId: number): Observable<boolean> {
+        return this.http
+            .delete<APIResponse<boolean>>(
+                `/api/v1/workspaces/invitations/${invitationId}`,
+                {withCredentials: true},
+            ).pipe(map((res) => res.data));
+    }
+
+    revoke(invitationId: number): Observable<Invitation> {
+        return this.http
+            .post<APIResponse<invitationDto>>(
+                `/api/v1/workspaces/invitations/${invitationId}/revoke`,
+                null,
+                {withCredentials: true},
+            ).pipe(map((res) => toInvitationModel(res.data)));
+    }
 }
 

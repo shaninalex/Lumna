@@ -51,3 +51,34 @@ func (s *InvitationRepo) ListByWorkspaceId(ctx context.Context, workspaceId int)
 	}
 	return invitations, nil
 }
+
+func (s *InvitationRepo) Delete(ctx context.Context, invitationId int) error {
+	rows, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).
+		Where("id = ?", invitationId).
+		Delete(ctx)
+	if rows < 1 {
+		return domain.InvitationNotFound
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *InvitationRepo) GetById(ctx context.Context, invitationId int) (domain.Invitation, error) {
+	invitation, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).
+		Where("id = ?", invitationId).
+		First(ctx)
+	return toInvitationDomain(invitation), err
+}
+
+func (s *InvitationRepo) Update(ctx context.Context, invitation domain.Invitation) error {
+	rowsAffected, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).Updates(ctx, toInvitationRecord(invitation))
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return domain.InvitationNotFound
+	}
+	return nil
+}
