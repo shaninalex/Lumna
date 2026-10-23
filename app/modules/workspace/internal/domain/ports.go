@@ -32,4 +32,5 @@ type InvitationRepo interface {
 
 type TokenHasher interface {
 	CreateToken() (string, string, error)
+	Hash(token string) string
 }

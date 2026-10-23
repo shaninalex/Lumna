@@ -22,19 +22,19 @@ func NewInvitationValidate(repo domain.InvitationRepo, hasher domain.TokenHasher
 	}
 }
 
-func (s *InvitationValidate) Handle(ctx context.Context, q contract.InvitationValidate) (bool, error) {
+func (s *InvitationValidate) Handle(ctx context.Context, q contract.InvitationValidate) (contract.InvitationView, error) {
 	// The invitation exists.
-	invitation, err := s.repo.GetByHash(ctx, s.hasher.q.Hash)
+	invitation, err := s.repo.GetByHash(ctx, s.hasher.Hash(q.Hash))
 	if err != nil {
-		return false, err
+		return contract.InvitationView{}, err
 	}
 
 	// It has not expired.
 	// It has not already been accepted.
 	// It has not been revoked.
 	if invitation.IsExpired(s.clock.Now()) || invitation.IsRevoked() || invitation.IsAccepted() {
-		return false, domain.InvitationExpiredOrAcceptedError
+		return contract.InvitationView{}, domain.InvitationExpiredOrAcceptedError
 	}
 
-	return true, nil
+	return toInvitationView(invitation), nil
 }

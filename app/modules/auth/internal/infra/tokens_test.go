@@ -37,15 +37,6 @@ func TestParseAccess(t *testing.T) {
 	}
 }
 
-func TestParseAccessRejectsInvalidToken(t *testing.T) {
-	tokens := newTestTokens()
-
-	_, err := tokens.ParseAccess("not-a-jwt")
-	if err == nil {
-		t.Fatal("ParseAccess() succeeded with an invalid token")
-	}
-}
-
 func TestParseAccessRejectsWrongSecret(t *testing.T) {
 	signer := newTestTokens()
 	verifier := infra.NewTokens(

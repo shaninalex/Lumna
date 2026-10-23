@@ -28,9 +28,9 @@ func (s *Invitation) IsExpired(t time.Time) bool {
 }
 
 func (s *Invitation) IsRevoked() bool {
-	return s.RevokedAt.IsZero()
+	return !s.RevokedAt.IsZero()
 }
 
 func (s *Invitation) IsAccepted() bool {
-	return s.AcceptedAt.IsZero()
+	return !s.AcceptedAt.IsZero()
 }

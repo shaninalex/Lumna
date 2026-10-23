@@ -49,7 +49,7 @@ func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) 
 			TempSessionCookieAccessToken,
 			tempSession.AccessToken,
 			int(tempSession.AccessTokenDuration.Seconds()),
-			"/invirarion/password", "",
+			"/invitation", "",
 			cookieConfig.Secure,
 			true,
 		)

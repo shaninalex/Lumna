@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"errors"
 
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
@@ -32,10 +33,13 @@ func (s *InvitationRepo) GetByHash(ctx context.Context, hash string) (domain.Inv
 	record, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).
 		Where("token_hash = ?", hash).
 		First(ctx)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return domain.Invitation{}, domain.InvitationNotFoundError
+	}
 	if err != nil {
 		return domain.Invitation{}, err
 	}
-	return toInvitationDomain(record), err
+	return toInvitationDomain(record), nil
 }
 
 func (s *InvitationRepo) ListByWorkspaceId(ctx context.Context, workspaceId int) ([]domain.Invitation, error) {
@@ -69,7 +73,13 @@ func (s *InvitationRepo) GetById(ctx context.Context, invitationId int) (domain.
 	invitation, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).
 		Where("id = ?", invitationId).
 		First(ctx)
-	return toInvitationDomain(invitation), err
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return domain.Invitation{}, domain.InvitationNotFoundError
+	}
+	if err != nil {
+		return domain.Invitation{}, err
+	}
+	return toInvitationDomain(invitation), nil
 }
 
 func (s *InvitationRepo) Update(ctx context.Context, invitation domain.Invitation) error {

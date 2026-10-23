@@ -23,3 +23,7 @@ func (s *TokenHasher) CreateToken() (string, string, error) {
 	}
 	return plain, s.hasher.HashRefresh(plain), nil
 }
+
+func (s *TokenHasher) Hash(token string) string {
+	return s.hasher.HashRefresh(token)
+}
