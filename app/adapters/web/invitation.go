@@ -10,7 +10,6 @@ import (
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/adapters/web/templates"
 	"gitlab.com/shaninalex/lumna/app/core"
-	"gitlab.com/shaninalex/lumna/app/core/actor"
 	authContract "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 )
@@ -68,14 +67,12 @@ func confirmInvitationMiddleware(verifier authContract.Verifier) gin.HandlerFunc
 			return
 		}
 
-		a, err := verifier.Verify(c.Request.Context(), accessToken)
-		if err != nil {
+		if err = verifier.VerifyTemp(c.Request.Context(), accessToken); err != nil {
 			log.Println(err)
 			c.Data(http.StatusForbidden, "text/html; charset=utf-8", []byte(ConfirmInvitationEmptyKey.Error()))
 			return
 		}
 
-		c.Request = c.Request.WithContext(actor.With(c.Request.Context(), a))
 		c.Next()
 	}
 }

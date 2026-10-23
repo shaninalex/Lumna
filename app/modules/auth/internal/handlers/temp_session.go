@@ -21,7 +21,7 @@ func NewTempSession(tokens domain.Tokens, clk clock.Clock) *TempSession {
 }
 
 func (s *TempSession) Handle(_ context.Context, cmd contract.TempSession) (contract.SessionView, error) {
-	token, ttl, err := s.tokens.IssueTempAccess(cmd.Email, cmd.Email, s.clock.Now())
+	token, ttl, err := s.tokens.IssueTempAccess(cmd.Email, cmd.Role, s.clock.Now())
 	if err != nil {
 		return contract.SessionView{}, err
 	}

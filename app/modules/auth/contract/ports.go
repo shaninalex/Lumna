@@ -22,4 +22,5 @@ type IdentityProvisioner interface {
 // Verifier turns an access token into the actor it stands for.
 type Verifier interface {
 	Verify(ctx context.Context, accessToken string) (actor.Actor, error)
+	VerifyTemp(ctx context.Context, accessToken string) error // questionable
 }

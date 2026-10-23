@@ -16,4 +16,5 @@ type Tokens interface {
 	IssueRefresh() (plain string, hash string, ttl time.Duration, err error)
 	HashRefresh(plain string) string
 	ParseAccess(accessToken string) (identityID int, err error)
+	ParseTempAccess(accessToken string) (email, role string, err error)
 }

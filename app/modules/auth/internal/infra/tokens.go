@@ -2,7 +2,9 @@ package infra
 
 import (
 	"fmt"
+	"net/mail"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -89,4 +91,30 @@ func (t *Tokens) IssueTempAccess(email, role string, now time.Time) (string, tim
 		return "", 0, fmt.Errorf("auth: sign access token: %w", err)
 	}
 	return signed, t.accessTTL, nil
+}
+
+func (t *Tokens) ParseTempAccess(accessToken string) (string, string, error) {
+	token, err := t.hasher.Unpack(accessToken, t.issuer)
+	if err != nil {
+		return "", "", err
+	}
+
+	claims, ok := token.Claims.(*jwt.RegisteredClaims)
+	if !ok || !token.Valid {
+		return "", "", fmt.Errorf("invalid token claims")
+	}
+	result := strings.Split(claims.Subject, ":")
+	if len(result) < 2 {
+		return "", "", fmt.Errorf("invalid token claims")
+	}
+
+	if _, err := mail.ParseAddress(result[0]); err != nil {
+		return "", "", err
+	}
+
+	if result[1] != "admin" && result[1] != "member" {
+		return "", "", fmt.Errorf("invalid token claims")
+	}
+
+	return result[0], result[1], nil
 }

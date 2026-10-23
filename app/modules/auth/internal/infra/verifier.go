@@ -30,3 +30,16 @@ func (v *Verifier) Verify(_ context.Context, accessToken string) (actor.Actor, e
 		IdentityID: identityID,
 	}, nil
 }
+
+func (v *Verifier) VerifyTemp(_ context.Context, accessToken string) error {
+	if accessToken == "" {
+		return domain.ErrBadAccessToken
+	}
+
+	_, _, err := v.tokens.ParseTempAccess(accessToken)
+	if err != nil {
+		return domain.ErrBadAccessToken
+	}
+
+	return nil
+}
