@@ -12,6 +12,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/workspace"
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/actor"
 	authc "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 )
 
@@ -23,7 +24,7 @@ type Config struct {
 }
 
 // RegisterApiRoutes mounts the API.
-func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier, cfg Config, router *gin.Engine) {
+func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier[actor.Actor], cfg Config, router *gin.Engine) {
 	cookies := httpx.CookieConfig{Secure: cfg.SecureCookies}
 	router.Use(httpx.CORSMiddleware(cfg.CORSOrigins))
 

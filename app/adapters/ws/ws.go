@@ -32,7 +32,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func RegisterWebsocketRoute(feed Feed, verifier authc.Verifier, router *gin.Engine) {
+func RegisterWebsocketRoute(feed Feed, verifier authc.Verifier[actor.Actor], router *gin.Engine) {
 	private := router.Group("")
 	private.Use(httpx.AuthMiddleware(verifier))
 	private.GET("/ws", handle(feed, upgrader))

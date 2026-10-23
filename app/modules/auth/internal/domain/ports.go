@@ -10,11 +10,12 @@ type RefreshTokenRepo interface {
 	ByHash(ctx context.Context, hash string) (RefreshToken, error)
 }
 
-type Tokens interface {
-	IssueAccess(identityID int, now time.Time) (token string, ttl time.Duration, err error)
-	IssueTempAccess(email, role string, now time.Time) (string, time.Duration, error)
-	IssueRefresh() (plain string, hash string, ttl time.Duration, err error)
-	HashRefresh(plain string) string
-	ParseAccess(accessToken string) (identityID int, err error)
-	ParseTempAccess(accessToken string) (email, role string, err error)
+type TokenCodec[P any] interface {
+	Issue(p P, now time.Time) (token string, ttl time.Duration, err error)
+	Parse(token string) (P, error)
+}
+
+type RefreshTokens interface {
+	Issue() (plain, hash string, ttl time.Duration, err error)
+	Hash(plain string) string
 }

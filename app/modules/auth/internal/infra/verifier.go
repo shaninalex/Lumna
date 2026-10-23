@@ -3,43 +3,37 @@ package infra
 import (
 	"context"
 
-	"gitlab.com/shaninalex/lumna/app/core/actor"
+	"gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/domain"
 )
 
-// Verifier implements contract.Verifier.
-type Verifier struct {
-	tokens domain.Tokens
+type Verifier[P, T any] struct {
+	codec domain.TokenCodec[P]
+	view  func(P) T
 }
 
-func NewVerifier(t domain.Tokens) *Verifier { return &Verifier{tokens: t} }
+var _ contract.Verifier[int] = (*Verifier[struct{}, int])(nil)
 
-// Verify never reports why a token was rejected: expired, forged and
-// malformed all look the same from outside, so a caller cannot probe.
-func (v *Verifier) Verify(_ context.Context, accessToken string) (actor.Actor, error) {
-	if accessToken == "" {
-		return actor.Actor{}, domain.ErrBadAccessToken
+func NewVerifier[P, T any](c domain.TokenCodec[P], view func(P) T) *Verifier[P, T] {
+	return &Verifier[P, T]{
+		codec: c,
+		view:  view,
+	}
+}
+
+func (v *Verifier[P, T]) Verify(_ context.Context, token string) (T, error) {
+	var zero T
+
+	if token == "" {
+		return zero, domain.ErrBadAccessToken
 	}
 
-	identityID, err := v.tokens.ParseAccess(accessToken)
+	p, err := v.codec.Parse(token)
 	if err != nil {
-		return actor.Actor{}, domain.ErrBadAccessToken
+		return zero, domain.ErrBadAccessToken
 	}
 
-	return actor.Actor{
-		IdentityID: identityID,
-	}, nil
+	return v.view(p), nil
 }
 
-func (v *Verifier) VerifyTemp(_ context.Context, accessToken string) error {
-	if accessToken == "" {
-		return domain.ErrBadAccessToken
-	}
-
-	_, _, err := v.tokens.ParseTempAccess(accessToken)
-	if err != nil {
-		return domain.ErrBadAccessToken
-	}
-
-	return nil
-}
+func Identity[T any](p T) T { return p }

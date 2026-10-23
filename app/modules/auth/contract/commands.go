@@ -41,13 +41,13 @@ func ExecLogout(ctx context.Context, a *core.App, c Logout) (LogoutView, error) 
 	return bus.Execute[Logout, LogoutView](ctx, a.Commands, c)
 }
 
-type TempSession struct {
+type InvitationSession struct {
 	Email string
 	Role  string
 }
 
-func (TempSession) Permission() (action string, scope int) { return "", 0 }
+func (InvitationSession) Permission() (action string, scope int) { return "", 0 }
 
-func ExecTempSession(ctx context.Context, a *core.App, cmd TempSession) (SessionView, error) {
-	return bus.Execute[TempSession, SessionView](ctx, a.Commands, cmd)
+func ExecInvitationSession(ctx context.Context, a *core.App, cmd InvitationSession) (SessionView, error) {
+	return bus.Execute[InvitationSession, SessionView](ctx, a.Commands, cmd)
 }

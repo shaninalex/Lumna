@@ -15,7 +15,10 @@ import (
 )
 
 var ConfirmInvitationEmptyKey = errors.New("invalid invitation key")
-var TempSessionCookieAccessToken = "invitation_access_token"
+
+// InvitationCookieAccessToken holds the invitation session token. It is
+// scoped to /invitation, so it never reaches the API or the SPA.
+var InvitationCookieAccessToken = "invitation_access_token"
 
 func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -34,8 +37,9 @@ func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) 
 			return
 		}
 
-		// create temp guest session
-		tempSession, err := authContract.ExecTempSession(c.Request.Context(), app(), authContract.TempSession{
+		// open an invitation session: the token carries the invitation
+		// validated above, so later steps don't need the key again
+		session, err := authContract.ExecInvitationSession(c.Request.Context(), app(), authContract.InvitationSession{
 			Email: invitation.Email,
 			Role:  invitation.Role,
 		})
@@ -45,9 +49,9 @@ func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) 
 		}
 
 		c.SetCookie(
-			TempSessionCookieAccessToken,
-			tempSession.AccessToken,
-			int(tempSession.AccessTokenDuration.Seconds()),
+			InvitationCookieAccessToken,
+			session.AccessToken,
+			int(session.AccessTokenDuration.Seconds()),
 			"/invitation", "",
 			cookieConfig.Secure,
 			true,
@@ -58,28 +62,49 @@ func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) 
 	}
 }
 
-func confirmInvitationMiddleware(verifier authContract.Verifier) gin.HandlerFunc {
+// invitationClaimsKey is the gin context key the verified invitation is
+// stored under by invitationSessionMiddleware.
+const invitationClaimsKey = "invitation_claims"
+
+// invitationSessionMiddleware lets a request through only with a valid
+// invitation session cookie, and stores the invitation it carries for the
+// handlers (see invitationFrom). A regular access token is not accepted here.
+func invitationSessionMiddleware(verifier authContract.Verifier[authContract.InvitationClaims]) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		accessToken, err := c.Cookie(TempSessionCookieAccessToken)
+		accessToken, err := c.Cookie(InvitationCookieAccessToken)
 		if err != nil {
 			log.Println(err)
 			c.Data(http.StatusForbidden, "text/html; charset=utf-8", []byte(ConfirmInvitationEmptyKey.Error()))
+			c.Abort()
 			return
 		}
 
-		if err = verifier.VerifyTemp(c.Request.Context(), accessToken); err != nil {
+		claims, err := verifier.Verify(c.Request.Context(), accessToken)
+		if err != nil {
 			log.Println(err)
 			c.Data(http.StatusForbidden, "text/html; charset=utf-8", []byte(ConfirmInvitationEmptyKey.Error()))
+			c.Abort()
 			return
 		}
 
+		c.Set(invitationClaimsKey, claims)
 		c.Next()
 	}
 }
 
+// invitationFrom returns the invitation of the current session. It is only
+// meaningful behind invitationSessionMiddleware.
+func invitationFrom(c *gin.Context) (authContract.InvitationClaims, bool) {
+	v, ok := c.Get(invitationClaimsKey)
+	if !ok {
+		return authContract.InvitationClaims{}, false
+	}
+	claims, ok := v.(authContract.InvitationClaims)
+	return claims, ok
+}
+
 func handleCreatePassword() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// validate temp session cookie
 		// 4) html form[action=/accept-invitation] submit form to /accept-invitation
 		templ.Handler(templates.ConfirmInvitationView()).ServeHTTP(c.Writer, c.Request)
 	}
@@ -87,9 +112,9 @@ func handleCreatePassword() gin.HandlerFunc {
 
 func handleAcceptInvitation() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// validate temp session cookie
+		// invitation, _ := invitationFrom(c) — email and role to create the user with
 		// request body
-		// 5) Create user
+		// 5) Create user (workspace validates the role)
 		// 5.2) remove temp session cookie
 		// 6) redirect to /auth/login
 		c.Redirect(http.StatusFound, "/auth/login")

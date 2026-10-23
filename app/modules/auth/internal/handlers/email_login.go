@@ -11,18 +11,12 @@ import (
 
 type EmailLogin struct {
 	identities contract.IdentityAuthenticator // port: implemented by another module
-	tokens     domain.Tokens
-	refresh    domain.RefreshTokenRepo
+	sessions   *SessionIssuer
 	clock      clock.Clock
 }
 
-func NewEmailLogin(
-	i contract.IdentityAuthenticator,
-	t domain.Tokens,
-	r domain.RefreshTokenRepo,
-	clk clock.Clock,
-) *EmailLogin {
-	return &EmailLogin{identities: i, tokens: t, refresh: r, clock: clk}
+func NewEmailLogin(i contract.IdentityAuthenticator, s *SessionIssuer, clk clock.Clock) *EmailLogin {
+	return &EmailLogin{identities: i, sessions: s, clock: clk}
 }
 
 // Handle — implements bus.RegisterCommand.
@@ -36,31 +30,39 @@ func (u *EmailLogin) Handle(ctx context.Context, cmd contract.EmailLogin) (contr
 		return zero, err
 	}
 
-	return issueSession(ctx, u.tokens, u.refresh, identityID, u.clock.Now())
+	return u.sessions.Issue(ctx, identityID, u.clock.Now())
 }
 
-// issueSession mints an access/refresh pair and stores the refresh half.
+// SessionIssuer mints an access/refresh pair and stores the refresh half.
 // Shared by login and rotation so both can never drift apart.
-func issueSession(
-	ctx context.Context,
-	tokens domain.Tokens,
+type SessionIssuer struct {
+	access  domain.TokenCodec[domain.AccessClaims]
+	refresh domain.RefreshTokens
+	repo    domain.RefreshTokenRepo
+}
+
+func NewSessionIssuer(
+	a domain.TokenCodec[domain.AccessClaims],
+	r domain.RefreshTokens,
 	repo domain.RefreshTokenRepo,
-	identityID int,
-	now time.Time,
-) (contract.SessionView, error) {
+) *SessionIssuer {
+	return &SessionIssuer{access: a, refresh: r, repo: repo}
+}
+
+func (s *SessionIssuer) Issue(ctx context.Context, identityID int, now time.Time) (contract.SessionView, error) {
 	var zero contract.SessionView
 
-	access, accessTTL, err := tokens.IssueAccess(identityID, now)
+	access, accessTTL, err := s.access.Issue(domain.AccessClaims{IdentityID: identityID}, now)
 	if err != nil {
 		return zero, err
 	}
 
-	plain, hash, refreshTTL, err := tokens.IssueRefresh()
+	plain, hash, refreshTTL, err := s.refresh.Issue()
 	if err != nil {
 		return zero, err
 	}
 
-	if _, err = repo.Save(ctx, domain.NewRefreshToken(identityID, hash, refreshTTL, now)); err != nil {
+	if _, err = s.repo.Save(ctx, domain.NewRefreshToken(identityID, hash, refreshTTL, now)); err != nil {
 		return zero, err
 	}
 

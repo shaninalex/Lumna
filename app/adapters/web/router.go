@@ -11,7 +11,12 @@ import (
 	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
 
-func RegisterWebRoutes(cfg *config.Config, resolve core.Resolve, authVerifier authc.Verifier, router *gin.Engine) {
+func RegisterWebRoutes(
+	cfg *config.Config,
+	resolve core.Resolve,
+	invitationVerifier authc.Verifier[authc.InvitationClaims],
+	router *gin.Engine,
+) {
 	cookies := httpx.CookieConfig{Secure: cfg.SecureCookies()}
 
 	if cfg.SetupEnabled() {
@@ -28,6 +33,9 @@ func RegisterWebRoutes(cfg *config.Config, resolve core.Resolve, authVerifier au
 		router.StaticFS("/api-docs", http.FS(docsFS))
 	}
 	router.GET("/invitation/confirm", handleConfirmInvitation(resolve, cookies))
-	router.GET("/invitation/password", confirmInvitationMiddleware(authVerifier), handleCreatePassword())
-	router.POST("/invitation/accept", handleAcceptInvitation())
+
+	// Everything after /confirm runs inside the invitation session it opened.
+	invitation := router.Group("/invitation", invitationSessionMiddleware(invitationVerifier))
+	invitation.GET("/password", handleCreatePassword())
+	invitation.POST("/accept", handleAcceptInvitation())
 }

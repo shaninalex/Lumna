@@ -29,6 +29,12 @@ func NewCreateInvitation(repo domain.InvitationRepo, hasher domain.TokenHasher, 
 }
 
 func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvitation) (contract.InvitationView, error) {
+	// The role travels through the invitation link and the auth module's
+	// invitation session untouched; this is where it is checked.
+	if err := domain.ValidateRole(cmd.Invitation.Role); err != nil {
+		return contract.InvitationView{}, err
+	}
+
 	publicToken, hash, err := s.hasher.CreateToken()
 	if err != nil {
 		return contract.InvitationView{}, err

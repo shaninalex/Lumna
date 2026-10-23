@@ -15,10 +15,9 @@ import (
 )
 
 type Deps struct {
-	DB     *database.DB
-	Log    *slog.Logger
-	Clock  clock.Clock
-	Secret []byte
+	DB    *database.DB
+	Log   *slog.Logger
+	Clock clock.Clock
 
 	Profiler contract.Profiler
 	EventBus *bus.EventBus
@@ -50,7 +49,7 @@ func New(d Deps) *Module {
 	identityWorkspaceRepo := storage.NewIdentityWorkspaceRepo(d.DB)
 	projectRepo := storage.NewProjectRepo(d.DB)
 	invitationRepo := storage.NewInvitationRepo(d.DB, d.Clock)
-	hasher := infra.NewTokenHasher(d.Secret, "workspace")
+	hasher := infra.NewTokenHasher()
 
 	return &Module{
 		deps: d,

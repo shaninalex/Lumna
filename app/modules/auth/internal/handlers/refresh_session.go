@@ -9,13 +9,19 @@ import (
 )
 
 type RefreshSession struct {
-	tokens  domain.Tokens
-	refresh domain.RefreshTokenRepo
-	clock   clock.Clock
+	tokens   domain.RefreshTokens
+	refresh  domain.RefreshTokenRepo
+	sessions *SessionIssuer
+	clock    clock.Clock
 }
 
-func NewRefreshSession(t domain.Tokens, r domain.RefreshTokenRepo, clk clock.Clock) *RefreshSession {
-	return &RefreshSession{tokens: t, refresh: r, clock: clk}
+func NewRefreshSession(
+	t domain.RefreshTokens,
+	r domain.RefreshTokenRepo,
+	s *SessionIssuer,
+	clk clock.Clock,
+) *RefreshSession {
+	return &RefreshSession{tokens: t, refresh: r, sessions: s, clock: clk}
 }
 
 // Handle — implements contract.RefreshSession.
@@ -27,7 +33,7 @@ func (u *RefreshSession) Handle(ctx context.Context, cmd contract.RefreshSession
 		return zero, domain.ErrEmptyToken
 	}
 
-	stored, err := u.refresh.ByHash(ctx, u.tokens.HashRefresh(presented))
+	stored, err := u.refresh.ByHash(ctx, u.tokens.Hash(presented))
 	if err != nil {
 		return zero, err
 	}
@@ -42,5 +48,5 @@ func (u *RefreshSession) Handle(ctx context.Context, cmd contract.RefreshSession
 		return zero, err
 	}
 
-	return issueSession(ctx, u.tokens, u.refresh, stored.IdentityID, now)
+	return u.sessions.Issue(ctx, stored.IdentityID, now)
 }

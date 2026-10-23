@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/actor"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/modules/auth"
 	authc "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
@@ -30,7 +31,8 @@ const (
 // Bridges are module-provided ports that an adapter needs directly, without
 // going through the bus. It's basically a "library call" without side effects
 type Bridges struct {
-	AuthVerifier authc.Verifier
+	AccessVerifier     authc.Verifier[actor.Actor]
+	InvitationVerifier authc.Verifier[authc.InvitationClaims]
 }
 
 // Workers are module-provided background processes. Each one blocks until its
@@ -78,7 +80,7 @@ func buildModules(
 		Issuer:        tokenIssuer,
 		Identities:    identityModule.Authenticator(),
 		Provisioner:   identityModule.Provisioner(),
-		TempAccessTTL: time.Duration(15) * time.Minute,
+		InvitationTTL: 15 * time.Minute,
 	})
 
 	trackerModule := tracker.New(tracker.Deps{
@@ -92,7 +94,6 @@ func buildModules(
 		DB:       db,
 		Log:      log,
 		Clock:    clk,
-		Secret:   secret,
 		Profiler: identityModule.Profiler(),
 		EventBus: e,
 	})
@@ -116,7 +117,8 @@ func buildModules(
 	}
 
 	bridges := Bridges{
-		AuthVerifier: authModule.Verifier(),
+		AccessVerifier:     authModule.AccessVerifier(),
+		InvitationVerifier: authModule.InvitationVerifier(),
 	}
 
 	workers := Workers{

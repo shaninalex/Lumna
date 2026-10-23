@@ -10,12 +10,12 @@ import (
 )
 
 type Logout struct {
-	tokens  domain.Tokens
+	tokens  domain.RefreshTokens
 	refresh domain.RefreshTokenRepo
 	clock   clock.Clock
 }
 
-func NewLogout(t domain.Tokens, r domain.RefreshTokenRepo, clk clock.Clock) *Logout {
+func NewLogout(t domain.RefreshTokens, r domain.RefreshTokenRepo, clk clock.Clock) *Logout {
 	return &Logout{tokens: t, refresh: r, clock: clk}
 }
 
@@ -26,7 +26,7 @@ func (u *Logout) Handle(ctx context.Context, cmd contract.Logout) (contract.Logo
 		return contract.LogoutView{Revoked: false}, nil
 	}
 
-	stored, err := u.refresh.ByHash(ctx, u.tokens.HashRefresh(presented))
+	stored, err := u.refresh.ByHash(ctx, u.tokens.Hash(presented))
 	if err != nil {
 		if errors.Is(err, domain.ErrTokenUnknown) {
 			return contract.LogoutView{Revoked: false}, nil

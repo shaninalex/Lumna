@@ -12,7 +12,7 @@ import (
 //
 // Everything downstream reads the actor from ctx, never a user object: that
 // is what keeps handlers from depending on the identity module.
-func AuthMiddleware(verifier contract.Verifier) gin.HandlerFunc {
+func AuthMiddleware(verifier contract.Verifier[actor.Actor]) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// A missing cookie is an empty token, and the verifier already
 		// rejects that — one source of truth for "not authenticated".

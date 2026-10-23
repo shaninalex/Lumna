@@ -4,26 +4,22 @@ import (
 	"gitlab.com/shaninalex/lumna/app/core/securetoken"
 )
 
-type TokenHasher struct {
-	issuer string
-	hasher *securetoken.Hasher
-}
+// TokenHasher implements domain.TokenHasher with opaque tokens: the plain
+// token goes into the invitation link, only its hash is stored.
+type TokenHasher struct{}
 
-func NewTokenHasher(secret []byte, issuer string) *TokenHasher {
-	return &TokenHasher{
-		issuer: issuer,
-		hasher: securetoken.New(secret),
-	}
+func NewTokenHasher() *TokenHasher {
+	return &TokenHasher{}
 }
 
 func (s *TokenHasher) CreateToken() (string, string, error) {
-	plain, err := s.hasher.Token()
+	plain, err := securetoken.NewOpaque()
 	if err != nil {
 		return "", "", err
 	}
-	return plain, s.hasher.HashRefresh(plain), nil
+	return plain, securetoken.HashOpaque(plain), nil
 }
 
 func (s *TokenHasher) Hash(token string) string {
-	return s.hasher.HashRefresh(token)
+	return securetoken.HashOpaque(token)
 }
