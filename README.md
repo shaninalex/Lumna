@@ -23,12 +23,9 @@ go mod tidy
 cp ./config/config.test.yaml ./config/config.yaml
 
 # modify path to database
-
 cd frontend
 yarn build
-
-go run ./app migrate apply --config=config/config.yaml
-go run ./app serve  --config=config/config.yaml
-
+go run ./app --config=config/config.yaml migrate apply
+go run ./app --config=config/config.yaml serve --email_queue
 # go to http://localhost:8000/setup and setup your workspace
 ```
