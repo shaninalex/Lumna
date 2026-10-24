@@ -25,8 +25,9 @@ func NewInvitationSession(t domain.TokenCodec[contract.InvitationClaims], clk cl
 // Handle — implements contract.InvitationSession.
 func (s *InvitationSession) Handle(_ context.Context, cmd contract.InvitationSession) (contract.SessionView, error) {
 	token, ttl, err := s.tokens.Issue(contract.InvitationClaims{
-		Email: cmd.Email,
-		Role:  cmd.Role,
+		Email:       cmd.Email,
+		Role:        cmd.Role,
+		WorkspaceId: cmd.WorkspaceId,
 	}, s.clock.Now())
 	if err != nil {
 		return contract.SessionView{}, err

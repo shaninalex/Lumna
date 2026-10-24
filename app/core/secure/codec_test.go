@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 )
 
 var testSecret = []byte("test-secret-key")

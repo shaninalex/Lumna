@@ -38,5 +38,5 @@ func RegisterWebRoutes(
 	// Everything after /confirm runs inside the invitation session it opened.
 	invitation := router.Group("/invitation", invitationSessionMiddleware(invitationVerifier))
 	invitation.GET("/password", handleCreatePassword())
-	invitation.POST("/password", handleAcceptInvitation(passwordVerifier))
+	invitation.POST("/password", handleAcceptInvitation(resolve, passwordVerifier, cookies))
 }

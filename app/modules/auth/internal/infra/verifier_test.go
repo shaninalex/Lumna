@@ -53,7 +53,7 @@ func TestAccessVerifier(t *testing.T) {
 
 func TestInvitationVerifier(t *testing.T) {
 	f := newFixture()
-	want := contract.InvitationClaims{Email: "new@example.com", Role: "member"}
+	want := contract.InvitationClaims{Email: "new@example.com", Role: "member", WorkspaceId: 1}
 
 	token, _, err := f.invitation.Issue(want, time.Now())
 	if err != nil {
@@ -122,10 +122,10 @@ func TestInvitationClaimsValidate(t *testing.T) {
 		claims  contract.InvitationClaims
 		wantErr bool
 	}{
-		"valid":            {contract.InvitationClaims{Email: "a@b.c", Role: "member"}, false},
-		"quoted local":     {contract.InvitationClaims{Email: `"a:b"@b.c`, Role: "member"}, false},
-		"any role is fine": {contract.InvitationClaims{Email: "a@b.c", Role: "whatever"}, false},
-		"bad email":        {contract.InvitationClaims{Email: "nope", Role: "member"}, true},
+		"valid":            {contract.InvitationClaims{Email: "a@b.c", Role: "member", WorkspaceId: 1}, false},
+		"quoted local":     {contract.InvitationClaims{Email: `"a:b"@b.c`, Role: "member", WorkspaceId: 1}, false},
+		"any role is fine": {contract.InvitationClaims{Email: "a@b.c", Role: "whatever", WorkspaceId: 1}, false},
+		"bad email":        {contract.InvitationClaims{Email: "nope", Role: "member", WorkspaceId: 1}, true},
 		"empty role":       {contract.InvitationClaims{Email: "a@b.c"}, true},
 	} {
 		t.Run(name, func(t *testing.T) {

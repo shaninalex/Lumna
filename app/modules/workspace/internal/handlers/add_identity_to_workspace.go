@@ -25,6 +25,7 @@ func (s *AddIdentityToWorkspace) Handle(ctx context.Context, cmd contract.AddIde
 		IdentityID:  cmd.IdentityId,
 		WorkspaceID: cmd.WorkspaceId,
 		CreatedAt:   s.clock.Now(),
+		Role:        cmd.Role,
 	})
 	if err != nil {
 		return false, err

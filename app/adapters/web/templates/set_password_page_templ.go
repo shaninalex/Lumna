@@ -57,19 +57,19 @@ func SetPasswordPage(invitation contract.InvitationClaims, err error) templ.Comp
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</b>.</p><p>Please, set up your password to complete registration</p><label for=\"inputPassword\" class=\"form-label\">Password</label> <input name=\"password\" type=\"password\" id=\"inputPassword\" class=\"form-control\"> <label for=\"inputPasswordConfirm\" class=\"form-label\">Password confirm</label> <input name=\"password_confirm\" type=\"password\" id=\"inputPasswordConfirm\" class=\"form-control\"><div id=\"passwordHelpBlock\" class=\"form-text\">Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</b>.</p><p>Please, set up your password to complete registration</p><label for=\"fullName\" class=\"form-label\">Full Name</label> <input name=\"full_name\" type=\"text\" id=\"fullName\" class=\"form-control\" required> <label for=\"inputPassword\" class=\"form-label\">Password</label> <input name=\"password\" type=\"password\" id=\"inputPassword\" class=\"form-control\" required> <label for=\"inputPasswordConfirm\" class=\"form-label\">Password confirm</label> <input name=\"password_confirm\" type=\"password\" id=\"inputPasswordConfirm\" class=\"form-control\" required><div id=\"passwordHelpBlock\" class=\"form-text\">Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if err != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"alert alert-danger small\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"alert alert-danger small\">Error: ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/adapters/web/templates/set_password_page.templ`, Line: 36, Col: 59}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/adapters/web/templates/set_password_page.templ`, Line: 42, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {

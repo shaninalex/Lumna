@@ -5,6 +5,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"testing"
+
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 )
 
 func TestNewOpaque(t *testing.T) {

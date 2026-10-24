@@ -35,6 +35,7 @@ func ExecCreateWorkspace(ctx context.Context, a *core.App, c CreateWorkspace) (W
 type AddIdentityToWorkspace struct {
 	IdentityId  int
 	WorkspaceId int
+	Role        string
 }
 
 func (AddIdentityToWorkspace) Permission() (action string, scope int) { return "", 0 }
