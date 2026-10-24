@@ -34,6 +34,7 @@ type Module struct {
 	// event handlers
 	workItemStageChanged *handlers.WorkItemStageChanged
 	invitationCreated    *handlers.InvitationCreated
+	invitationAccepted   *handlers.InvitationAccepted
 }
 
 func New(d Deps) *Module {
@@ -48,6 +49,7 @@ func New(d Deps) *Module {
 		// event handlers
 		workItemStageChanged: handlers.NewWorkItemStageChanged(notificationsRepo, d.Clock, d.EventBus, d.Pusher),
 		invitationCreated:    handlers.NewInvitationCreated(emailRepo, d.Clock, d.BaseUrl),
+		invitationAccepted:   handlers.NewInvitationAccepted(d.Pusher, d.Clock, notificationsRepo),
 	}
 }
 
@@ -57,6 +59,7 @@ func (s *Module) Register(a *core.App) error {
 	return errors.Join(
 		bus.Subscribe(a.Events, s.workItemStageChanged.Handle),
 		bus.Subscribe(a.Events, s.invitationCreated.Handle),
+		bus.Subscribe(a.Events, s.invitationAccepted.Handle),
 	)
 }
 

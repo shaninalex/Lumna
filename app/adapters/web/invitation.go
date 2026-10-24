@@ -10,6 +10,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/adapters/web/templates"
 	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/core/secure"
 	authContract "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	identityContract "gitlab.com/shaninalex/lumna/app/modules/identity/contract"
@@ -40,12 +41,33 @@ func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) 
 			return
 		}
 
+		// check is user already exists by invitation.Email
+		existed, err := identityContract.AskGetProfileByEmail(c.Request.Context(), app(), identityContract.GetProfileByEmail{Email: invitation.Email})
+		if err != nil && errs.KindOf(err) != errs.KindNotFound {
+			httpx.Fail(c, err)
+			return
+		}
+
+		if err == nil && invitation.Email == existed.Email {
+			_, err = contract.ExecAcceptInvitation(c.Request.Context(), app(), contract.AcceptInvitation{
+				IdentityId:   existed.ID,
+				InvitationId: invitation.ID,
+			})
+			if err != nil {
+				httpx.Fail(c, err)
+				return
+			}
+			c.Redirect(http.StatusFound, "/auth/login")
+			return
+		}
+
 		// open an invitation session: the token carries the invitation
 		// validated above, so later steps don't need the key again
 		session, err := authContract.ExecInvitationSession(c.Request.Context(), app(), authContract.InvitationSession{
-			Email:       invitation.Email,
-			Role:        invitation.Role,
-			WorkspaceId: invitation.WorkspaceID,
+			Email:        invitation.Email,
+			Role:         invitation.Role,
+			InvitationID: invitation.ID,
+			WorkspaceId:  invitation.WorkspaceID,
 		})
 		if err != nil {
 			httpx.Fail(c, errors.Join(ConfirmInvitationEmptyKey, err))
@@ -137,28 +159,9 @@ func handleAcceptInvitation(app core.Resolve, verifier authContract.PasswordVeri
 		}
 
 		// validate payload (password/password_confirm)
-		fullName := c.PostForm("full_name")
-		if fullName == "" {
-			templ.Handler(templates.SetPasswordPage(invitation, FullNameIsEmpty)).ServeHTTP(c.Writer, c.Request)
-			c.Abort()
-			return
-		}
-		password := c.PostForm("password")
-		if password == "" {
-			templ.Handler(templates.SetPasswordPage(invitation, PasswordNameIsEmpty)).ServeHTTP(c.Writer, c.Request)
-			c.Abort()
-			return
-		}
-		passwordConfirm := c.PostForm("password_confirm")
-		if password != passwordConfirm {
-			templ.Handler(templates.SetPasswordPage(invitation, PasswordConfirmDoesNotMatch)).ServeHTTP(c.Writer, c.Request)
-			c.Abort()
-			return
-		}
-
-		score := verifier.Verify(secure.Secret(password))
-		if score < 4 {
-			templ.Handler(templates.SetPasswordPage(invitation, PasswordTooWeak)).ServeHTTP(c.Writer, c.Request)
+		fullName, securePassword, err := parseInvitationProcessFormData(c, verifier)
+		if err != nil {
+			templ.Handler(templates.SetPasswordPage(invitation, err)).ServeHTTP(c.Writer, c.Request)
 			c.Abort()
 			return
 		}
@@ -167,25 +170,21 @@ func handleAcceptInvitation(app core.Resolve, verifier authContract.PasswordVeri
 		profile, err := identityContract.ExecRegister(c.Request.Context(), app(), identityContract.Register{
 			Email:    invitation.Email,
 			FullName: fullName,
-			Password: secure.Secret(password),
+			Password: securePassword,
 		})
 		if err != nil {
 			c.Data(http.StatusNotFound, "text/html; charset=utf-8", []byte(err.Error()))
 			c.Abort()
 			return
 		}
-		ok, err = contract.ExecAddIdentityToWorkspace(c.Request.Context(), app(), contract.AddIdentityToWorkspace{
-			IdentityId:  profile.ID,
-			WorkspaceId: invitation.WorkspaceId,
-			Role:        invitation.Role,
+
+		// add new user to workspace, accept invitation and push event
+		_, err = contract.ExecAcceptInvitation(c.Request.Context(), app(), contract.AcceptInvitation{
+			IdentityId:   profile.ID,
+			InvitationId: invitation.InvitationID,
 		})
 		if err != nil {
-			c.Data(http.StatusNotFound, "text/html; charset=utf-8", []byte(err.Error()))
-			c.Abort()
-			return
-		}
-		if !ok {
-			c.Data(http.StatusNotFound, "text/html; charset=utf-8", []byte(UnableToAddMember.Error()))
+			templ.Handler(templates.SetPasswordPage(invitation, err)).ServeHTTP(c.Writer, c.Request)
 			c.Abort()
 			return
 		}
@@ -196,4 +195,27 @@ func handleAcceptInvitation(app core.Resolve, verifier authContract.PasswordVeri
 		// redirect to /auth/login
 		c.Redirect(http.StatusFound, "/auth/login")
 	}
+}
+
+func parseInvitationProcessFormData(c *gin.Context, verifier authContract.PasswordVerifier) (string, secure.Secret, error) {
+	fullName := c.PostForm("full_name")
+	if fullName == "" {
+		return "", "", FullNameIsEmpty
+	}
+	password := c.PostForm("password")
+	if password == "" {
+		return "", "", PasswordNameIsEmpty
+	}
+	passwordConfirm := c.PostForm("password_confirm")
+	if password != passwordConfirm {
+		return "", "", PasswordConfirmDoesNotMatch
+	}
+
+	securePassword := secure.Secret(password)
+	score := verifier.Verify(secure.Secret(password))
+	if score < 4 {
+		return "", "", PasswordTooWeak
+	}
+
+	return fullName, securePassword, nil
 }

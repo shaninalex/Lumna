@@ -101,8 +101,8 @@ func toInvitationRecord(d domain.Invitation) workspaceInvitationRecord {
 		TokenHash:   d.TokenHash,
 		InvitedBy:   sql.NullInt32{Int32: int32(d.InvitedBy), Valid: d.InvitedBy > 0},
 		ExpiresAt:   d.ExpiresAt,
-		AcceptedAt:  sql.NullTime{Time: d.AcceptedAt, Valid: d.AcceptedAt.IsZero()},
-		RevokedAt:   sql.NullTime{Time: d.RevokedAt, Valid: d.RevokedAt.IsZero()},
+		AcceptedAt:  sql.NullTime{Time: d.AcceptedAt, Valid: !d.AcceptedAt.IsZero()},
+		RevokedAt:   sql.NullTime{Time: d.RevokedAt, Valid: !d.RevokedAt.IsZero()},
 		CreatedAt:   d.CreatedAt,
 	}
 }

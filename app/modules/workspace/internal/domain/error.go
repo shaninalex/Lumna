@@ -9,5 +9,6 @@ var (
 	CreateInvitationAlreadyRevokedError  = errs.Conflict("WSP03", "invitation was revoked for this user")
 	InvitationNotFoundError              = errs.NotFound("WSP04", "invitation not found")
 	InvitationExpiredOrAcceptedError     = errs.Conflict("WSP05", "invitation expired or already accepted")
+	InvitationUnableToSaveError          = errs.Conflict("WSP05", "invitation unable to save")
 	ErrUnknownRole                       = errs.Validation("WSP06", "unknown workspace role")
 )

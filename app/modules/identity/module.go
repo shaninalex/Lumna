@@ -39,8 +39,9 @@ type Module struct {
 	register *handlers.Register
 
 	// query
-	profileList *handlers.ListProfiles
-	getProfile  *handlers.GetProfile
+	profileList       *handlers.ListProfiles
+	getProfile        *handlers.GetProfile
+	getProfileByEmail *handlers.GetProfileByEmail
 }
 
 func New(d Deps) *Module {
@@ -57,9 +58,10 @@ func New(d Deps) *Module {
 		provisioner:   infra.NewProvisioner(identities, d.Clock),
 		profiler:      infra.NewProfiler(identities),
 
-		register:    handlers.NewRegister(identities, credentials, hasher, d.Mailer, d.Clock),
-		profileList: handlers.NewListProfiles(identities),
-		getProfile:  handlers.NewGetProfile(identities),
+		register:          handlers.NewRegister(identities, credentials, hasher, d.Mailer, d.Clock),
+		profileList:       handlers.NewListProfiles(identities),
+		getProfile:        handlers.NewGetProfile(identities),
+		getProfileByEmail: handlers.NewGetProfileByEmail(identities),
 	}
 }
 
@@ -86,5 +88,6 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.register.Handle),
 		bus.RegisterQuery(a.Queries, m.profileList.Handle),
 		bus.RegisterQuery(a.Queries, m.getProfile.Handle),
+		bus.RegisterQuery(a.Queries, m.getProfileByEmail.Handle),
 	)
 }

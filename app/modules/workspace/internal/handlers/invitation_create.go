@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"log/slog"
 	"net/mail"
 	"time"
 
@@ -15,17 +16,13 @@ import (
 type CreateInvitation struct {
 	repo   domain.InvitationRepo
 	hasher domain.TokenHasher
-	clock  clock.Clock
+	clk    clock.Clock
 	bus    *bus.EventBus
+	logger *slog.Logger
 }
 
-func NewCreateInvitation(repo domain.InvitationRepo, hasher domain.TokenHasher, clk clock.Clock, bus *bus.EventBus) *CreateInvitation {
-	return &CreateInvitation{
-		repo:   repo,
-		hasher: hasher,
-		clock:  clk,
-		bus:    bus,
-	}
+func NewCreateInvitation(repo domain.InvitationRepo, hasher domain.TokenHasher, clk clock.Clock, bus *bus.EventBus, logger *slog.Logger) *CreateInvitation {
+	return &CreateInvitation{repo, hasher, clk, bus, logger}
 }
 
 func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvitation) (contract.InvitationView, error) {
@@ -58,7 +55,7 @@ func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvita
 
 	domainInvitation := toInvitationDomain(cmd.Invitation)
 	domainInvitation.TokenHash = hash
-	domainInvitation.ExpiresAt = s.clock.Now().Add(24 * time.Hour)
+	domainInvitation.ExpiresAt = s.clk.Now().Add(24 * time.Hour)
 
 	inv, err := s.repo.Create(ctx, domainInvitation)
 	if err != nil {
@@ -73,9 +70,8 @@ func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvita
 	if a, ok := actor.From(ctx); ok {
 		invitationEvent.InitiatorId = a.IdentityID
 	}
-	err = s.bus.Publish(ctx, invitationEvent)
-	if err != nil {
-		return contract.InvitationView{}, err
+	if err = s.bus.Publish(ctx, invitationEvent); err != nil {
+		s.logger.Error(err.Error())
 	}
 
 	return toInvitationView(inv), nil

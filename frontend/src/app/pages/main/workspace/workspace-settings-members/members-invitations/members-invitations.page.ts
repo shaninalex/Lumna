@@ -19,6 +19,7 @@ import { isAfter } from 'date-fns';
             <table class="table mb-4">
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Email</th>
                     <th>Role</th>
                     <th>Invited By</th>
@@ -34,6 +35,13 @@ import { isAfter } from 'date-fns';
                         <tr [ngClass]="{
                             'disabled-invitation': isExpired(invitation),
                         }">
+                            <td>
+                                @if (isAccepted(invitation)) {
+                                    <i class="fa-solid fa-check text-success"></i>
+                                } @else {
+                                    <i class="fa-solid fa-xmark text-danger"></i>
+                                }
+                            </td>
                             <td>{{ invitation.email }}</td>
                             <td>{{ invitation.role }}</td>
                             <td><img alt="" src="images/7.png"
@@ -57,6 +65,7 @@ import { isAfter } from 'date-fns';
                             <td>
                                 <div class="btn-group" role="group" aria-label="Invitation actions">
                                     <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            [disabled]="isAccepted(invitation)"
                                             (click)="invitationRevoke(invitation.id)">Revoke
                                     </button>
                                     <button type="button" class="btn btn-sm btn-outline-secondary"
@@ -111,6 +120,10 @@ export class MembersInvitationsPage {
 
     isExpired(invitation: Invitation): boolean {
         return isAfter(new Date(), new Date(invitation.expiresAt))
+    }
+
+    isAccepted(invitation: Invitation): boolean {
+        return invitation.acceptedAt !== undefined
     }
 
     invitationDelete(invitationId: number): void {

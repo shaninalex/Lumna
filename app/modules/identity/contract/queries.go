@@ -20,6 +20,7 @@ func AskGetProfile(ctx context.Context, a *core.App, q GetProfile) (ProfileView,
 }
 
 type ListProfiles struct {
+	//TODO: workspace id
 	Limit  int
 	Offset int
 }
@@ -30,4 +31,16 @@ func (q ListProfiles) Permission() (string, int) {
 
 func AskListProfiles(ctx context.Context, a *core.App, q ListProfiles) (ListProfilesView, error) {
 	return bus.Ask[ListProfiles, ListProfilesView](ctx, a.Queries, q)
+}
+
+type GetProfileByEmail struct {
+	Email string
+}
+
+func (q GetProfileByEmail) Permission() (string, int) {
+	return "", 0
+}
+
+func AskGetProfileByEmail(ctx context.Context, a *core.App, q GetProfileByEmail) (ProfileView, error) {
+	return bus.Ask[GetProfileByEmail, ProfileView](ctx, a.Queries, q)
 }

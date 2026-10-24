@@ -83,7 +83,8 @@ func (s *InvitationRepo) GetById(ctx context.Context, invitationId int) (domain.
 }
 
 func (s *InvitationRepo) Update(ctx context.Context, invitation domain.Invitation) error {
-	rowsAffected, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).Updates(ctx, toInvitationRecord(invitation))
+	inv := toInvitationRecord(invitation)
+	rowsAffected, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).Updates(ctx, inv)
 	if err != nil {
 		return err
 	}

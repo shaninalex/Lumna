@@ -43,9 +43,10 @@ func ExecLogout(ctx context.Context, a *core.App, c Logout) (LogoutView, error) 
 }
 
 type InvitationSession struct {
-	Email       string
-	Role        string
-	WorkspaceId int
+	Email        string
+	Role         string
+	InvitationID int
+	WorkspaceId  int
 }
 
 func (InvitationSession) Permission() (action string, scope int) { return "", 0 }

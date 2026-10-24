@@ -25,9 +25,10 @@ type Verifier[T any] interface {
 }
 
 type InvitationClaims struct {
-	Email       string `json:"email"`
-	Role        string `json:"role"`
-	WorkspaceId int    `json:"workspace_id"`
+	Email        string `json:"email"`
+	InvitationID int    `json:"invitation_id"`
+	Role         string `json:"role"`
+	WorkspaceId  int    `json:"workspace_id"`
 }
 
 var errInvalidInvitationClaims = errors.New("invalid invitation claims")
@@ -36,7 +37,7 @@ func (c InvitationClaims) Validate() error {
 	if _, err := mail.ParseAddress(c.Email); err != nil {
 		return errors.Join(errInvalidInvitationClaims, err)
 	}
-	if c.Role == "" {
+	if c.InvitationID == 0 {
 		return errInvalidInvitationClaims
 	}
 	if c.WorkspaceId == 0 {

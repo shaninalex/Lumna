@@ -73,3 +73,14 @@ func (RevokeInvitation) Permission() (action string, scope int) { return "", 0 }
 func ExecRevokeInvitation(ctx context.Context, a *core.App, cmd RevokeInvitation) (InvitationView, error) {
 	return bus.Execute[RevokeInvitation, InvitationView](ctx, a.Commands, cmd)
 }
+
+type AcceptInvitation struct {
+	InvitationId int
+	IdentityId   int
+}
+
+func (AcceptInvitation) Permission() (action string, scope int) { return "", 0 }
+
+func ExecAcceptInvitation(ctx context.Context, a *core.App, cmd AcceptInvitation) (InvitationView, error) {
+	return bus.Execute[AcceptInvitation, InvitationView](ctx, a.Commands, cmd)
+}

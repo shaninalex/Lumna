@@ -23,6 +23,12 @@ func (s *Invitation) Revoke(t time.Time) {
 	s.TokenHash = ""
 }
 
+// Accept - revoke invitation. Also removes TokenHash
+func (s *Invitation) Accept(t time.Time) {
+	s.AcceptedAt = t
+	s.TokenHash = ""
+}
+
 func (s *Invitation) IsExpired(t time.Time) bool {
 	return t.After(s.ExpiresAt)
 }
