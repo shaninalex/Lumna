@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	api "gitlab.com/shaninalex/lumna/app/adapters/api"
+	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/adapters/web"
 	"gitlab.com/shaninalex/lumna/app/adapters/ws"
 	"gitlab.com/shaninalex/lumna/app/core"
@@ -47,6 +48,8 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 
 			// router and routes registration
 			router := gin.Default()
+			router.Use(httpx.LoggingMiddleware())
+
 			web.RegisterWebRoutes(cfg, resolve, app().Bridges.InvitationVerifier, app().Bridges.PasswordVerifier, router)
 			ws.RegisterWebsocketRoute(app().Realtime, app().Bridges.AccessVerifier, router)
 			api.RegisterApiRoutes(resolve, app().Bridges.AccessVerifier, api.Config{
