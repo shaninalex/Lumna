@@ -1,20 +1,18 @@
-package securetoken_test
+package secure_test
 
 import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"testing"
-
-	"gitlab.com/shaninalex/lumna/app/core/securetoken"
 )
 
 func TestNewOpaque(t *testing.T) {
-	first, err := securetoken.NewOpaque()
+	first, err := secure.NewOpaque()
 	if err != nil {
 		t.Fatalf("NewOpaque() error = %v", err)
 	}
-	second, err := securetoken.NewOpaque()
+	second, err := secure.NewOpaque()
 	if err != nil {
 		t.Fatalf("NewOpaque() error = %v", err)
 	}
@@ -35,10 +33,10 @@ func TestHashOpaque(t *testing.T) {
 	sum := sha256.Sum256([]byte("plain"))
 	want := hex.EncodeToString(sum[:])
 
-	if got := securetoken.HashOpaque("plain"); got != want {
+	if got := secure.HashOpaque("plain"); got != want {
 		t.Errorf("HashOpaque() = %q, want %q", got, want)
 	}
-	if securetoken.HashOpaque("a") == securetoken.HashOpaque("b") {
+	if secure.HashOpaque("a") == secure.HashOpaque("b") {
 		t.Error("HashOpaque() collides on different inputs")
 	}
 }

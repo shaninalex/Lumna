@@ -7,25 +7,25 @@ import (
 	"time"
 
 	"gitlab.com/shaninalex/lumna/app/core/actor"
-	"gitlab.com/shaninalex/lumna/app/core/securetoken"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/infra"
 )
 
 type fixture struct {
-	access     *securetoken.Codec[domain.AccessClaims]
-	invitation *securetoken.Codec[contract.InvitationClaims]
+	access     *secure.Codec[domain.AccessClaims]
+	invitation *secure.Codec[contract.InvitationClaims]
 
 	accessVerifier     contract.Verifier[actor.Actor]
 	invitationVerifier contract.Verifier[contract.InvitationClaims]
 }
 
 func newFixture() fixture {
-	signer := securetoken.NewSigner([]byte("test-secret-key"), "test-issuer")
+	signer := secure.NewSigner([]byte("test-secret-key"), "test-issuer")
 	f := fixture{
-		access:     securetoken.NewCodec[domain.AccessClaims](signer, "access", 15*time.Minute),
-		invitation: securetoken.NewCodec[contract.InvitationClaims](signer, "invitation", 15*time.Minute),
+		access:     secure.NewCodec[domain.AccessClaims](signer, "access", 15*time.Minute),
+		invitation: secure.NewCodec[contract.InvitationClaims](signer, "invitation", 15*time.Minute),
 	}
 	f.accessVerifier = infra.NewVerifier(f.access, func(c domain.AccessClaims) actor.Actor {
 		return actor.Actor{IdentityID: c.IdentityID}

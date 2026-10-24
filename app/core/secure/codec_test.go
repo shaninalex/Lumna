@@ -1,4 +1,4 @@
-package securetoken_test
+package secure_test
 
 import (
 	"errors"
@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"gitlab.com/shaninalex/lumna/app/core/securetoken"
 )
 
 var testSecret = []byte("test-secret-key")
@@ -29,8 +28,8 @@ func (v validated) Validate() error {
 	return nil
 }
 
-func newCodec[P any](kind string, ttl time.Duration) *securetoken.Codec[P] {
-	return securetoken.NewCodec[P](securetoken.NewSigner(testSecret, "test-issuer"), kind, ttl)
+func newCodec[P any](kind string, ttl time.Duration) *secure.Codec[P] {
+	return secure.NewCodec[P](secure.NewSigner(testSecret, "test-issuer"), kind, ttl)
 }
 
 func TestCodecRoundTrip(t *testing.T) {
@@ -55,9 +54,9 @@ func TestCodecRoundTrip(t *testing.T) {
 }
 
 func TestCodecRejectsOtherKind(t *testing.T) {
-	signer := securetoken.NewSigner(testSecret, "test-issuer")
-	access := securetoken.NewCodec[payload](signer, "access", time.Hour)
-	invite := securetoken.NewCodec[payload](signer, "invitation", time.Hour)
+	signer := secure.NewSigner(testSecret, "test-issuer")
+	access := secure.NewCodec[payload](signer, "access", time.Hour)
+	invite := secure.NewCodec[payload](signer, "invitation", time.Hour)
 
 	token, _, err := invite.Issue(payload{ID: 1}, time.Now())
 	if err != nil {
@@ -82,7 +81,7 @@ func TestCodecRejectsExpired(t *testing.T) {
 
 func TestCodecRejectsWrongSecret(t *testing.T) {
 	signer := newCodec[payload]("thing", time.Hour)
-	verifier := securetoken.NewCodec[payload](securetoken.NewSigner([]byte("other"), "test-issuer"), "thing", time.Hour)
+	verifier := secure.NewCodec[payload](secure.NewSigner([]byte("other"), "test-issuer"), "thing", time.Hour)
 
 	token, _, err := signer.Issue(payload{ID: 1}, time.Now())
 	if err != nil {
@@ -95,7 +94,7 @@ func TestCodecRejectsWrongSecret(t *testing.T) {
 
 func TestCodecRejectsWrongIssuer(t *testing.T) {
 	signer := newCodec[payload]("thing", time.Hour)
-	verifier := securetoken.NewCodec[payload](securetoken.NewSigner(testSecret, "other-issuer"), "thing", time.Hour)
+	verifier := secure.NewCodec[payload](secure.NewSigner(testSecret, "other-issuer"), "thing", time.Hour)
 
 	token, _, err := signer.Issue(payload{ID: 1}, time.Now())
 	if err != nil {

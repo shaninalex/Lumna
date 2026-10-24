@@ -5,13 +5,13 @@ import (
 	"errors"
 	"net/mail"
 
-	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 )
 
 type IdentityAuthenticator interface {
 
 	// VerifyPassword authenticate user by email/password
-	VerifyPassword(ctx context.Context, email string, password bus.Secret) (int, error)
+	VerifyPassword(ctx context.Context, email string, password secure.Secret) (int, error)
 }
 
 type IdentityProvisioner interface {
@@ -39,4 +39,8 @@ func (c InvitationClaims) Validate() error {
 		return errInvalidInvitationClaims
 	}
 	return nil
+}
+
+type PasswordVerifier interface {
+	Verify(pwd secure.Secret) int
 }

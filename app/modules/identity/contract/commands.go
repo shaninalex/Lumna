@@ -5,11 +5,12 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 )
 
 type Register struct {
 	Email    string
-	Password bus.Secret
+	Password secure.Secret
 	FullName string
 }
 

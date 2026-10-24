@@ -5,12 +5,13 @@ import (
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 )
 
 // EmailLogin — authenticate by email and password, issue a session.
 type EmailLogin struct {
 	Email    string
-	Password bus.Secret
+	Password secure.Secret
 }
 
 func (EmailLogin) Permission() (action string, scope int) { return "", 0 } // public
@@ -21,7 +22,7 @@ func ExecEmailLogin(ctx context.Context, a *core.App, c EmailLogin) (SessionView
 
 // RefreshSession — exchange a refresh token for a new pair, rotating the old one.
 type RefreshSession struct {
-	RefreshToken bus.Secret
+	RefreshToken secure.Secret
 }
 
 func (RefreshSession) Permission() (action string, scope int) { return "", 0 } // the token IS the credential
@@ -32,7 +33,7 @@ func ExecRefreshSession(ctx context.Context, a *core.App, c RefreshSession) (Ses
 
 // Logout — revoke a single refresh token.
 type Logout struct {
-	RefreshToken bus.Secret
+	RefreshToken secure.Secret
 }
 
 func (Logout) Permission() (action string, scope int) { return "", 0 }

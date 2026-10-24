@@ -10,11 +10,13 @@ import (
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/adapters/web/templates"
 	"gitlab.com/shaninalex/lumna/app/core"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 	authContract "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 )
 
 var ConfirmInvitationEmptyKey = errors.New("invalid invitation key")
+var InvitationNotFoundError = errors.New("invitation not found")
 
 // InvitationCookieAccessToken holds the invitation session token. It is
 // scoped to /invitation, so it never reaches the API or the SPA.
@@ -105,13 +107,46 @@ func invitationFrom(c *gin.Context) (authContract.InvitationClaims, bool) {
 
 func handleCreatePassword() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 4) html form[action=/accept-invitation] submit form to /accept-invitation
-		templ.Handler(templates.ConfirmInvitationView()).ServeHTTP(c.Writer, c.Request)
+		invitation, ok := invitationFrom(c)
+		if !ok {
+			c.Data(http.StatusNotFound, "text/html; charset=utf-8", []byte(InvitationNotFoundError.Error()))
+			c.Abort()
+			return
+		}
+		templ.Handler(templates.SetPasswordPage(invitation, nil)).ServeHTTP(c.Writer, c.Request)
 	}
 }
 
-func handleAcceptInvitation() gin.HandlerFunc {
+var (
+	PasswordConfirmDoesNotMatch = errors.New("password confirm does not match")
+	PasswordTooWeak             = errors.New("password is too weak")
+)
+
+func handleAcceptInvitation(verifier authContract.PasswordVerifier) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		invitation, ok := invitationFrom(c)
+		if !ok {
+			c.Data(http.StatusNotFound, "text/html; charset=utf-8", []byte(InvitationNotFoundError.Error()))
+			c.Abort()
+			return
+		}
+
+		// validate payload (password/password_confirm)
+		password := c.PostForm("password")
+		passwordConfirm := c.PostForm("password_confirm")
+		if password != passwordConfirm {
+			templ.Handler(templates.SetPasswordPage(invitation, PasswordConfirmDoesNotMatch)).ServeHTTP(c.Writer, c.Request)
+			c.Abort()
+			return
+		}
+
+		score := verifier.Verify(secure.Secret(password))
+		if score < 4 {
+			templ.Handler(templates.SetPasswordPage(invitation, PasswordTooWeak)).ServeHTTP(c.Writer, c.Request)
+			c.Abort()
+			return
+		}
+
 		// invitation, _ := invitationFrom(c) — email and role to create the user with
 		// request body
 		// 5) Create user (workspace validates the role)

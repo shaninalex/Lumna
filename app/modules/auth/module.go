@@ -8,7 +8,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/actor"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
-	"gitlab.com/shaninalex/lumna/app/core/securetoken"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/handlers"
@@ -42,6 +42,7 @@ type Module struct {
 	// bridges — what this module exposes to adapters and other modules
 	accessVerifier     contract.Verifier[actor.Actor]
 	invitationVerifier contract.Verifier[contract.InvitationClaims]
+	passwordVerifier   contract.PasswordVerifier
 
 	// commands
 	emailLogin        *handlers.EmailLogin
@@ -65,9 +66,9 @@ func New(d Deps) *Module {
 	refreshRepo := storage.NewRefreshTokenRepo(d.DB)
 
 	// One signer for every signed kind; the codecs keep the kinds apart.
-	signer := securetoken.NewSigner(d.Secret, d.Issuer)
-	access := securetoken.NewCodec[domain.AccessClaims](signer, kindAccess, d.AccessTTL)
-	invitation := securetoken.NewCodec[contract.InvitationClaims](signer, kindInvitation, d.InvitationTTL)
+	signer := secure.NewSigner(d.Secret, d.Issuer)
+	access := secure.NewCodec[domain.AccessClaims](signer, kindAccess, d.AccessTTL)
+	invitation := secure.NewCodec[contract.InvitationClaims](signer, kindInvitation, d.InvitationTTL)
 
 	refresh := infra.NewRefreshTokens(d.RefreshTTL)
 	sessions := handlers.NewSessionIssuer(access, refresh, refreshRepo)
@@ -80,6 +81,7 @@ func New(d Deps) *Module {
 			return actor.Actor{IdentityID: c.IdentityID}
 		}),
 		invitationVerifier: infra.NewVerifier(invitation, infra.Identity[contract.InvitationClaims]),
+		passwordVerifier:   infra.NewPasswordVerifier(),
 
 		// commands
 		emailLogin:        handlers.NewEmailLogin(d.Identities, sessions, d.Clock),
@@ -99,6 +101,10 @@ func (m *Module) AccessVerifier() contract.Verifier[actor.Actor] { return m.acce
 // invitation it was opened for. Used by the invitation web pages.
 func (m *Module) InvitationVerifier() contract.Verifier[contract.InvitationClaims] {
 	return m.invitationVerifier
+}
+
+func (m *Module) PasswordVerifier() contract.PasswordVerifier {
+	return m.passwordVerifier
 }
 
 // Register — subscribe on commands/queries/events. With error awareness

@@ -15,6 +15,7 @@ func RegisterWebRoutes(
 	cfg *config.Config,
 	resolve core.Resolve,
 	invitationVerifier authc.Verifier[authc.InvitationClaims],
+	passwordVerifier authc.PasswordVerifier,
 	router *gin.Engine,
 ) {
 	cookies := httpx.CookieConfig{Secure: cfg.SecureCookies()}
@@ -37,5 +38,5 @@ func RegisterWebRoutes(
 	// Everything after /confirm runs inside the invitation session it opened.
 	invitation := router.Group("/invitation", invitationSessionMiddleware(invitationVerifier))
 	invitation.GET("/password", handleCreatePassword())
-	invitation.POST("/accept", handleAcceptInvitation())
+	invitation.POST("/password", handleAcceptInvitation(passwordVerifier))
 }

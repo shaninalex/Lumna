@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/cobra"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/actor"
-	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/core/errs"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
 )
 
@@ -42,7 +42,7 @@ func newCreateIdentityCmd(app core.Resolve) *cobra.Command {
 			profile, err := contract.ExecRegister(ctx, app(), contract.Register{
 				Email:    email,
 				FullName: fullName,
-				Password: bus.Secret(password),
+				Password: secure.Secret(password),
 			})
 			if err != nil {
 				return errs.Conflict("WSP", "unable to add identity to workspace")

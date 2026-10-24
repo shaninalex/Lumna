@@ -33,6 +33,7 @@ const (
 type Bridges struct {
 	AccessVerifier     authc.Verifier[actor.Actor]
 	InvitationVerifier authc.Verifier[authc.InvitationClaims]
+	PasswordVerifier   authc.PasswordVerifier
 }
 
 // Workers are module-provided background processes. Each one blocks until its
@@ -119,6 +120,7 @@ func buildModules(
 	bridges := Bridges{
 		AccessVerifier:     authModule.AccessVerifier(),
 		InvitationVerifier: authModule.InvitationVerifier(),
+		PasswordVerifier:   authModule.PasswordVerifier(),
 	}
 
 	workers := Workers{

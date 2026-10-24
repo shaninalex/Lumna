@@ -1,4 +1,4 @@
-package bus
+package secure
 
 import "log/slog"
 

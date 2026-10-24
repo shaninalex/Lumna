@@ -1,4 +1,4 @@
-package securetoken
+package secure
 
 import (
 	"fmt"

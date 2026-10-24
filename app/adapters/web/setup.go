@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/web/templates"
 	"gitlab.com/shaninalex/lumna/app/core"
-	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
 )
 
@@ -97,7 +97,7 @@ func handleSetupSubmit(app core.Resolve) gin.HandlerFunc {
 
 		_, err := contract.ExecRegister(c.Request.Context(), app(), contract.Register{
 			Email:    data.Email,
-			Password: bus.Secret(data.Password),
+			Password: secure.Secret(data.Password),
 			FullName: fmt.Sprintf("%s %s", data.FirstName, data.LastName),
 		})
 		if err != nil {

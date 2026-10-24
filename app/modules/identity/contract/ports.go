@@ -3,12 +3,12 @@ package contract
 import (
 	"context"
 
-	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 )
 
 // Authenticator verifies a password without letting the hash leave identity
 type Authenticator interface {
-	VerifyPassword(ctx context.Context, email string, password bus.Secret) (int, error)
+	VerifyPassword(ctx context.Context, email string, password secure.Secret) (int, error)
 }
 
 // Provisioner resolves an email to an identity id, creating the identity if

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
-	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 )
 
 type Interface interface {
@@ -64,7 +64,7 @@ func (s *Config) EmailConfig() EmailerConfig {
 		Host:      s.v.GetString("smtp.host"),
 		Port:      s.v.GetInt("smtp.port"),
 		User:      s.v.GetString("smtp.user"),
-		Password:  bus.Secret(s.v.GetString("smtp.password")),
+		Password:  secure.Secret(s.v.GetString("smtp.password")),
 		ServerUrl: s.v.GetString("smtp.server_url"),
 	}
 }
@@ -92,6 +92,6 @@ type EmailerConfig struct {
 	Host      string
 	Port      int
 	User      string
-	Password  bus.Secret
+	Password  secure.Secret
 	ServerUrl string
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 	"gitlab.com/shaninalex/lumna/app/modules/identity/internal/domain"
 )
 
@@ -24,7 +24,7 @@ func NewAuthenticator(
 }
 
 // VerifyPassword returns the identity id on success.
-func (a *Authenticator) VerifyPassword(ctx context.Context, email string, password bus.Secret) (int, error) {
+func (a *Authenticator) VerifyPassword(ctx context.Context, email string, password secure.Secret) (int, error) {
 	ident, err := a.identities.ByEmail(ctx, email)
 	if err != nil {
 		if errors.Is(err, domain.ErrNotFound) {

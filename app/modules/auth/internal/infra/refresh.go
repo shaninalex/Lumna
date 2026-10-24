@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"gitlab.com/shaninalex/lumna/app/core/securetoken"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/domain"
 )
 
@@ -19,7 +19,7 @@ func NewRefreshTokens(ttl time.Duration) *RefreshTokens {
 }
 
 func (r *RefreshTokens) Issue() (string, string, time.Duration, error) {
-	plain, err := securetoken.NewOpaque()
+	plain, err := secure.NewOpaque()
 	if err != nil {
 		return "", "", 0, fmt.Errorf("auth: generate refresh token: %w", err)
 	}
@@ -27,5 +27,5 @@ func (r *RefreshTokens) Issue() (string, string, time.Duration, error) {
 }
 
 func (r *RefreshTokens) Hash(plain string) string {
-	return securetoken.HashOpaque(plain)
+	return secure.HashOpaque(plain)
 }

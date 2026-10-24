@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/core"
-	"gitlab.com/shaninalex/lumna/app/core/bus"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
 	"gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 )
 
@@ -28,7 +28,7 @@ func handleLogin(resolve core.Resolve, cookies httpx.CookieConfig) gin.HandlerFu
 
 		session, err := contract.ExecEmailLogin(c.Request.Context(), resolve(), contract.EmailLogin{
 			Email:    payload.Email,
-			Password: bus.Secret(payload.Password),
+			Password: secure.Secret(payload.Password),
 		})
 		if err != nil {
 			// Status comes from the error's class: wrong credentials are 401,
@@ -47,7 +47,7 @@ func handleRefresh(resolve core.Resolve, cookies httpx.CookieConfig) gin.Handler
 		refreshToken, _ := c.Cookie(httpx.CookieRefreshToken)
 
 		session, err := contract.ExecRefreshSession(c.Request.Context(), resolve(), contract.RefreshSession{
-			RefreshToken: bus.Secret(refreshToken),
+			RefreshToken: secure.Secret(refreshToken),
 		})
 		if err != nil {
 			httpx.ClearSession(c, cookies)
@@ -65,7 +65,7 @@ func handleLogout(resolve core.Resolve, cookies httpx.CookieConfig) gin.HandlerF
 		refreshToken, _ := c.Cookie(httpx.CookieRefreshToken)
 
 		if _, err := contract.ExecLogout(c.Request.Context(), resolve(), contract.Logout{
-			RefreshToken: bus.Secret(refreshToken),
+			RefreshToken: secure.Secret(refreshToken),
 		}); err != nil {
 			httpx.Fail(c, err)
 			return
