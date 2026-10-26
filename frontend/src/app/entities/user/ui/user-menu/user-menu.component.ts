@@ -2,11 +2,11 @@ import { Component, inject } from '@angular/core';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { Store } from '@ngrx/store';
 import { actionSession } from '@core/store/session/session.actions';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'lu-user-menu',
-    imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger],
-
+    imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, RouterLink],
     template: `
         <button [cdkMenuTriggerFor]="menu" class="btn btn-sm">
             <img src="images/7.png" alt="" class="rounded-circle" style="width: 24px" />
@@ -15,20 +15,14 @@ import { actionSession } from '@core/store/session/session.actions';
         <ng-template #menu>
             <div class="d-flex flex-column gap-2" cdkMenu>
                 <div class="list-group">
-                    <button
+                    <a
                         cdkMenuItem
                         type="button"
                         class="list-group-item list-group-item-action"
-                    >
-                        Account
-                    </button>
-                    <button
-                        cdkMenuItem
-                        type="button"
-                        class="list-group-item list-group-item-action"
+                        [routerLink]="['/app/settings']"
                     >
                         Settings
-                    </button>
+                    </a>
                     <button
                         cdkMenuItem
                         type="button"

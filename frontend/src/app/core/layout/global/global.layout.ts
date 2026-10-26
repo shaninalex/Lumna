@@ -8,7 +8,6 @@ import { ThemeSwitcherComponent } from '@shared/ui';
 @Component({
     selector: 'lu-global-layout',
     imports: [ThemeSwitcherComponent, UserMenuComponent, RouterLink],
-
     template: `
         <nav class="navbar navbar-expand-lg border-bottom bg-body">
             <div class="container-fluid">

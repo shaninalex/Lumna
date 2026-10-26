@@ -62,5 +62,5 @@ func (s *RefreshTokensCleaner) tick(ctx context.Context) {
 		s.log.Error(err.Error())
 	}
 
-	s.log.Info(fmt.Sprintf("[RefreshTokensCleaner]: remove %d tokens", len(tokens)))
+	s.log.Info(fmt.Sprintf("[RefreshTokensCleaner]: removed %d tokens", len(tokens)))
 }
