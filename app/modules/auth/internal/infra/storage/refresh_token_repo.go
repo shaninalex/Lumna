@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 
 	"gitlab.com/shaninalex/lumna/app/modules/auth/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -46,4 +47,44 @@ func (r *RefreshTokenRepo) ByHash(ctx context.Context, hash string) (domain.Refr
 		return domain.RefreshToken{}, err
 	}
 	return toDomainRefreshToken(rec), nil
+}
+
+func (r *RefreshTokenRepo) Expired(ctx context.Context, now time.Time) ([]domain.RefreshToken, error) {
+	records, err := gorm.G[refreshTokenRecord](r.db.From(ctx)).Where("expires_at <= ?", now).Find(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	tokens := make([]domain.RefreshToken, 0, len(records))
+	for _, rec := range records {
+		tokens = append(tokens, toDomainRefreshToken(rec))
+	}
+
+	return tokens, nil
+}
+
+func (r *RefreshTokenRepo) Remove(ctx context.Context, id int) error {
+	rows, err := gorm.G[refreshTokenRecord](r.db.From(ctx)).Where("id = ?", id).Delete(ctx)
+	if rows == 0 {
+		return domain.ErrTokenUnknown
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *RefreshTokenRepo) RemoveBatch(ctx context.Context, ids []int) error {
+	if len(ids) == 0 {
+		return nil
+	}
+	rows, err := gorm.G[refreshTokenRecord](r.db.From(ctx)).Where("id IN ?", ids).Delete(ctx)
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return domain.ErrTokenUnknown
+	}
+
+	return nil
 }

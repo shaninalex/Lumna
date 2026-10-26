@@ -7,7 +7,11 @@ migrate:
 	go run app/main.go --config=./config/config.yaml migrate apply
 
 run:
-	go run app/main.go --config=./config/config.yaml serve
+	go run app/main.go\
+ 		--config=./config/config.yaml\
+ 		 serve\
+ 		 --email-queue\
+ 		 --refresh-tokens-cleaner
 
 run_frontend:
 	yarn --cwd=./frontend start

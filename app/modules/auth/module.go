@@ -49,6 +49,9 @@ type Module struct {
 	refreshSession    *handlers.RefreshSession
 	logout            *handlers.Logout
 	invitationSession *handlers.InvitationSession
+
+	// Workers
+	refreshTokensCleaner *infra.RefreshTokensCleaner
 }
 
 // Token kinds. Each one is the `aud` claim of its tokens, so a token of one
@@ -88,6 +91,9 @@ func New(d Deps) *Module {
 		refreshSession:    handlers.NewRefreshSession(refresh, refreshRepo, sessions, d.Clock),
 		logout:            handlers.NewLogout(refresh, refreshRepo, d.Clock),
 		invitationSession: handlers.NewInvitationSession(invitation, d.Clock),
+
+		// workers
+		refreshTokensCleaner: infra.NewRefreshTokensCleaner(refreshRepo, d.Log, d.Clock),
 	}
 }
 
@@ -116,3 +122,5 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.invitationSession.Handle),
 	)
 }
+
+func (m *Module) RefreshTokensCleaner() contract.RefreshTokensCleaner { return m.refreshTokensCleaner }

@@ -39,7 +39,8 @@ type Bridges struct {
 // Workers are module-provided background processes. Each one blocks until its
 // context is cancelled. Bootstrap decides which of them run in this process.
 type Workers struct {
-	EmailDispatcher notificationsc.EmailDispatcher
+	EmailDispatcher      notificationsc.EmailDispatcher
+	RefreshTokensCleaner authc.RefreshTokensCleaner
 }
 
 type modulesDeps struct {
@@ -124,7 +125,8 @@ func buildModules(
 	}
 
 	workers := Workers{
-		EmailDispatcher: notificationsModule.EmailDispatcher(),
+		EmailDispatcher:      notificationsModule.EmailDispatcher(),
+		RefreshTokensCleaner: authModule.RefreshTokensCleaner(),
 	}
 
 	return modules, bridges, workers, nil

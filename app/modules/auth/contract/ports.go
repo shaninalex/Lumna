@@ -49,3 +49,8 @@ func (c InvitationClaims) Validate() error {
 type PasswordVerifier interface {
 	Verify(pwd secure.Secret) int
 }
+
+type RefreshTokensCleaner interface {
+	// Run start refresh tokens watcher to remove expired ones. Blocks.
+	Run(ctx context.Context)
+}

@@ -56,21 +56,8 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	hub := realtime.NewHub(64)
 
 	// ======= Core =======
-	write := []bus.Middleware{
-		// pmw.Recover(log),
-		// pmw.RequestLog(log),
-		// pmw.Authorize(guard), // permissions BEFORE open transactions
-		pmw.Transaction(db), // tx in ctx; commit/rollback
-		// pmw.Metrics(),
-	}
-
-	read := []bus.Middleware{
-		// pmw.Recover(log),
-		// pmw.RequestLog(log),
-		// pmw.Authorize(guard),
-		// pmw.ReadOnly(db), // Connection for read only
-		// pmw.Metrics(),
-	}
+	write := []bus.Middleware{pmw.Transaction(db)}
+	read := []bus.Middleware{}
 
 	c := &core.App{
 		Commands: bus.NewCommandBus(write...),

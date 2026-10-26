@@ -46,6 +46,13 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 				})
 			}
 
+			if on, _ := cmd.Flags().GetBool("refresh-tokens-cleaner"); on {
+				fmt.Println("Refresh tokens cleaner started")
+				workers.Go(func() {
+					app().Workers.RefreshTokensCleaner.Run(ctx)
+				})
+			}
+
 			// router and routes registration
 			router := gin.Default()
 			router.Use(httpx.LoggingMiddleware())
@@ -95,7 +102,8 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().Bool("email-queue", false, "Send queued emails from this process. Run it in exactly one process at a time")
+	cmd.Flags().Bool("email-queue", false, "Send queued emails from this process.")
+	cmd.Flags().Bool("refresh-tokens-cleaner", false, "Remove expired refresh tokens.")
 
 	return cmd
 }
