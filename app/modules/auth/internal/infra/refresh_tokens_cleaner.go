@@ -53,7 +53,7 @@ func (s *RefreshTokensCleaner) tick(ctx context.Context) {
 		return
 	}
 
-	ids := make([]int, len(tokens))
+	ids := make([]int, 0, len(tokens))
 	for _, t := range tokens {
 		ids = append(ids, t.ID)
 	}

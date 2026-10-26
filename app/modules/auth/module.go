@@ -73,7 +73,7 @@ func New(d Deps) *Module {
 	access := secure.NewCodec[domain.AccessClaims](signer, kindAccess, d.AccessTTL)
 	invitation := secure.NewCodec[contract.InvitationClaims](signer, kindInvitation, d.InvitationTTL)
 
-	refresh := infra.NewRefreshTokens(d.RefreshTTL)
+	refresh := infra.NewRefreshTokens(d.RefreshTTL, refreshRepo, access)
 	sessions := handlers.NewSessionIssuer(access, refresh, refreshRepo)
 
 	return &Module{
@@ -88,7 +88,7 @@ func New(d Deps) *Module {
 
 		// commands
 		emailLogin:        handlers.NewEmailLogin(d.Identities, sessions, d.Clock),
-		refreshSession:    handlers.NewRefreshSession(refresh, refreshRepo, sessions, d.Clock),
+		refreshSession:    handlers.NewRefreshSession(refresh, d.Clock),
 		logout:            handlers.NewLogout(refresh, refreshRepo, d.Clock),
 		invitationSession: handlers.NewInvitationSession(invitation, d.Clock),
 
