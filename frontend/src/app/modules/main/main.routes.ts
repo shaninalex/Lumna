@@ -26,6 +26,7 @@ import { MemberApi } from '@entities/member/api/member.api';
 import { memberFeature } from '@entities/member/provider';
 import { InvitationApi } from '@entities/invitation/api';
 import { invitationFeature } from '@entities/invitation';
+import { refreshTokenFeature, RefreshTokenService } from '@entities/refresh_token';
 
 export const routes: Routes = [
     {
@@ -45,6 +46,7 @@ export const routes: Routes = [
             ActivityApi,
             MemberApi,
             InvitationApi,
+            RefreshTokenService,
 
             provideEffects(mainEffects),
 
@@ -57,6 +59,7 @@ export const routes: Routes = [
             provideState(activityFeature),
             provideState(memberFeature),
             provideState(invitationFeature),
+            provideState(refreshTokenFeature),
         ],
         children: [
             ...workspacesRoutes,

@@ -10,4 +10,6 @@ var (
 	ErrEmptyToken          = errs.Validation("AUTH005", "refresh token is empty")
 	ErrBadAccessToken      = errs.Unauthenticated("AUTH006", "access token is missing or invalid")
 	ErrAccessClaimsInvalid = errs.Validation("AUTH007", "invalid access claims")
+	ErrTokenNotBelongs     = errs.Conflict("AUTH008", "token not belongs to given actor")
+	ErrNotFound            = errs.Conflict("AUTH009", "not found")
 )

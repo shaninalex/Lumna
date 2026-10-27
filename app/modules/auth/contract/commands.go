@@ -54,3 +54,25 @@ func (InvitationSession) Permission() (action string, scope int) { return "", 0 
 func ExecInvitationSession(ctx context.Context, a *core.App, cmd InvitationSession) (SessionView, error) {
 	return bus.Execute[InvitationSession, SessionView](ctx, a.Commands, cmd)
 }
+
+// RefreshTokenDelete — delete refresh token
+type RefreshTokenDelete struct {
+	TokenID int
+}
+
+func (RefreshTokenDelete) Permission() (action string, scope int) { return "", 0 }
+
+func ExecRefreshTokenDelete(ctx context.Context, a *core.App, c RefreshTokenDelete) (bool, error) {
+	return bus.Execute[RefreshTokenDelete, bool](ctx, a.Commands, c)
+}
+
+// RefreshTokenRevoke — revoke refresh token
+type RefreshTokenRevoke struct {
+	TokenID int
+}
+
+func (RefreshTokenRevoke) Permission() (action string, scope int) { return "", 0 }
+
+func ExecRefreshTokenRevoke(ctx context.Context, a *core.App, c RefreshTokenRevoke) (RefreshTokenView, error) {
+	return bus.Execute[RefreshTokenRevoke, RefreshTokenView](ctx, a.Commands, c)
+}

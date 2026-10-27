@@ -64,11 +64,11 @@ import { isAfter } from 'date-fns';
                             <td>{{ invitation.createdAt | date }}</td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="Invitation actions">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    <button type="button" class="btn btn-sm btn-secondary"
                                             [disabled]="isAccepted(invitation)"
                                             (click)="invitationRevoke(invitation.id)">Revoke
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    <button type="button" class="btn btn-sm btn-danger"
                                             (click)="invitationDelete(invitation.id)">Delete
                                     </button>
                                 </div>

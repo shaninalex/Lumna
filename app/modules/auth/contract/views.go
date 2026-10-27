@@ -18,3 +18,14 @@ type SessionView struct {
 type LogoutView struct {
 	Revoked bool
 }
+
+type RefreshTokenView struct {
+	ID         int
+	IdentityID int
+	ClientID   string
+	Scopes     string
+	ExpiresAt  time.Time
+	Revoked    bool
+	CreatedAt  time.Time
+	//Hash       string
+}

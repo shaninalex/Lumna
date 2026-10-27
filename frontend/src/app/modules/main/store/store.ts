@@ -9,8 +9,10 @@ import { KanbanEffects } from "@widgets/kanban-widget"
 import { ActivityEffects } from '@entities/activity/model';
 import { MemberEffects } from '@entities/member/model';
 import { InvitationEffects } from '@entities/invitation/model';
+import { RefreshTokenEffects } from '@entities/refresh_token';
 
 export const mainEffects = [
+    // effects
     TaskEffects,
     MainEffects,
     UserEffects,
@@ -21,6 +23,8 @@ export const mainEffects = [
     ActivityEffects,
     MemberEffects,
     InvitationEffects,
+    RefreshTokenEffects,
 
+    // widgets
     KanbanEffects,
 ];

@@ -13,7 +13,7 @@ import { filter, map, switchMap } from 'rxjs';
     template: `
         @if (workspace$ | async; as workspace) {
             <button
-                class="btn btn-sm btn-outline-secondary d-block w-100 text-left bg-body text-body"
+                class="btn btn-sm btn-secondary d-block w-100 text-left bg-body text-body"
                 (click)="openDialog()"
             >
                 <span class="d-block text-start">
@@ -26,14 +26,14 @@ import { filter, map, switchMap } from 'rxjs';
         } @else if (workspaces$ | async; as workspaces) {
             @if (workspaces.length > 0) {
                 <button
-                    class="btn btn-sm btn-outline-secondary d-block w-100 text-left bg-body text-body"
+                    class="btn btn-sm btn-secondary d-block w-100 text-left bg-body text-body"
                     (click)="openDialog()"
                 >
                     <span class="d-block text-start"> Select workspace </span>
                 </button>
             } @else {
                 <a
-                    class="btn btn-sm btn-outline-secondary d-block bg-body text-body"
+                    class="btn btn-sm btn-secondary d-block bg-body text-body"
                     routerLink="/app/workspaces/create"
                 >
                     Create Workspace

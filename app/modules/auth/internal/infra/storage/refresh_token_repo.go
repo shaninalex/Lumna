@@ -68,6 +68,9 @@ func (r *RefreshTokenRepo) Remove(ctx context.Context, id int) error {
 	if rows == 0 {
 		return domain.ErrTokenUnknown
 	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return domain.ErrNotFound
+	}
 	if err != nil {
 		return err
 	}
@@ -87,4 +90,27 @@ func (r *RefreshTokenRepo) RemoveBatch(ctx context.Context, ids []int) error {
 	}
 
 	return nil
+}
+
+func (r *RefreshTokenRepo) ListIdentityID(ctx context.Context, id int) ([]domain.RefreshToken, error) {
+	records, err := gorm.G[refreshTokenRecord](r.db.From(ctx)).Where("identity_id = ?", id).Find(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	tokens := make([]domain.RefreshToken, 0, len(records))
+	for _, rec := range records {
+		tokens = append(tokens, toDomainRefreshToken(rec))
+	}
+
+	return tokens, nil
+}
+
+func (r *RefreshTokenRepo) ByID(ctx context.Context, id int) (domain.RefreshToken, error) {
+	record, err := gorm.G[refreshTokenRecord](r.db.From(ctx)).Where("id = ?", id).First(ctx)
+	if err != nil {
+		return domain.RefreshToken{}, err
+	}
+
+	return toDomainRefreshToken(record), nil
 }

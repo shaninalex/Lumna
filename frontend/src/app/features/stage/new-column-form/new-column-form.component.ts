@@ -46,7 +46,7 @@ import { tap } from 'rxjs';
                 </div>
             </form>
         } @else {
-            <button class="btn btn-sm btn-outline-secondary" (click)="openForm()">Create new column</button>
+            <button class="btn btn-sm btn-secondary" (click)="openForm()">Create new column</button>
         }
     `,
     host: { class: 'flex-shrink-0' },

@@ -45,10 +45,15 @@ type Module struct {
 	passwordVerifier   contract.PasswordVerifier
 
 	// commands
-	emailLogin        *handlers.EmailLogin
-	refreshSession    *handlers.RefreshSession
-	logout            *handlers.Logout
-	invitationSession *handlers.InvitationSession
+	emailLogin         *handlers.EmailLogin
+	refreshSession     *handlers.RefreshSession
+	logout             *handlers.Logout
+	invitationSession  *handlers.InvitationSession
+	refreshTokenDelete *handlers.RefreshTokenDelete
+	refreshTokenRevoke *handlers.RefreshTokenRevoke
+
+	// queries
+	refreshTokenList *handlers.RefreshTokenList
 
 	// Workers
 	refreshTokensCleaner *infra.RefreshTokensCleaner
@@ -87,10 +92,15 @@ func New(d Deps) *Module {
 		passwordVerifier:   infra.NewPasswordVerifier(),
 
 		// commands
-		emailLogin:        handlers.NewEmailLogin(d.Identities, sessions, d.Clock),
-		refreshSession:    handlers.NewRefreshSession(refresh, d.Clock),
-		logout:            handlers.NewLogout(refresh, refreshRepo, d.Clock),
-		invitationSession: handlers.NewInvitationSession(invitation, d.Clock),
+		emailLogin:         handlers.NewEmailLogin(d.Identities, sessions, d.Clock),
+		refreshSession:     handlers.NewRefreshSession(refresh, d.Clock),
+		logout:             handlers.NewLogout(refresh, refreshRepo, d.Clock),
+		invitationSession:  handlers.NewInvitationSession(invitation, d.Clock),
+		refreshTokenDelete: handlers.NewRefreshTokenDelete(refreshRepo),
+		refreshTokenRevoke: handlers.NewRefreshTokenRevoke(refreshRepo),
+
+		// queries
+		refreshTokenList: handlers.NewRefreshTokenList(refreshRepo),
 
 		// workers
 		refreshTokensCleaner: infra.NewRefreshTokensCleaner(refreshRepo, d.Log, d.Clock),
@@ -120,6 +130,9 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.refreshSession.Handle),
 		bus.RegisterCommand(a.Commands, m.logout.Handle),
 		bus.RegisterCommand(a.Commands, m.invitationSession.Handle),
+		bus.RegisterCommand(a.Commands, m.refreshTokenDelete.Handle),
+		bus.RegisterCommand(a.Commands, m.refreshTokenRevoke.Handle),
+		bus.RegisterQuery(a.Queries, m.refreshTokenList.Handle),
 	)
 }
 

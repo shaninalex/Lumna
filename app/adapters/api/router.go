@@ -7,6 +7,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/board"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/column"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/project"
+	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/session"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/task"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/user"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/workspace"
@@ -40,4 +41,5 @@ func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier[actor.Actor
 	column.Register(resolve, private.Group("columns"))
 	task.Register(resolve, private.Group("tasks"))
 	activity.Register(resolve, private.Group("activities"))
+	session.Register(resolve, private.Group("sessions"))
 }
