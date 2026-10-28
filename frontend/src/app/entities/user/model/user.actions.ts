@@ -11,5 +11,9 @@ export const actionUser = createActionGroup({
         changePassword: props<{ password: string, passwordConfirm: string }>(),
         changePasswordSuccess: emptyProps(),
         changePasswordFailed: props<{ errors: Error[] }>(),
+
+        update: props<{ email: string, fullName: string }>(),
+        updateSuccess: props<{ user: UserModel }>(),
+        updateFailed: props<{ errors: Error[] }>(),
     },
 });

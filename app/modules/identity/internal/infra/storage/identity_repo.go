@@ -107,3 +107,12 @@ func (r *IdentityRepo) ListByIDs(ctx context.Context, ids []int) ([]domain.Ident
 
 	return result, nil
 }
+
+func (r *IdentityRepo) Update(ctx context.Context, identity domain.Identity) error {
+	data := toRecordIdentity(identity)
+	rows, err := gorm.G[identityRecord](r.db.From(ctx)).Where("id = ?", identity.ID).Updates(ctx, data)
+	if errors.Is(err, gorm.ErrRecordNotFound) || rows <= 0 {
+		return domain.ErrNotFound
+	}
+	return err
+}

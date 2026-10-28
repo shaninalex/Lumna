@@ -49,5 +49,10 @@ func (r *CredentialRepo) ByIdentityAndProvider(ctx context.Context, id int, p do
 }
 
 func (r *CredentialRepo) Update(ctx context.Context, credential domain.Credential) error {
-	return r.db.From(ctx).Updates(&credential).Error
+	data := toRecordCredential(credential)
+	rows, err := gorm.G[credentialRecord](r.db.From(ctx)).Where("id = ?", credential.ID).Updates(ctx, data)
+	if errors.Is(err, gorm.ErrRecordNotFound) || rows <= 0 {
+		return domain.ErrNotFound
+	}
+	return err
 }

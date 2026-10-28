@@ -10,8 +10,6 @@ import { fromErrorResponse } from '@shared/models';
 @Injectable()
 export class UserEffects {
     private actions$ = inject(Actions);
-    private api = inject(UserApi);
-
     clearUser$ = createEffect(() =>
             this.actions$.pipe(
                 ofType(actionUser.clear),
@@ -19,7 +17,7 @@ export class UserEffects {
             ),
         {dispatch: false},
     );
-
+    private api = inject(UserApi);
     changePassword$ = createEffect(() =>
         this.actions$.pipe(
             ofType(actionUser.changePassword),
@@ -28,6 +26,20 @@ export class UserEffects {
                     switchMap(() => of(actionUser.changePasswordSuccess())),
                     catchError((err: HttpErrorResponse) =>
                         of(actionUser.changePasswordFailed({errors: fromErrorResponse(err)}))
+                    )
+                )
+            )
+        )
+    );
+
+    update$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(actionUser.update),
+            switchMap((action) =>
+                this.api.update({email: action.email, full_name: action.fullName}).pipe(
+                    switchMap((user) => of(actionUser.updateSuccess({user}))),
+                    catchError((err: HttpErrorResponse) =>
+                        of(actionUser.updateFailed({errors: fromErrorResponse(err)}))
                     )
                 )
             )

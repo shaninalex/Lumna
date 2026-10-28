@@ -2,6 +2,7 @@ package contract
 
 import (
 	"context"
+	"net/mail"
 
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
@@ -16,8 +17,8 @@ type Register struct {
 
 func (Register) Permission() (action string, scope int) { return "", 0 }
 
-func ExecRegister(ctx context.Context, a *core.App, c Register) (ProfileView, error) {
-	return bus.Execute[Register, ProfileView](ctx, a.Commands, c)
+func ExecRegister(ctx context.Context, a *core.App, cmd Register) (ProfileView, error) {
+	return bus.Execute[Register, ProfileView](ctx, a.Commands, cmd)
 }
 
 type PasswordChange struct {
@@ -27,6 +28,18 @@ type PasswordChange struct {
 
 func (PasswordChange) Permission() (action string, scope int) { return "", 0 }
 
-func ExecPasswordChange(ctx context.Context, a *core.App, c PasswordChange) (bool, error) {
-	return bus.Execute[PasswordChange, bool](ctx, a.Commands, c)
+func ExecPasswordChange(ctx context.Context, a *core.App, cmd PasswordChange) (bool, error) {
+	return bus.Execute[PasswordChange, bool](ctx, a.Commands, cmd)
+}
+
+type AccountChange struct {
+	IdentityID int
+	Email      *mail.Address
+	FullName   string
+}
+
+func (AccountChange) Permission() (action string, scope int) { return "", 0 }
+
+func ExecAccountChange(ctx context.Context, a *core.App, cmd AccountChange) (ProfileView, error) {
+	return bus.Execute[AccountChange, ProfileView](ctx, a.Commands, cmd)
 }

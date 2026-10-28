@@ -21,4 +21,10 @@ export class UserApi {
             .post<APIResponse<void>>(`/api/v1/user/change-password`, data, {withCredentials: true})
             .pipe(map((response) => response.data));
     }
+
+    update(data: { email: string, full_name: string }): Observable<UserModel> {
+        return this.http
+            .patch<APIResponse<UserModelDTO>>(`/api/v1/user`, data, {withCredentials: true})
+            .pipe(map((response) => toUserModel(response.data)));
+    }
 }

@@ -35,6 +35,7 @@ type Module struct {
 	// commands
 	register       *handlers.Register
 	passwordChange *handlers.PasswordChange
+	accountChange  *handlers.AccountChange
 
 	// query
 	profileList       *handlers.ListProfiles
@@ -54,8 +55,10 @@ func New(d Deps) *Module {
 		provisioner:   infra.NewProvisioner(identitiesRepo, d.Clock),
 		profiler:      infra.NewProfiler(identitiesRepo),
 
-		register:          handlers.NewRegister(identitiesRepo, credentialsRepo, hasher, d.Mailer, d.Clock),
-		passwordChange:    handlers.NewPasswordChange(identitiesRepo, credentialsRepo, hasher),
+		register:       handlers.NewRegister(identitiesRepo, credentialsRepo, hasher, d.Mailer, d.Clock),
+		passwordChange: handlers.NewPasswordChange(identitiesRepo, credentialsRepo, hasher),
+		accountChange:  handlers.NewAccountChange(identitiesRepo, d.Clock),
+
 		profileList:       handlers.NewListProfiles(identitiesRepo),
 		getProfile:        handlers.NewGetProfile(identitiesRepo),
 		getProfileByEmail: handlers.NewGetProfileByEmail(identitiesRepo),
@@ -84,6 +87,7 @@ func (m *Module) Register(a *core.App) error {
 	return errors.Join(
 		bus.RegisterCommand(a.Commands, m.register.Handle),
 		bus.RegisterCommand(a.Commands, m.passwordChange.Handle),
+		bus.RegisterCommand(a.Commands, m.accountChange.Handle),
 		bus.RegisterQuery(a.Queries, m.profileList.Handle),
 		bus.RegisterQuery(a.Queries, m.getProfile.Handle),
 		bus.RegisterQuery(a.Queries, m.getProfileByEmail.Handle),

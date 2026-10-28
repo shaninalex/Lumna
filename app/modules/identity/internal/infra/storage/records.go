@@ -33,6 +33,17 @@ func toDomainIdentity(rec identityRecord) domain.Identity {
 	return i
 }
 
+func toRecordIdentity(i domain.Identity) identityRecord {
+	return identityRecord{
+		ID:        i.ID,
+		Email:     i.Email,
+		FullName:  i.FullName,
+		Active:    i.Active,
+		CreatedAt: i.Created,
+		UpdatedAt: sql.NullTime{Time: i.Updated, Valid: !i.Updated.IsZero()},
+	}
+}
+
 // credentialRecord — shape in database
 type credentialRecord struct {
 	ID             int            `gorm:"primaryKey;autoIncrement"`
@@ -55,5 +66,17 @@ func toDomainCredential(rec credentialRecord) domain.Credential {
 		Email:          rec.Email.String,
 		PasswordHash:   rec.PasswordHash.String,
 		CreatedAt:      rec.CreatedAt,
+	}
+}
+
+func toRecordCredential(c domain.Credential) credentialRecord {
+	return credentialRecord{
+		ID:             c.ID,
+		IdentityID:     c.IdentityID,
+		Provider:       c.Provider,
+		ProviderUserID: sql.NullString{String: c.ProviderUserID, Valid: c.ProviderUserID != ""},
+		Email:          sql.NullString{String: c.Email, Valid: c.Email != ""}, // validate with net/mail?
+		PasswordHash:   sql.NullString{String: c.PasswordHash, Valid: c.PasswordHash != ""},
+		CreatedAt:      c.CreatedAt,
 	}
 }

@@ -1,6 +1,8 @@
 package user
 
 import (
+	"net/mail"
+
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/core"
@@ -20,6 +22,7 @@ var (
 
 func Register(resolve core.Resolve, router *gin.RouterGroup, verifier authContract.PasswordVerifier) {
 	router.GET("/me", handleMe(resolve))
+	router.PATCH("", handleUpdateMe(resolve))
 	router.POST("/change-password", handleChangePassword(resolve, verifier))
 }
 
@@ -82,5 +85,43 @@ func handleChangePassword(resolve core.Resolve, verifier authContract.PasswordVe
 		}
 
 		httpx.Success(c, true)
+	}
+}
+
+func handleUpdateMe(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		a, ok := actor.From(c.Request.Context())
+		if !ok {
+			httpx.Fail(c, errs.Unauthenticated("API001", "authentication required"))
+			return
+		}
+
+		var data accountChangeDTO
+		if err := c.BindJSON(&data); err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		email, err := mail.ParseAddress(data.Email)
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		identity, err := contract.ExecAccountChange(c.Request.Context(), resolve(), contract.AccountChange{
+			IdentityID: a.IdentityID,
+			Email:      email,
+			FullName:   data.FullName,
+		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		httpx.Success(c, profileDTO{
+			ID:       identity.ID,
+			Email:    identity.Email,
+			FullName: identity.FullName,
+			Active:   identity.Active,
+		})
 	}
 }

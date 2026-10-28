@@ -9,6 +9,7 @@ type IdentityRepo interface {
 	DisplayNames(ctx context.Context, ids []int) (map[int]string, error)
 	List(ctx context.Context, limit, offset int, filter *Identity) ([]Identity, error)
 	ListByIDs(ctx context.Context, ids []int) ([]Identity, error)
+	Update(ctx context.Context, identity Identity) error
 }
 
 type CredentialRepo interface {
