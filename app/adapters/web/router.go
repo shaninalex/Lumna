@@ -29,6 +29,11 @@ func RegisterWebRoutes(
 		RegisterSPA(router)
 	}
 
+	assetsFS := lumna.StaticFS("resources/assets")
+	if assetsFS != nil {
+		router.StaticFS("/assets", http.FS(assetsFS))
+	}
+
 	docsFS := lumna.StaticFS("resources/openapi")
 	if docsFS != nil {
 		router.StaticFS("/api-docs", http.FS(docsFS))

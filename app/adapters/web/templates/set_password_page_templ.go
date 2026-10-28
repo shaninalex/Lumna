@@ -31,14 +31,14 @@ func SetPasswordPage(invitation contract.InvitationClaims, err error) templ.Comp
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><meta name=\"viewport\" content=\"initial-scale=1.0, width=device-width\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB\" crossorigin=\"anonymous\"></head><body><form action=\"\" method=\"post\" class=\"container\"><div class=\"row\"><div class=\"offset-md-3 col-md-6\"><div class=\"card my-4\"><div class=\"card-body\"><h3 class=\"card-title\">Set password</h3><p>Hello <b>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><meta name=\"viewport\" content=\"initial-scale=1.0, width=device-width\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><link href=\"/assets/css/styles.min.css\" rel=\"stylesheet\"></head><body><form action=\"\" method=\"post\" class=\"container\"><div class=\"row\"><div class=\"offset-md-3 col-md-6\"><div class=\"card my-4\"><div class=\"card-body\"><h3 class=\"card-title\">Set password</h3><p>Hello <b>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(invitation.Email)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/adapters/web/templates/set_password_page.templ`, Line: 25, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/adapters/web/templates/set_password_page.templ`, Line: 20, Col: 38}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -51,7 +51,7 @@ func SetPasswordPage(invitation contract.InvitationClaims, err error) templ.Comp
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(invitation.Role)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/adapters/web/templates/set_password_page.templ`, Line: 25, Col: 102}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/adapters/web/templates/set_password_page.templ`, Line: 20, Col: 102}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -69,7 +69,7 @@ func SetPasswordPage(invitation contract.InvitationClaims, err error) templ.Comp
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/adapters/web/templates/set_password_page.templ`, Line: 42, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/adapters/web/templates/set_password_page.templ`, Line: 37, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
