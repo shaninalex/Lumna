@@ -24,6 +24,9 @@ import { GlobalLayout } from '@core/layout';
                             <li class="nav-item">
                                 <a class="nav-link" routerLinkActive="active" [routerLink]="['/app/settings/sessions']">Sessions</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" routerLinkActive="active" [routerLink]="['/app/settings/security']">Security</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

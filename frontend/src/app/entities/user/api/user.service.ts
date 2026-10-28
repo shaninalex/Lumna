@@ -12,7 +12,13 @@ export class UserApi {
 
     me(): Observable<UserModel> {
         return this.http
-            .get<APIResponse<UserModelDTO>>(`/api/v1/user/me`, { withCredentials: true })
+            .get<APIResponse<UserModelDTO>>(`/api/v1/user/me`, {withCredentials: true})
             .pipe(map((response) => toUserModel(response.data)));
+    }
+
+    changePassword(data: { password: string, password_confirm: string }): Observable<void> {
+        return this.http
+            .post<APIResponse<void>>(`/api/v1/user/change-password`, data, {withCredentials: true})
+            .pipe(map((response) => response.data));
     }
 }

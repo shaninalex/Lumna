@@ -26,9 +26,6 @@ type Deps struct {
 type Module struct {
 	deps Deps
 
-	identities  *storage.IdentityRepo
-	credentials *storage.CredentialRepo
-
 	// bridges — what this module exposes to other modules
 	//reader        *infra.Reader
 	authenticator *infra.Authenticator
@@ -36,7 +33,8 @@ type Module struct {
 	profiler      *infra.Profiler
 
 	// commands
-	register *handlers.Register
+	register       *handlers.Register
+	passwordChange *handlers.PasswordChange
 
 	// query
 	profileList       *handlers.ListProfiles
@@ -45,23 +43,22 @@ type Module struct {
 }
 
 func New(d Deps) *Module {
-	identities := storage.NewIdentityRepo(d.DB)
-	credentials := storage.NewCredentialRepo(d.DB)
+	identitiesRepo := storage.NewIdentityRepo(d.DB)
+	credentialsRepo := storage.NewCredentialRepo(d.DB)
 	hasher := infra.NewHasher()
 
 	return &Module{
-		deps:        d,
-		identities:  identities,
-		credentials: credentials,
+		deps: d,
 
-		authenticator: infra.NewAuthenticator(identities, credentials, hasher),
-		provisioner:   infra.NewProvisioner(identities, d.Clock),
-		profiler:      infra.NewProfiler(identities),
+		authenticator: infra.NewAuthenticator(identitiesRepo, credentialsRepo, hasher),
+		provisioner:   infra.NewProvisioner(identitiesRepo, d.Clock),
+		profiler:      infra.NewProfiler(identitiesRepo),
 
-		register:          handlers.NewRegister(identities, credentials, hasher, d.Mailer, d.Clock),
-		profileList:       handlers.NewListProfiles(identities),
-		getProfile:        handlers.NewGetProfile(identities),
-		getProfileByEmail: handlers.NewGetProfileByEmail(identities),
+		register:          handlers.NewRegister(identitiesRepo, credentialsRepo, hasher, d.Mailer, d.Clock),
+		passwordChange:    handlers.NewPasswordChange(identitiesRepo, credentialsRepo, hasher),
+		profileList:       handlers.NewListProfiles(identitiesRepo),
+		getProfile:        handlers.NewGetProfile(identitiesRepo),
+		getProfileByEmail: handlers.NewGetProfileByEmail(identitiesRepo),
 	}
 }
 
@@ -86,6 +83,7 @@ func (m *Module) Profiler() contract.Profiler {
 func (m *Module) Register(a *core.App) error {
 	return errors.Join(
 		bus.RegisterCommand(a.Commands, m.register.Handle),
+		bus.RegisterCommand(a.Commands, m.passwordChange.Handle),
 		bus.RegisterQuery(a.Queries, m.profileList.Handle),
 		bus.RegisterQuery(a.Queries, m.getProfile.Handle),
 		bus.RegisterQuery(a.Queries, m.getProfileByEmail.Handle),

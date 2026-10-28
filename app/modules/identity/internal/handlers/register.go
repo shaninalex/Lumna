@@ -9,11 +9,11 @@ import (
 )
 
 type Register struct {
-	identities domain.IdentityRepo
-	creds      domain.CredentialRepo
-	hasher     domain.Hasher
-	mailer     contract.Mailer
-	clock      clock.Clock
+	identityRepo domain.IdentityRepo
+	credsRepo    domain.CredentialRepo
+	hasher       domain.Hasher
+	mailer       contract.Mailer
+	clock        clock.Clock
 }
 
 func NewRegister(
@@ -30,11 +30,11 @@ func NewRegister(
 func (u *Register) Handle(ctx context.Context, cmd contract.Register) (contract.ProfileView, error) {
 	var zero contract.ProfileView
 
-	if existing, err := u.identities.ByEmail(ctx, cmd.Email); err == nil && existing.ID != 0 {
+	if existing, err := u.identityRepo.ByEmail(ctx, cmd.Email); err == nil && existing.ID != 0 {
 		return zero, domain.ErrEmailTaken
 	}
 
-	identity, err := u.identities.Save(ctx, domain.NewIdentity(cmd.Email, cmd.FullName, u.clock.Now()))
+	identity, err := u.identityRepo.Save(ctx, domain.NewIdentity(cmd.Email, cmd.FullName, u.clock.Now()))
 	if err != nil {
 		return zero, err
 	}
@@ -43,7 +43,7 @@ func (u *Register) Handle(ctx context.Context, cmd contract.Register) (contract.
 	if err != nil {
 		return zero, err
 	}
-	_, err = u.creds.Save(ctx, domain.NewPasswordCredential(identity.ID, hash, identity.Email))
+	_, err = u.credsRepo.Save(ctx, domain.NewPasswordCredential(identity.ID, hash, identity.Email))
 	if err != nil {
 		return zero, err
 	}

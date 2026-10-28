@@ -62,7 +62,7 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 			api.RegisterApiRoutes(resolve, app().Bridges.AccessVerifier, api.Config{
 				CORSOrigins:   cfg.CORSOrigins(),
 				SecureCookies: cfg.SecureCookies(),
-			}, router)
+			}, router, app().Bridges.PasswordVerifier)
 
 			// server
 			srv := &http.Server{

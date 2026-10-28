@@ -47,3 +47,7 @@ func (r *CredentialRepo) ByIdentityAndProvider(ctx context.Context, id int, p do
 	}
 	return toDomainCredential(rec), nil
 }
+
+func (r *CredentialRepo) Update(ctx context.Context, credential domain.Credential) error {
+	return r.db.From(ctx).Updates(&credential).Error
+}

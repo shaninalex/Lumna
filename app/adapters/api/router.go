@@ -25,7 +25,7 @@ type Config struct {
 }
 
 // RegisterApiRoutes mounts the API.
-func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier[actor.Actor], cfg Config, router *gin.Engine) {
+func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier[actor.Actor], cfg Config, router *gin.Engine, pwdVerifier authc.PasswordVerifier) {
 	cookies := httpx.CookieConfig{Secure: cfg.SecureCookies}
 	router.Use(httpx.CORSMiddleware(cfg.CORSOrigins))
 
@@ -34,7 +34,7 @@ func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier[actor.Actor
 
 	private := router.Group("/api/v1")
 	private.Use(httpx.AuthMiddleware(verifier))
-	user.Register(resolve, private.Group("user"))
+	user.Register(resolve, private.Group("user"), pwdVerifier)
 	workspace.Register(resolve, private.Group("workspaces"))
 	project.Register(resolve, private.Group("projects"))
 	board.Register(resolve, private.Group("boards"))

@@ -14,4 +14,5 @@ type IdentityRepo interface {
 type CredentialRepo interface {
 	Save(ctx context.Context, c Credential) (Credential, error)
 	ByIdentityAndProvider(ctx context.Context, id int, p Provider) (Credential, error)
+	Update(ctx context.Context, credential Credential) error
 }
