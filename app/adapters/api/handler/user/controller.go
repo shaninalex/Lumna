@@ -1,6 +1,7 @@
 package user
 
 import (
+	"net/http"
 	"net/mail"
 
 	"github.com/gin-gonic/gin"
@@ -20,10 +21,11 @@ var (
 	ErrPasswordToWeak         = errs.Conflict("AUTH004", "password too weak")
 )
 
-func Register(resolve core.Resolve, router *gin.RouterGroup, verifier authContract.PasswordVerifier) {
+func Register(resolve core.Resolve, router *gin.RouterGroup, verifier authContract.PasswordVerifier, cookies httpx.CookieConfig) {
 	router.GET("/me", handleMe(resolve))
 	router.PATCH("", handleUpdateMe(resolve))
 	router.POST("/change-password", handleChangePassword(resolve, verifier))
+	router.POST("/delete", handleDeleteAccount(resolve, cookies))
 }
 
 func handleMe(resolve core.Resolve) gin.HandlerFunc {
@@ -123,5 +125,27 @@ func handleUpdateMe(resolve core.Resolve) gin.HandlerFunc {
 			FullName: identity.FullName,
 			Active:   identity.Active,
 		})
+	}
+}
+
+func handleDeleteAccount(resolve core.Resolve, cookies httpx.CookieConfig) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		a, ok := actor.From(c.Request.Context())
+		if !ok {
+			httpx.Fail(c, errs.Unauthenticated("API001", "authentication required"))
+			return
+		}
+
+		ok, err := contract.ExecAccountDelete(c.Request.Context(), resolve(), contract.AccountDelete{
+			IdentityID: a.IdentityID,
+		})
+
+		if !ok && err != nil {
+			httpx.Fail(c, errs.Unauthenticated("API001", "authentication required"))
+			return
+		}
+
+		httpx.ClearSession(c, cookies)
+		c.Redirect(http.StatusFound, "/auth/login")
 	}
 }

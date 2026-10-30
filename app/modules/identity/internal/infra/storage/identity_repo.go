@@ -116,3 +116,11 @@ func (r *IdentityRepo) Update(ctx context.Context, identity domain.Identity) err
 	}
 	return err
 }
+
+func (r *IdentityRepo) Delete(ctx context.Context, id int) error {
+	rows, err := gorm.G[identityRecord](r.db.From(ctx)).Where("id = ?", id).Delete(ctx)
+	if errors.Is(err, gorm.ErrRecordNotFound) || rows <= 0 {
+		return domain.ErrNotFound
+	}
+	return err
+}

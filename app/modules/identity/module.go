@@ -36,6 +36,7 @@ type Module struct {
 	register       *handlers.Register
 	passwordChange *handlers.PasswordChange
 	accountChange  *handlers.AccountChange
+	accountDelete  *handlers.AccountDelete
 
 	// query
 	profileList       *handlers.ListProfiles
@@ -58,6 +59,7 @@ func New(d Deps) *Module {
 		register:       handlers.NewRegister(identitiesRepo, credentialsRepo, hasher, d.Mailer, d.Clock),
 		passwordChange: handlers.NewPasswordChange(identitiesRepo, credentialsRepo, hasher),
 		accountChange:  handlers.NewAccountChange(identitiesRepo, d.Clock),
+		accountDelete:  handlers.NewAccountDelete(identitiesRepo),
 
 		profileList:       handlers.NewListProfiles(identitiesRepo),
 		getProfile:        handlers.NewGetProfile(identitiesRepo),
@@ -88,6 +90,7 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.register.Handle),
 		bus.RegisterCommand(a.Commands, m.passwordChange.Handle),
 		bus.RegisterCommand(a.Commands, m.accountChange.Handle),
+		bus.RegisterCommand(a.Commands, m.accountDelete.Handle),
 		bus.RegisterQuery(a.Queries, m.profileList.Handle),
 		bus.RegisterQuery(a.Queries, m.getProfile.Handle),
 		bus.RegisterQuery(a.Queries, m.getProfileByEmail.Handle),

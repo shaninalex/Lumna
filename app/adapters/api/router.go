@@ -34,7 +34,7 @@ func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier[actor.Actor
 
 	private := router.Group("/api/v1")
 	private.Use(httpx.AuthMiddleware(verifier))
-	user.Register(resolve, private.Group("user"), pwdVerifier)
+	user.Register(resolve, private.Group("user"), pwdVerifier, cookies)
 	workspace.Register(resolve, private.Group("workspaces"))
 	project.Register(resolve, private.Group("projects"))
 	board.Register(resolve, private.Group("boards"))

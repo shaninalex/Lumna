@@ -43,3 +43,13 @@ func (AccountChange) Permission() (action string, scope int) { return "", 0 }
 func ExecAccountChange(ctx context.Context, a *core.App, cmd AccountChange) (ProfileView, error) {
 	return bus.Execute[AccountChange, ProfileView](ctx, a.Commands, cmd)
 }
+
+type AccountDelete struct {
+	IdentityID int
+}
+
+func (AccountDelete) Permission() (action string, scope int) { return "", 0 }
+
+func ExecAccountDelete(ctx context.Context, a *core.App, cmd AccountDelete) (bool, error) {
+	return bus.Execute[AccountDelete, bool](ctx, a.Commands, cmd)
+}

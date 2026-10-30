@@ -10,6 +10,7 @@ type IdentityRepo interface {
 	List(ctx context.Context, limit, offset int, filter *Identity) ([]Identity, error)
 	ListByIDs(ctx context.Context, ids []int) ([]Identity, error)
 	Update(ctx context.Context, identity Identity) error
+	Delete(ctx context.Context, id int) error
 }
 
 type CredentialRepo interface {
