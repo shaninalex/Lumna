@@ -1,3 +1,4 @@
 export * from './change-password'
 export * from './manage-refresh-tokens'
 export * from './account-form'
+export * from './account-remove'

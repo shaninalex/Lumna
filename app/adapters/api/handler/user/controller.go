@@ -25,7 +25,7 @@ func Register(resolve core.Resolve, router *gin.RouterGroup, verifier authContra
 	router.GET("/me", handleMe(resolve))
 	router.PATCH("", handleUpdateMe(resolve))
 	router.POST("/change-password", handleChangePassword(resolve, verifier))
-	router.POST("/delete", handleDeleteAccount(resolve, cookies))
+	router.POST("/delete-account", handleDeleteAccount(resolve, cookies))
 }
 
 func handleMe(resolve core.Resolve) gin.HandlerFunc {

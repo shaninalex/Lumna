@@ -6,10 +6,14 @@ import { UserApi } from '../api/user.service';
 import { switchMap } from 'rxjs/operators';
 import type { HttpErrorResponse } from '@angular/common/http';
 import { fromErrorResponse } from '@shared/models';
+import { Router } from "@angular/router";
+import { actionSession } from "@core/store/session/session.actions";
 
 @Injectable()
 export class UserEffects {
     private actions$ = inject(Actions);
+    private router = inject(Router);
+
     clearUser$ = createEffect(() =>
             this.actions$.pipe(
                 ofType(actionUser.clear),
@@ -41,6 +45,18 @@ export class UserEffects {
                     catchError((err: HttpErrorResponse) =>
                         of(actionUser.updateFailed({errors: fromErrorResponse(err)}))
                     )
+                )
+            )
+        )
+    );
+
+    delete$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(actionUser.delete),
+            switchMap(() =>
+                this.api.delete().pipe(
+                    switchMap(() => of(actionSession.loggedOut())),
+                    catchError((err: HttpErrorResponse) => of(actionUser.deleteFailed({errors: fromErrorResponse(err)})))
                 )
             )
         )

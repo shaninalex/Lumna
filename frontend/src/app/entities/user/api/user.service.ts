@@ -27,4 +27,10 @@ export class UserApi {
             .patch<APIResponse<UserModelDTO>>(`/api/v1/user`, data, {withCredentials: true})
             .pipe(map((response) => toUserModel(response.data)));
     }
+
+    delete(): Observable<null> {
+        return this.http
+            .post<APIResponse<null>>(`/api/v1/user/delete-account`, null, {withCredentials: true})
+            .pipe(map((response) => response.data));
+    }
 }

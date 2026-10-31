@@ -15,5 +15,9 @@ export const actionUser = createActionGroup({
         update: props<{ email: string, fullName: string }>(),
         updateSuccess: props<{ user: UserModel }>(),
         updateFailed: props<{ errors: Error[] }>(),
+
+        delete: emptyProps(),
+        deleteSuccess: emptyProps(),
+        deleteFailed: props<{ errors: Error[] }>(),
     },
 });

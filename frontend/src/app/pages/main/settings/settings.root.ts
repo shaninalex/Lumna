@@ -27,6 +27,9 @@ import { GlobalLayout } from '@core/layout';
                             <li class="nav-item">
                                 <a class="nav-link" routerLinkActive="active" [routerLink]="['/app/settings/security']">Security</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link secondary" routerLinkActive="active" [routerLink]="['/app/settings/remove']">Remove</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -38,4 +41,5 @@ import { GlobalLayout } from '@core/layout';
         </lu-global-layout>
     `
 })
-export class SettingsRoot {}
+export class SettingsRoot {
+}
