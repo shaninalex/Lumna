@@ -56,7 +56,10 @@ export class UserEffects {
             switchMap(() =>
                 this.api.delete().pipe(
                     switchMap(() => of(actionSession.loggedOut())),
-                    catchError((err: HttpErrorResponse) => of(actionUser.deleteFailed({errors: fromErrorResponse(err)})))
+                    catchError((err: HttpErrorResponse) => {
+                        console.log(err)
+                        return of(actionUser.deleteFailed({errors: fromErrorResponse(err)}))
+                    })
                 )
             )
         )

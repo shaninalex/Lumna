@@ -9,21 +9,38 @@ import { actionUser } from '@entities/user';
 @Injectable()
 export class SessionEffects {
     private actions$ = inject(Actions);
+    authenticated_successfull$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(actionSession.authenticatedSuccessfull),
+            map((action) => actionUser.set({user: action.user})),
+        );
+    });
+    logging_out_completed$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(actionSession.loggedOut),
+            map(() => actionUser.clear()),
+        );
+    });
+    logging_out_completed_redirect$ = createEffect(() => {
+            return this.actions$.pipe(
+                ofType(actionSession.loggedOut),
+                map(() => window.location.href = '/auth/login'),
+            );
+        },
+        {dispatch: false},
+    );
     private sessionApi = inject(SessionApi);
-    private router = inject(Router);
-
     authenticate_start$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(actionSession.startAuthenticate),
             exhaustMap((action) =>
                 this.sessionApi.login(action.email, action.password).pipe(
-                    map((user) => actionSession.authenticatedSuccessfull({ user: user })),
+                    map((user) => actionSession.authenticatedSuccessfull({user: user})),
                     catchError(() => EMPTY), // TODO: handle auth errors
                 ),
             ),
         );
     });
-
     logging_out_init$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(actionSession.loggingOut),
@@ -35,14 +52,7 @@ export class SessionEffects {
             ),
         );
     });
-
-    authenticated_successfull$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(actionSession.authenticatedSuccessfull),
-            map((action) => actionUser.set({ user: action.user })),
-        );
-    });
-
+    private router = inject(Router);
     authenticated_successfull_redirect$ = createEffect(
         () => {
             return this.actions$.pipe(
@@ -50,23 +60,6 @@ export class SessionEffects {
                 map(() => this.router.navigateByUrl('/app')),
             );
         },
-        { dispatch: false },
-    );
-
-    logging_out_completed$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(actionSession.loggedOut),
-            map(() => actionUser.clear()),
-        );
-    });
-
-    logging_out_completed_redirect$ = createEffect(
-        () => {
-            return this.actions$.pipe(
-                ofType(actionSession.loggedOut),
-                map(() => this.router.navigateByUrl('/auth/login')),
-            );
-        },
-        { dispatch: false },
+        {dispatch: false},
     );
 }

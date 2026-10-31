@@ -1,7 +1,6 @@
 package user
 
 import (
-	"net/http"
 	"net/mail"
 
 	"github.com/gin-gonic/gin"
@@ -146,6 +145,6 @@ func handleDeleteAccount(resolve core.Resolve, cookies httpx.CookieConfig) gin.H
 		}
 
 		httpx.ClearSession(c, cookies)
-		c.Redirect(http.StatusFound, "/auth/login")
+		httpx.Success(c, map[string]any{"deleted": true})
 	}
 }
