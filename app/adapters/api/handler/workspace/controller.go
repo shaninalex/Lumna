@@ -15,6 +15,7 @@ func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET("", handleWorkspaceList(resolve))
 	router.POST("", handleCreateWorkspace(resolve))
 	router.GET(":workspace_id/members", handleWorkspaceMembers(resolve))
+	router.POST(":workspace_id/members/remove", handleWorkspaceMembersRemove(resolve))
 	router.POST(":workspace_id/invitations", handleCreateInvitation(resolve))
 	router.GET(":workspace_id/invitations", handleInvitationsList(resolve))
 	router.DELETE(":workspace_id", handleWorkspaceDelete(resolve))
@@ -206,6 +207,27 @@ func handleWorkspaceDelete(resolve core.Resolve) gin.HandlerFunc {
 			WorkspaceID: workspaceID,
 			AdminID:     a.IdentityID,
 		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		httpx.Success(c, true)
+	}
+}
+
+func handleWorkspaceMembersRemove(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var data removeMemberDTO
+		if err := c.ShouldBindJSON(&data); err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		_, err := contract.ExecRemoveMember(c.Request.Context(), resolve(), contract.RemoveMember{
+			IdentityId:  data.IdentityID,
+			WorkspaceID: data.WorkspaceID,
+		})
+
 		if err != nil {
 			httpx.Fail(c, err)
 			return

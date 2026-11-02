@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"errors"
 
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -51,4 +52,14 @@ func (s *IdentityWorkspaceRepo) ByWorkspaceId(ctx context.Context, workspaceId i
 		}
 	}
 	return identities, nil
+}
+
+func (s *IdentityWorkspaceRepo) Delete(ctx context.Context, identityID, workspaceID int) error {
+	records, err := gorm.G[identityWorkspaceRecord](s.db.From(ctx)).
+		Where("identity_id = ? AND workspace_id = ?", identityID, workspaceID).
+		Delete(ctx)
+	if errors.Is(err, gorm.ErrRecordNotFound) || records <= 0 {
+		return domain.ErrMemberNotFound
+	}
+	return err
 }

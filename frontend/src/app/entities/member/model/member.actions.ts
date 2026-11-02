@@ -1,10 +1,15 @@
 import { createActionGroup, props } from '@ngrx/store';
 import { Member } from './member.model';
+import type { Error } from '@shared/models';
 
 export const actionMember = createActionGroup({
     source: 'Member',
     events: {
-        'get list': props<{ workspaceId: number }>(),
-        'set list': props<{ members: Member[] }>(),
+        getList: props<{ workspaceId: number }>(),
+        setList: props<{ members: Member[] }>(),
+
+        removeMember: props<{ workspaceId: number, identityId: number }>(),
+        removeMemberFailed: props<{ errors: Error[] }>(),
+        removeMemberSuccess: props<{ workspaceId: number, identityId: number }>(),
     },
 });

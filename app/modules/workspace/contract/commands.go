@@ -95,3 +95,14 @@ func (RemoveWorkspace) Permission() (action string, scope int) { return "", 0 }
 func ExecRemoveWorkspace(ctx context.Context, a *core.App, cmd RemoveWorkspace) (bool, error) {
 	return bus.Execute[RemoveWorkspace, bool](ctx, a.Commands, cmd)
 }
+
+type RemoveMember struct {
+	IdentityId  int
+	WorkspaceID int
+}
+
+func (RemoveMember) Permission() (action string, scope int) { return "", 0 }
+
+func ExecRemoveMember(ctx context.Context, a *core.App, cmd RemoveMember) (bool, error) {
+	return bus.Execute[RemoveMember, bool](ctx, a.Commands, cmd)
+}

@@ -35,6 +35,7 @@ type Module struct {
 	deleteInvitation       *handlers.InvitationDelete
 	revokeInvitation       *handlers.InvitationRevoke
 	acceptInvitation       *handlers.AcceptInvitation
+	removeMember           *handlers.RemoveMember
 
 	// query handlers
 	workspaceList      *handlers.WorkspaceList
@@ -64,6 +65,7 @@ func New(d Deps) *Module {
 		deleteInvitation:       handlers.NewInvitationDelete(invitationRepo),
 		revokeInvitation:       handlers.NewInvitationRevoke(invitationRepo, d.Clock),
 		acceptInvitation:       handlers.NewAcceptInvitation(invitationRepo, identityWorkspaceRepo, d.Clock, d.EventBus, d.Log),
+		removeMember:           handlers.NewRemoveMember(identityWorkspaceRepo),
 
 		workspaceList:      handlers.NewWorkspaceList(workspaceRepo),
 		projectList:        handlers.NewProjectList(projectRepo),
@@ -83,6 +85,7 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.revokeInvitation.Handle),
 		bus.RegisterCommand(a.Commands, m.acceptInvitation.Handle),
 		bus.RegisterCommand(a.Commands, m.removeWorkspace.Handle),
+		bus.RegisterCommand(a.Commands, m.removeMember.Handle),
 		bus.RegisterQuery(a.Queries, m.workspaceList.Handle),
 		bus.RegisterQuery(a.Queries, m.projectList.Handle),
 		bus.RegisterQuery(a.Queries, m.membersList.Handle),

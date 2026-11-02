@@ -98,3 +98,8 @@ func toMemberDTO(m contract.MemberView) memberDTO {
 		WorkspaceId: m.WorkspaceId,
 	}
 }
+
+type removeMemberDTO struct {
+	IdentityID  int `json:"identity_id"`
+	WorkspaceID int `json:"workspace_id"`
+}

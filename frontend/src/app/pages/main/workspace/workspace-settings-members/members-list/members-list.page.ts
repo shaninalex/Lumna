@@ -5,9 +5,10 @@ import { filter, Observable, tap } from 'rxjs';
 import { selectWorkspaces } from '@entities/workspace';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
+import { RemoveMemberButtonFeature } from '@features/user';
 
 @Component({
-    imports: [AsyncPipe, DatePipe],
+    imports: [AsyncPipe, DatePipe, RemoveMemberButtonFeature],
     selector: 'lu-members-list',
     template: `
         @if (members$ | async; as members) {
@@ -19,6 +20,7 @@ import { switchMap } from 'rxjs/operators';
                     <th>full name</th>
                     <th>role</th>
                     <th>date joined</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -29,6 +31,12 @@ import { switchMap } from 'rxjs/operators';
                             <td>{{ member.fullName }}</td>
                             <td>{{ member.role }}</td>
                             <td>{{ member.dateJoined | date }}</td>
+                            <td>
+                                <lu-remove-member-button
+                                    [identityId]="member.id"
+                                    [workspaceId]="member.workspaceId"
+                                />
+                            </td>
                         </tr>
                     }
                 </tbody>

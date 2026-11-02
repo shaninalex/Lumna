@@ -33,7 +33,6 @@ export class WorkspaceRemoveFeature {
             if (id === null) { return }
             this.store.dispatch(actionWorkspace.remove({ id }))
         });
-
     }
 }
 

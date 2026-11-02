@@ -12,4 +12,5 @@ var (
 	InvitationUnableToSaveError          = errs.Conflict("WSP05", "invitation unable to save")
 	ErrUnknownRole                       = errs.Validation("WSP06", "unknown workspace role")
 	ErrUnableToAddUserToWorkspace        = errs.Conflict("WSP07", "unable to add user to workspace")
+	ErrMemberNotFound                    = errs.NotFound("WSP08", "member not found")
 )
