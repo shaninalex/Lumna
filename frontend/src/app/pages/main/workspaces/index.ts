@@ -1,1 +1,1 @@
-export * from './workspaces.routes'
+export { WorkspacesPage } from './workspaces.page'

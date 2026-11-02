@@ -18,10 +18,11 @@ import { KanbanApi } from '@widgets/kanban-widget/api';
 import { WebSocketService } from './websocket.service';
 import { ActivityApi } from '@entities/activity/api';
 import { activityFeature } from '@entities/activity';
-import { routes as workspacesRoutes } from '@pages/main/workspaces';
-import { routes as workspaceRoutes } from '@pages/main/workspace';
-import { routes as projectRoutes } from '@pages/main/project';
-import { routes as settingsRoutes } from '@pages/main/settings';
+import { workspacesRoutes,
+    workspaceRoutes,
+    projectRoutes,
+    settingsRoutes
+} from '@pages';
 import { MemberApi } from '@entities/member/api/member.api';
 import { memberFeature } from '@entities/member/provider';
 import { InvitationApi } from '@entities/invitation/api';

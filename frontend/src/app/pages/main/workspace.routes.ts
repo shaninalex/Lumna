@@ -1,14 +1,16 @@
 import type { Routes } from '@angular/router';
 import { WorkspaceEntryPage } from './workspace-entry';
-import { WorkspaceRemovePage, WorkspaceSettingsPage } from './workspace-settings';
+import { WorkspaceSettingsPage } from './workspace-settings';
 import { WorkspaceSettingsMainPage } from './workspace-settings-main';
 import { WorkspaceSettingsMembersPage } from './workspace-settings-members';
 import { ProjectListPage } from './project-list';
 import { ProjectCreatePage } from './project-create';
 
-import { routes as workspaceMembersRoutes } from './workspace-settings-members/workspace-members.routes'
+import { MembersListPage } from './members-list';
+import { MembersInvitationsPage } from './members-invitations';
+import { WorkspaceRemovePage } from './workspace-remove';
 
-export const routes: Routes = [
+export const workspaceRoutes: Routes = [
     {
         path: '',
         component: WorkspaceEntryPage,
@@ -24,7 +26,16 @@ export const routes: Routes = [
             {
                 path: "members",
                 component: WorkspaceSettingsMembersPage,
-                children: workspaceMembersRoutes,
+                children: [
+                    {
+                        path: "",
+                        component: MembersListPage,
+                    },
+                    {
+                        path: "invitations",
+                        component: MembersInvitationsPage,
+                    }
+                ],
             },
             {
                 path: "remove",

@@ -5,7 +5,7 @@ import { SecurityPage } from './security';
 import { AccountPage } from './account';
 import { RemovePage } from './remove';
 
-export const routes: Routes = [
+export const settingsRoutes: Routes = [
     {
         path: '',
         component: SettingsRoot,

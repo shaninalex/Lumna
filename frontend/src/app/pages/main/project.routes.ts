@@ -1,13 +1,13 @@
 import type { Routes } from '@angular/router';
 import { paramMatches, paramMatchesDigitsOnly } from '@shared/utils';
-import { activeProjectGuard } from "../project.guard";
+import { activeProjectGuard } from "./project.guard";
 import { InboxPage } from "./inbox";
 import { BoardsPage } from './boards';
 import { BoardCreatePage } from './board-create';
 import { BoardDetailPage } from './board-detail';
 import { TaskDetailPage } from './task-detail';
 
-export const routes: Routes = [
+export const projectRoutes: Routes = [
     {
         path: 'p/:projectId',
         canActivate: [activeProjectGuard],
