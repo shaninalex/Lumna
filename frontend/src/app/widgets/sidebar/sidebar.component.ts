@@ -7,17 +7,19 @@ import { filter, map, switchMap } from 'rxjs';
 import { selectProjects } from '@entities/project';
 import { selectUI } from "@core/store/ui";
 import { AppRoutes } from '@core';
+import { reiconInbox, reiconPage, reiconSettings2 } from '@ng-icons/reicon';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 
 @Component({
     selector: 'lu-sidebar',
-    imports: [NgClass, RouterLink, AsyncPipe],
+    imports: [NgClass, RouterLink, AsyncPipe, NgIcon],
     styleUrl: './sidebar.component.scss',
     templateUrl: './sidebar.component.html',
+    providers: [provideIcons({reiconSettings2, reiconInbox, reiconPage})]
 })
 export class SidebarComponent {
-    private store = inject(Store);
     readonly appRoutes = inject(AppRoutes);
-
+    private store = inject(Store);
     hideSidebar = this.store.selectSignal(selectUI.sidebarOpen);
     currentProject = this.store.selectSignal(selectProjects.currentProject);
 

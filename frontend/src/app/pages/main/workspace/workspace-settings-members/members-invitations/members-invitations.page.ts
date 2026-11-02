@@ -9,10 +9,13 @@ import { AppRoutes } from '@core';
 import { InviteData, MembersInvitationsDialogComponent } from './members-invitations.dialog';
 import { Dialog } from '@angular/cdk/dialog';
 import { isAfter } from 'date-fns';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconCheck, reiconXmark } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-members-invitations',
-    imports: [AsyncPipe, DatePipe, NgClass],
+    imports: [AsyncPipe, DatePipe, NgClass, NgIcon],
+    providers: [provideIcons({ reiconCheck, reiconXmark })],
     styleUrl: './members-invitations.page.scss',
     template: `
         @if (invitations$ | async; as invitations) {
@@ -37,13 +40,13 @@ import { isAfter } from 'date-fns';
                         }">
                             <td>
                                 @if (isAccepted(invitation)) {
-                                    <i class="fa-solid fa-check text-success"></i>
+                                    <ng-icon name="reiconCheck" color="green" />
                                 } @else {
-                                    <i class="fa-solid fa-xmark text-danger"></i>
+                                    <ng-icon name="reiconXmark" color="red"/>
                                 }
                             </td>
                             <td>{{ invitation.email }}</td>
-                            <td>{{ invitation.role }}</td>
+                            <td>    {{ invitation.role }}</td>
                             <td><img alt="" src="images/7.png"
                                      style="width:1.5rem; height: 1.5rem; border-radius: 1.5rem"/></td>
                             <td>{{ invitation.expiresAt | date }}</td>

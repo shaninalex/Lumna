@@ -1,12 +1,16 @@
 import { Component, inject, input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { actionUI } from '@core/store/ui';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconPlus } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-add-task-btn',
+    imports: [NgIcon],
+    providers: [provideIcons({ reiconPlus })],
     template: `
         <button class="button button-pill w-100 text-start" (click)="openForm($event)">
-            <i class="fa-solid fa-plus"></i> Add Task
+            <ng-icon name="reiconPlus" /> Add Task
         </button>
     `
 })

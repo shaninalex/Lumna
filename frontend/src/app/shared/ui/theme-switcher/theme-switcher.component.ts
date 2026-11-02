@@ -4,23 +4,25 @@ import { AsyncPipe } from '@angular/common';
 import { UiService } from '../ui.service';
 import type { Theme } from '../theme.manager';
 import type { Observable } from 'rxjs';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconDarkLight, reiconMoon, reiconSun } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-theme-switcher',
-    imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe],
-
+    imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe, NgIcon],
+    providers: [provideIcons({reiconMoon, reiconSun, reiconDarkLight})],
     template: `
         <button class="btn btn-sm" [cdkMenuTriggerFor]="theme">
             @if (themeMode | async; as themeMode) {
                 @switch (themeMode) {
                     @case ('dark') {
-                        <i class="fa-solid fa-moon"></i>
+                        <ng-icon name="reiconMoon"/>
                     }
                     @case ('light') {
-                        <i class="fa-solid fa-sun"></i>
+                        <ng-icon name="reiconSun"/>
                     }
                     @case ('auto') {
-                        <i class="fa-solid fa-circle-half-stroke"></i>
+                        <ng-icon name="reiconDarkLight"/>
                     }
                 }
             }

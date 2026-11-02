@@ -6,11 +6,13 @@ import { TaskModel } from '@entities/task/model';
 import { selectUser } from '@entities/user';
 import { filter } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconUserCircle } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-assignment-dropdown',
-    imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe],
-
+    imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe, NgIcon],
+    providers: [provideIcons({ reiconUserCircle })],
     template: `
         <div
             class="text-muted d-inline-flex align-items-center lh-1"
@@ -19,7 +21,7 @@ import { AsyncPipe } from '@angular/common';
             @if (task.assignees !== null && task.assignees.length > 0) {
                 <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
             } @else {
-                <i class="fa-regular fa-circle-user"></i>
+                <ng-icon name="reiconUserCircle" />
             }
         </div>
         <ng-template #assignmentMenu>

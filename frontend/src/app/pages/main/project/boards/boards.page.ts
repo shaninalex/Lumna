@@ -4,11 +4,13 @@ import { RouterLink } from '@angular/router';
 import { AppRoutes } from '@core';
 import { BoardListFeature } from '@features';
 import { MainLayout } from '@core/layout';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconPlus } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-boards-page',
-    imports: [MainLayout, RouterLink, BoardListFeature],
-
+    imports: [MainLayout, RouterLink, BoardListFeature, NgIcon  ],
+    providers: [provideIcons({ reiconPlus })],
     template: `
         <lu-main-layout>
             <div class="container-fluid py-4">
@@ -22,7 +24,7 @@ import { MainLayout } from '@core/layout';
                     </div>
 
                     <a [routerLink]="appRoutes.boardsCreate()" class="btn btn-primary btn-sm">
-                        <i class="fa-solid fa-plus me-2"></i>
+                        <ng-icon name="reiconPlus" />
                         New Board
                     </a>
                 </div>

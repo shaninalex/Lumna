@@ -10,7 +10,7 @@
     height: inherit;
 }
 
-.logo-button:not(.logo-button-closed) i {
+.logo-button:not(.logo-button-closed) ng-icon {
     display: none;
     position: absolute;
     top: 50%;
@@ -18,5 +18,5 @@
     transform: translate(-50%, -50%);
 }
 
-.logo-button:not(.logo-button-closed):hover i { display: block }
+.logo-button:not(.logo-button-closed):hover ng-icon { display: block }
 .logo-button:not(.logo-button-closed):hover img { display: none }

@@ -1,7 +1,7 @@
 <button [cdkMenuTriggerFor]="menu" class="btn btn-sm">
-    <i class="fa-solid fa-bell"></i>
+    <ng-icon name="reiconBell" />
 </button>
-    
+
 <ng-template #menu>
     <div class="card shadow-sm" cdkMenu style="width: 380px;">
 
@@ -31,7 +31,7 @@
                         <div class="rounded-circle bg-primary-subtle text-primary
                                     d-flex align-items-center justify-content-center"
                              style="width: 38px; height: 38px;">
-                            <i class="fa-solid fa-at"></i>
+                            @
                         </div>
                     </div>
 
@@ -67,7 +67,7 @@
                         <div class="rounded-circle bg-success-subtle text-success
                                     d-flex align-items-center justify-content-center"
                              style="width: 38px; height: 38px;">
-                            <i class="fa-solid fa-user-plus"></i>
+                            <ng-icon name="reiconPlus" />
                         </div>
                     </div>
 
@@ -103,7 +103,7 @@
                         <div class="rounded-circle bg-warning-subtle text-warning
                                     d-flex align-items-center justify-content-center"
                              style="width: 38px; height: 38px;">
-                            <i class="fa-solid fa-comment"></i>
+                            <ng-icon name="reiconCommentDots" />
                         </div>
                     </div>
 
@@ -135,7 +135,7 @@
                         <div class="rounded-circle bg-info-subtle text-info
                                     d-flex align-items-center justify-content-center"
                              style="width: 38px; height: 38px;">
-                            <i class="fa-solid fa-code-pull-request"></i>
+                            <ng-icon name="reiconArrowToTopLeftFill" />
                         </div>
                     </div>
 

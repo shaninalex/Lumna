@@ -7,6 +7,8 @@ import { ProjectDropdownComponent } from '@features/project';
 import { WorkspaceSwitcherComponent } from '@features';
 import { actionUI, selectUI } from '@core/store/ui';
 import { NgClass } from '@angular/common';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconChevronLeft, reiconMenu } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-header',
@@ -17,7 +19,9 @@ import { NgClass } from '@angular/common';
         ProjectDropdownComponent,
         WorkspaceSwitcherComponent,
         NgClass,
+        NgIcon,
     ],
+    providers: [provideIcons({ reiconChevronLeft, reiconMenu })],
     styleUrl: './header.component.scss',
     template: `
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -27,9 +31,9 @@ import { NgClass } from '@angular/common';
                             [ngClass]="{'logo-button-closed': !sidebarOpen()}"
                             (click)="toggleSidebar()">
                         @if (!sidebarOpen()) {
-                            <i class="fa-solid fa-chevron-right"></i>
+                            <ng-icon name="reiconChevronLeft" />
                         } @else {
-                            <i class="fa-solid fa-bars"></i>
+                            <ng-icon name="reiconMenu" />
                             <img src="images/logo-icon.svg">
                         }
                     </button>

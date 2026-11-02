@@ -8,7 +8,7 @@
                         [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id, 'inbox']"
                         title="Inbox"
                     >
-                        <i class="fa-solid fa-chart-column"></i>
+                        <ng-icon name="reiconInbox" />
                         <span class="sidebar-nav-link">Inbox</span>
                     </a>
                 </li>
@@ -18,7 +18,7 @@
                         [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id, 'boards']"
                         title="Boards"
                     >
-                        <i class="fa-solid fa-chart-simple"></i>
+                        <ng-icon name="reiconPage" />
                         <span class="sidebar-nav-link">Boards</span>
                     </a>
                 </li>
@@ -29,7 +29,7 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link text-body" [routerLink]="appRoutes.workspaceRoot(['settings'])">
-                        <i class="fa-solid fa-cog"></i>
+                        <ng-icon name="reiconSettings2" />
                         <span class="sidebar-nav-link">Workspace settings</span>
                     </a>
                 </li>

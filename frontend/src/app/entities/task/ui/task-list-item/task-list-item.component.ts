@@ -7,10 +7,13 @@ import { ColumnModel, selectColumns } from '@entities/column'; // bad (?)
 import { filter, Observable } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconChevronRight } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-task-list-item',
-    imports: [RouterLink, DatePipe, AsyncPipe],
+    imports: [RouterLink, DatePipe, AsyncPipe, NgIcon],
+    providers: [provideIcons({ reiconChevronRight })],
     template: `
         <a
             [routerLink]="appRoutes.task(task.boardId, task.id)"
@@ -29,10 +32,9 @@ import { AsyncPipe, DatePipe } from '@angular/common';
                     #Feat-123 • Created by Alex • {{ task.createdAt | date: standardTime }}
                 </div>
             </div>
-            <i class="fa-solid fa-chevron-right text-muted mt-1"></i>
+            <ng-icon name="reiconChevronRight" />
         </a>
     `,
-
     host: {
         class: 'list-group-item list-group-item-action',
     },

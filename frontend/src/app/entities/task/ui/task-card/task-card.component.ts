@@ -7,12 +7,14 @@ import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 
 import { actionTask, TaskModel } from '../../model';
 import { Store } from '@ngrx/store';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconCalendar, reiconMenu2, reiconTextalignLeft } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-task-card',
-    imports: [RouterLink, TrimPipe, DatePipe, CdkMenu, CdkMenuItem, CdkMenuTrigger, StripHtmlPipe],
+    imports: [RouterLink, TrimPipe, DatePipe, CdkMenu, CdkMenuItem, CdkMenuTrigger, StripHtmlPipe, NgIcon],
     styleUrl: './task-card.component.scss',
-
+    providers: [provideIcons({ reiconMenu2, reiconTextalignLeft, reiconCalendar })],
     template: `
         <div class="card text-decoration-none text-body">
             <div class="card-body p-2">
@@ -33,7 +35,7 @@ import { Store } from '@ngrx/store';
                         </a>
                     </h6>
                     <button [cdkMenuTriggerFor]="taskMenu" class="btn btn-sm p-1 lh-1">
-                        <i class="fa-solid fa-ellipsis"></i>
+                        <ng-icon name="reiconMenu2" />
                     </button>
                 </div>
 
@@ -48,13 +50,13 @@ import { Store } from '@ngrx/store';
 
                         @if (task.dueTo) {
                             <span class="badge rounded-pill text-bg-secondary">
-                                <i class="fa-regular fa-calendar"></i>
+                                <ng-icon name="reiconCalendar" />
                                 {{ task.dueTo | date: 'd MMM' }}
                             </span>
                         }
                     </div>
                     @if (task.body !== '') {
-                        <i class="fa-solid fa-align-left"></i>
+                        <ng-icon name="reiconTextalignLeft" />
                     }
                 </div>
             </div>

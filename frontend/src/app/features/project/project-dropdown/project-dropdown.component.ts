@@ -6,9 +6,12 @@ import { Store } from '@ngrx/store';
 import { filter, switchMap, map } from 'rxjs';
 import { selectWorkspaces } from '@entities/workspace';
 import { ProjectListItemComponent, selectProjects } from '@entities/project';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconChevronDown, reiconChevronUp } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-project-dropdown',
+    providers: [provideIcons({ reiconChevronUp, reiconChevronDown })],
     imports: [
         CdkMenu,
         CdkMenuItem,
@@ -16,6 +19,7 @@ import { ProjectListItemComponent, selectProjects } from '@entities/project';
         AsyncPipe,
         ProjectListItemComponent,
         RouterLink,
+        NgIcon,
     ],
     templateUrl: './project-dropdown.component.html',
 })

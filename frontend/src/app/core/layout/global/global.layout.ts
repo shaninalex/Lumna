@@ -4,10 +4,13 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectWorkspaces } from '@entities/workspace';
 import { ThemeSwitcherComponent } from '@shared/ui';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconBell } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-global-layout',
-    imports: [ThemeSwitcherComponent, UserMenuComponent, RouterLink],
+    imports: [ThemeSwitcherComponent, UserMenuComponent, RouterLink, NgIcon],
+    providers: [provideIcons({ reiconBell })],
     template: `
         <nav class="navbar navbar-expand-lg border-bottom bg-body">
             <div class="container-fluid">
@@ -17,7 +20,7 @@ import { ThemeSwitcherComponent } from '@shared/ui';
                 <div class="flex align-items-center">
                     <lu-theme-switcher />
                     <button class="btn btn-sm">
-                        <i class="fa-solid fa-bell"></i>
+                        <ng-icon name="reiconBell" />
                     </button>
                     <lu-user-menu />
                 </div>
