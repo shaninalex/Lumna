@@ -22,60 +22,13 @@
 </button>
 <ng-template #theme>
     <div class="card" cdkMenu>
-        @if (project$ | async; as project) {
-            @if (project) {
-                <div class="card-body">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <div class="project-icon project-icon--lg">
-                            {{ project.title[0]}}
-                        </div>
-                        {{ project.title }}
-                    </div>
-
-                    <button class="btn btn-info btn-sm me-2" cdkMenuItem>
-                        <i class="fa-solid fa-cog"></i>
-                        Settings
-                    </button>
-                    <button class="btn btn-info btn-sm" cdkMenuItem>
-                        <i class="fa-solid fa-users"></i>
-                        People
-                    </button>
-                </div>
-                <div class="card-body border-top">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link p-0 disabled" aria-disabled="true">
-                                <small>Apps</small>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link p-0 disabled" aria-disabled="true">
-                                <small>Templates</small>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link p-0 disabled" aria-disabled="true">
-                                <small>Automations</small>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link p-0 disabled" aria-disabled="true">
-                                <small>Tag Manager</small>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            }
-        }
-
         @if (workspace$ | async; as workspace) {
             <div class="card-body border-top d-flex flex-column gap-2">
                 @if (workspace.projects.length) {
                     @for (item of workspace.projects; track $index) {
-                        <lu-project-list-item cdkMenuItem [project]="item" />
+                        <lu-project-list-item cdkMenuItem [project]="item"/>
                     }
                 }
-
                 <div>
                     <a
                         class="card-link"

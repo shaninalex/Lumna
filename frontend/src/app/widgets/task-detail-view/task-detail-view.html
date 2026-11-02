@@ -2,31 +2,19 @@
     <nav class="mb-3 d-flex gap-2">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a [routerLink]="appRoutes.board(t.boardId)">Development</a></li>
-            <li class="breadcrumb-item active">#Feat-123</li>
         </ol>
     </nav>
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <span class="badge text-bg-primary mb-2">
-                        #Feat-123
-                    </span>
-                </div>
-                <div class="d-flex gap-2">
-                    <button
-                        class="btn btn-sm btn-primary"
-                        type="submit"
-                        (click)="submit($event)"
-                        [disabled]="taskEditForm().invalid()"
-                        >Save</button>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary btn-sm">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </button>
-                    </div>
-                </div>
+            <div class="mb-3">
+                <button
+                    class="btn btn-sm btn-primary"
+                    type="submit"
+                    (click)="submit($event)"
+                    [disabled]="taskEditForm().invalid()">
+                    Save
+                </button>
             </div>
 
             <div class="w-100">
@@ -35,25 +23,10 @@
                     <input id="title" class="form-control" type="text" placeholder="Task title"
                            [formField]="taskEditForm.title"/>
                 </div>
-
-                <div class="d-flex gap-2 flex-wrap mb-3">
-                    <span class="badge text-bg-secondary">
-                        authentication
-                    </span>
-
-                    <span class="badge text-bg-secondary">
-                        backend
-                    </span>
-
-                    <span class="badge text-bg-secondary">
-                        oauth
-                    </span>
-                </div>
-
                 <div class="mb-3">
                     <label class="form-label">Description</label>
                     <div class="NgxEditor__Wrapper">
-                        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+                        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
                         <ngx-editor
                             [editor]="editor"
                             [(ngModel)]="html"
@@ -73,28 +46,6 @@
                     Details
                 </div>
                 <div class="list-group list-group-flush">
-                    <div class="list-group-item d-flex justify-content-between">
-                        <span class="text-muted">Board</span>
-                        <a routerLink="/board">Development</a>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <span class="text-muted">Column</span>
-                        <strong>In Progress</strong>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <span class="text-muted">Priority</span>
-                        <span class="badge text-bg-danger">
-                        High
-                    </span>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <span class="text-muted">Assignee</span>
-                        <strong>Alex</strong>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <span class="text-muted">Reporter</span>
-                        <strong>Kate</strong>
-                    </div>
                     @if (t.dueTo) {
                         <div class="list-group-item d-flex justify-content-between">
                             <span class="text-muted">Due to</span>
@@ -115,7 +66,7 @@
             </div>
 
             @if (activities | async; as activities) {
-                <lu-activity-list [activities]="activities" />
+                <lu-activity-list [activities]="activities"/>
             }
 
         </div>
