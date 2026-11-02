@@ -7,6 +7,7 @@ import (
 type WorkspaceRepo interface {
 	Save(ctx context.Context, w Workspace) (Workspace, error)
 	List(ctx context.Context) ([]Workspace, error)
+	Delete(ctx context.Context, id int) error
 }
 
 type IdentityWorkspaceRepo interface {

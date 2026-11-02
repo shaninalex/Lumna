@@ -16,7 +16,7 @@ export class WorkspaceEffects {
     workspace_list$ = createEffect(() =>
         this.actions$.pipe(
             ofType(actionWorkspace.getList),
-            exhaustMap(() => 
+            exhaustMap(() =>
                 this.api.List().pipe(
                     switchMap((list) => of(actionWorkspace.setList({ list })))
                 )
@@ -45,13 +45,23 @@ export class WorkspaceEffects {
         { dispatch: false }
     );
 
-    // workspace_set_current$ = createEffect(() =>
-    //     this.actions$.pipe(
-    //         ofType(actionWorkspace.SetCurrent),
-    //         map((action) => action.id),
-    //         filter(id => id !== null),
-    //         tap((id) => localStorage.setItem('last_workspace_id', id.toString())),
-    //     ),
-    //     { dispatch: false }
-    // );
+    remove$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(actionWorkspace.remove),
+            exhaustMap((action) =>
+                this.api.remove(action.id).pipe(
+                    switchMap(() => of(actionWorkspace.removeSuccess({ id: action.id }))),
+                    catchError((err: HttpErrorResponse) => of(actionWorkspace.removeFailed({ errors: fromErrorResponse(err) })))
+                )
+            )
+        )
+    );
+
+    __workspace_remove_success$ = createEffect(() =>
+            this.actions$.pipe(
+                ofType(actionWorkspace.removeSuccess),
+                map(() => this.router.navigate(["/app/workspaces"]))
+            ),
+        { dispatch: false }
+    );
 }

@@ -1,8 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Store } from "@ngrx/store";
-import { actionsColumns } from "@entities/column";
-import { ColumnDeletePromptComponentDialog } from "@features/stage";
 import { actionUser } from "@entities/user";
 
 @Component({
@@ -13,7 +11,7 @@ import { actionUser } from "@entities/user";
             <h4>Danger!</h4>
             <p>Warning text here...</p>
             <hr>
-            <button class="btn btn-danger" (click)="openConfirmationWindow()">Remove</button>        
+            <button class="btn btn-danger" (click)="openConfirmationWindow()">Remove</button>
         </div>
     `,
 })

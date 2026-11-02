@@ -12,5 +12,9 @@ export const actionWorkspace = createActionGroup({
         'create failed': props<{ errors: Error[] }>(),
         'data requested': props<{ initiator?: unknown }>(),
         'set current': props<{ id: number | null }>(),
+
+        remove: props<{ id: number }>(),
+        removeSuccess: props<{ id: number }>(),
+        removeFailed: props<{ errors: Error[] }>(),
     },
 });

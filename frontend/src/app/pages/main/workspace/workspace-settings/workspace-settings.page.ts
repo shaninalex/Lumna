@@ -25,6 +25,12 @@ import { AppRoutes } from '@core';
                                     Members
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" [routerLink]="appRoutes.workspaceRoot(['settings', 'remove'])"
+                                   routerLinkActive="active">
+                                    Remove
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

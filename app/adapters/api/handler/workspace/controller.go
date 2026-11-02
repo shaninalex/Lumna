@@ -7,6 +7,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
 	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/core/actor"
+	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 )
 
@@ -16,6 +17,7 @@ func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET(":workspace_id/members", handleWorkspaceMembers(resolve))
 	router.POST(":workspace_id/invitations", handleCreateInvitation(resolve))
 	router.GET(":workspace_id/invitations", handleInvitationsList(resolve))
+	router.DELETE(":workspace_id", handleWorkspaceDelete(resolve))
 	router.DELETE("invitations/:invitation_id", handleInvitationDelete(resolve))
 	router.POST("invitations/:invitation_id/revoke", handleInvitationRevoke(resolve))
 }
@@ -182,6 +184,32 @@ func handleInvitationRevoke(resolve core.Resolve) gin.HandlerFunc {
 			return
 		}
 		httpx.Success(c, toInvitationDTO(invitation))
+	}
+}
 
+func handleWorkspaceDelete(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		workspaceID, err := strconv.Atoi(c.Param("workspace_id"))
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		a, ok := actor.From(c.Request.Context())
+		if !ok || a.IdentityID <= 0 {
+			httpx.Fail(c, errs.Unauthenticated("API", "authentication required"))
+			return
+		}
+
+		// TODO: Validate role
+
+		_, err = contract.ExecRemoveWorkspace(c.Request.Context(), resolve(), contract.RemoveWorkspace{
+			WorkspaceID: workspaceID,
+			AdminID:     a.IdentityID,
+		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		httpx.Success(c, true)
 	}
 }

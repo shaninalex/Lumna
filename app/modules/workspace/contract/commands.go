@@ -84,3 +84,14 @@ func (AcceptInvitation) Permission() (action string, scope int) { return "", 0 }
 func ExecAcceptInvitation(ctx context.Context, a *core.App, cmd AcceptInvitation) (InvitationView, error) {
 	return bus.Execute[AcceptInvitation, InvitationView](ctx, a.Commands, cmd)
 }
+
+type RemoveWorkspace struct {
+	WorkspaceID int
+	AdminID     int
+}
+
+func (RemoveWorkspace) Permission() (action string, scope int) { return "", 0 }
+
+func ExecRemoveWorkspace(ctx context.Context, a *core.App, cmd RemoveWorkspace) (bool, error) {
+	return bus.Execute[RemoveWorkspace, bool](ctx, a.Commands, cmd)
+}

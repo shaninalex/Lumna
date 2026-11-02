@@ -7,6 +7,7 @@ import { actionWorkspace } from "./workspace.actions";
 export interface WorkspaceState extends EntityState<WorkspaceModel> {
     currentId: number | null;
 }
+
 export const workspaceAdapter = createEntityAdapter<WorkspaceModel>();
 const initialState: WorkspaceState = workspaceAdapter.getInitialState({
     currentId: null
@@ -14,9 +15,10 @@ const initialState: WorkspaceState = workspaceAdapter.getInitialState({
 
 export const workspaceReducer = createReducer(
     initialState,
-    on(actionWorkspace.setList, (state, { list }) => workspaceAdapter.setAll(list, state)),
-    on(actionWorkspace.created, (state, { data }) => workspaceAdapter.setOne(data, state)),
-    on(actionWorkspace.setCurrent, (state, { id }) => ({ ...state, currentId: id }))
+    on(actionWorkspace.setList, (state, {list}) => workspaceAdapter.setAll(list, state)),
+    on(actionWorkspace.created, (state, {data}) => workspaceAdapter.setOne(data, state)),
+    on(actionWorkspace.setCurrent, (state, {id}) => ({...state, currentId: id})),
+    on(actionWorkspace.removeSuccess, (state, {id}) => workspaceAdapter.removeOne(id, state)),
 );
 
 export const workspaceFeature = createFeature({

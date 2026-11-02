@@ -1,6 +1,6 @@
 import type { Routes } from '@angular/router';
 import { WorkspaceEntryPage } from './workspace-entry';
-import { WorkspaceSettingsPage } from './workspace-settings';
+import { WorkspaceRemovePage, WorkspaceSettingsPage } from './workspace-settings';
 import { WorkspaceSettingsMainPage } from './workspace-settings-main';
 import { WorkspaceSettingsMembersPage } from './workspace-settings-members';
 import { ProjectListPage } from './project-list';
@@ -25,6 +25,10 @@ export const routes: Routes = [
                 path: "members",
                 component: WorkspaceSettingsMembersPage,
                 children: workspaceMembersRoutes,
+            },
+            {
+                path: "remove",
+                component: WorkspaceRemovePage,
             }
         ]
     },
