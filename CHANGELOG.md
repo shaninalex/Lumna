@@ -1,3 +1,28 @@
+## 0.41.0 (2026-11-02)
+
+### Feat
+
+- **workspace**: remove member command
+- **workspace**: remove
+- **account**: change full name and email
+- **assets**: use only required styles on static pages
+- **auth**: change password
+- **auth**: settings page manage refresh tokens
+- settings route
+- remove expired tokens task
+- **workspace**: invite and accept new user
+- **workspace**: revoke/delete invitations
+- **client**: move to scss + bootstrap customization
+
+### Fix
+
+- **account**: logout after account delete
+- **account**: delete account
+- **auth**: actual access token refresh
+- **tests**: add invitation ids
+- **workspace**: accept invitation properly
+- **email**: content types
+
 ## 0.40.0 (2026-10-19)
 
 ### Feat
