@@ -9,11 +9,12 @@
         <div class="col-lg-8">
             <div class="mb-3">
                 <button
-                    class="btn btn-sm btn-primary"
+                    class="btn btn-sm btn-primary d-inline-flex align-items-center"
                     type="submit"
                     (click)="submit($event)"
                     [disabled]="taskEditForm().invalid()">
                     Save
+                    <lu-spinner [loading]="loading" />
                 </button>
             </div>
 

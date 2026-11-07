@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { debounce, form, FormField, minLength, required, validate } from '@angular/forms/signals';
 import { Store } from '@ngrx/store';
 import { actionUser } from '@entities/user';
 import { Actions, ofType } from '@ngrx/effects';
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SpinnerComponent } from '@shared/ui';
 
 const defaultValue = {
     password: '',
@@ -12,7 +13,7 @@ const defaultValue = {
 }
 
 @Component({
-    imports: [FormField],
+    imports: [FormField, SpinnerComponent],
     selector: 'lu-change-password-feature',
     template: `
         <form (submit)="onSubmit($event)">
@@ -46,14 +47,20 @@ const defaultValue = {
                     }
                 </div>
 
-                <button type="submit" class="btn btn-primary" [disabled]="!changePasswordForm().valid()">Save</button>
+                <button type="submit" class="btn btn-primary"
+                        [disabled]="!changePasswordForm().valid()">
+                    Save
+                    <lu-spinner [loading]="loading()"/>
+                </button>
             </div>
         </form>
     `,
 })
 export class ChangePasswordFeature {
     private store = inject(Store);
-    private actions$ = inject(Actions);
+    private readonly actions$ = inject(Actions);
+    private destroyRef = inject(DestroyRef);
+    loading = signal(false);
 
     changePassword = signal<{ password: string; passwordConfirm: string }>(defaultValue);
     changePasswordForm = form(this.changePassword, (schemaPath) => {
@@ -81,8 +88,15 @@ export class ChangePasswordFeature {
             tap(() => {
                 this.changePassword.set({...defaultValue})
                 this.changePasswordForm().reset()
+                this.loading.set(false)
             }),
-            takeUntilDestroyed(),
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe()
+
+        this.actions$.pipe(
+            ofType(actionUser.changePassword),
+            takeUntilDestroyed(this.destroyRef),
+            tap(() => this.loading.set(true)),
         ).subscribe()
     }
 

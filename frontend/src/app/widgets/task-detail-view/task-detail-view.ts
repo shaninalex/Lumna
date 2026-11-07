@@ -1,5 +1,5 @@
 import {
-    Component,
+    Component, DestroyRef,
     inject,
     input,
     OnDestroy,
@@ -10,7 +10,7 @@ import {
 import { Store } from '@ngrx/store';
 import { TimeAgoPipe } from '@shared/utils';
 import { AppRoutes } from '@core';
-import { filter, Observable, tap } from 'rxjs';
+import { filter, Observable, takeUntil, tap } from 'rxjs';
 import { form, FormField, required } from '@angular/forms/signals';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -24,13 +24,15 @@ import {
     toHTML,
 } from 'ngx-editor';
 import { FormsModule } from '@angular/forms';
-import { defaultToolbar } from '@shared/ui';
+import { defaultToolbar, SpinnerComponent } from '@shared/ui';
 import {
     actionActivity,
     ActivityListComponent,
     ActivityModel,
     selectActivity
 } from '@entities/activity';
+import { Actions, ofType } from '@ngrx/effects';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'lu-task-detail-view',
@@ -43,12 +45,16 @@ import {
         NgxEditorComponent,
         NgxEditorMenuComponent,
         FormsModule,
-        ActivityListComponent
+        ActivityListComponent,
+        SpinnerComponent,
     ],
     templateUrl: './task-detail-view.html',
 })
 export class TaskDetailView implements OnInit, OnDestroy {
     readonly appRoutes = inject(AppRoutes);
+    private readonly actions$ = inject(Actions);
+    private destroyRef = inject(DestroyRef);
+
     taskId = input.required<number>();
     task$: Observable<TaskModel>;
     taskEditFormModel: WritableSignal<TaskEditModel> = signal<TaskEditModel>({
@@ -64,6 +70,7 @@ export class TaskDetailView implements OnInit, OnDestroy {
     toolbar: Toolbar = defaultToolbar;
     html: Record<string, unknown> | string = '';
     activities: Observable<ActivityModel[]>;
+    loading: boolean = false;
 
     private store = inject(Store);
 
@@ -82,6 +89,16 @@ export class TaskDetailView implements OnInit, OnDestroy {
         );
         this.store.dispatch(actionActivity.getList({entityId: this.taskId(), entityType: "work_item"}));
         this.activities = this.store.select(selectActivity.byIdAndType(this.taskId(), "work_item"));
+        this.actions$.pipe(
+            ofType(actionTask.updateTask),
+            tap(() => this.loading = true),
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe();
+        this.actions$.pipe(
+            ofType(actionTask.setTask, actionTask.updateFailed),
+            tap(() => this.loading = false),
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe();
     }
 
     ngOnDestroy(): void {

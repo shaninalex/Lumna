@@ -1,11 +1,16 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { Store } from '@ngrx/store';
 import { actionUser, selectUser } from '@entities/user';
+import { SpinnerComponent } from '@shared/ui';
+import { Actions, ofType } from '@ngrx/effects';
+import { tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     imports: [
         FormField,
+        SpinnerComponent,
     ],
     selector: 'lu-account-form-feature',
     template: `
@@ -43,13 +48,19 @@ import { actionUser, selectUser } from '@entities/user';
                 }
             </div>
 
-            <button class="btn btn-primary" type="submit" [disabled]="!accountForm().valid()">Save</button>
+            <button class="btn btn-primary" type="submit" [disabled]="!accountForm().valid()">
+                Save
+                <lu-spinner [loading]="loading()"/>
+            </button>
         </form>
     `,
 })
 export class AccountFormFeature {
     private store = inject(Store);
+    private readonly actions$ = inject(Actions);
+    private destroyRef = inject(DestroyRef);
 
+    loading = signal(false);
     accountFormModel = signal<{ email: string; fullName: string }>({
         email: '',
         fullName: '',
@@ -65,6 +76,18 @@ export class AccountFormFeature {
         if (!user) return
 
         this.accountFormModel.set({email: user.email, fullName: user.fullName})
+
+        this.actions$.pipe(
+            ofType(actionUser.update),
+            takeUntilDestroyed(this.destroyRef),
+            tap(() => this.loading.set(true)),
+        ).subscribe()
+
+        this.actions$.pipe(
+            ofType(actionUser.updateSuccess, actionUser.updateFailed),
+            takeUntilDestroyed(this.destroyRef),
+            tap(() => this.loading.set(false)),
+        ).subscribe()
     }
 
     onSubmit(event: Event): void {
