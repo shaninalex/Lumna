@@ -1,3 +1,5 @@
+@import "styles/ngx-editor.scss";
+
 // overwrite bootstrap variables here or earlier;
 $border-radius: 1rem;
 $border-radius-sm: 1rem;
@@ -43,7 +45,6 @@ $border-radius-sm: 1rem;
 //@import "bootstrap/scss/placeholders";
 @import "bootstrap/scss/helpers";
 @import "bootstrap/scss/utilities/api";
-
 
 html, body {
     font-size: 0.9rem;
