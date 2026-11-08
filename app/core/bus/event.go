@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"slices"
 )
 
 type Event interface {
@@ -34,8 +35,8 @@ func Subscribe[E Event](b *EventBus, h func(context.Context, E) error) error {
 	call := Invoke(func(ctx context.Context, msg any) (any, error) {
 		return nil, h(ctx, msg.(E))
 	})
-	for i := len(b.chain) - 1; i >= 0; i-- {
-		call = b.chain[i](call)
+	for _, v := range slices.Backward(b.chain) {
+		call = v(call)
 	}
 	b.subs[key] = append(b.subs[key], call)
 	return nil
