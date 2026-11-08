@@ -6,6 +6,7 @@ import type { HttpErrorResponse } from '@angular/common/http';
 import { fromErrorResponse } from '@shared/models';
 import { actionProject } from './project.actions';
 
+
 @Injectable()
 export class ProjectEffects {
     private actions$ = inject(Actions);
@@ -16,7 +17,7 @@ export class ProjectEffects {
             ofType(actionProject.getList),
             exhaustMap((action) =>
                 this.projectsApi.GetProjects(action.workspaceId).pipe(
-                    switchMap((data) => of(actionProject.setList({ projects: data })))
+                    switchMap((data) => of(actionProject.setList({projects: data})))
                 ),
             ),
         ),
@@ -27,8 +28,8 @@ export class ProjectEffects {
             ofType(actionProject.create),
             exhaustMap((action) =>
                 this.projectsApi.CreateProject(action.payload).pipe(
-                    switchMap((data) => of(actionProject.createSuccefull({ project: data }))),
-                    catchError((err: HttpErrorResponse) => of(actionProject.createFailed({ errors: fromErrorResponse(err) })))
+                    switchMap((data) => of(actionProject.createSuccessful({project: data}))),
+                    catchError((err: HttpErrorResponse) => of(actionProject.createFailed({errors: fromErrorResponse(err)})))
                 ),
             ),
         ),
@@ -39,20 +40,22 @@ export class ProjectEffects {
             ofType(actionProject.patch),
             exhaustMap((action) =>
                 this.projectsApi.Patch(action.id, action.data).pipe(
-                    switchMap((data) => of(actionProject.patchSuccessful({ data }))),
-                    catchError((err: HttpErrorResponse) => of(actionProject.patchFailed({ errors: fromErrorResponse(err) })))
+                    switchMap((data) => of(actionProject.patchSuccessful({data}))),
+                    catchError((err: HttpErrorResponse) => of(actionProject.patchFailed({errors: fromErrorResponse(err)})))
                 ),
             ),
         ),
     );
 
-    delete_project$ = createEffect(() =>
+    remove_project$ = createEffect(() =>
         this.actions$.pipe(
             ofType(actionProject.delete),
             exhaustMap((action) =>
-                this.projectsApi.DeleteProject(action.project_id).pipe(
-                    switchMap(() => of(actionProject.deleteSuccefull({ projectId: action.project_id }))))
+                this.projectsApi.DeleteProject(action.projectId).pipe(
+                    switchMap(() => of(actionProject.deleteSuccessful({projectId: action.projectId}))),
+                    catchError((err: HttpErrorResponse) => of(actionProject.patchFailed({errors: fromErrorResponse(err)})))
                 )
-        ),
+            ),
+        )
     );
 }

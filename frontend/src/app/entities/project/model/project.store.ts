@@ -16,8 +16,8 @@ export const initialState: ProjectState = projectsAdapter.getInitialState({
 export const projectReducer = createReducer(
     initialState,
     on(actionProject.setList, (state, action) => projectsAdapter.addMany(action.projects, state)),
-    on(actionProject.createSuccefull, (state, action) => projectsAdapter.upsertOne(action.project, state)),
-    on(actionProject.deleteSuccefull, (state, action) =>
+    on(actionProject.createSuccessful, (state, action) => projectsAdapter.upsertOne(action.project, state)),
+    on(actionProject.deleteSuccessful, (state, action) =>
         projectsAdapter.removeOne(action.projectId, {
             ...state,
             currentId: state.currentId === action.projectId ? null : state.currentId,

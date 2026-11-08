@@ -58,3 +58,14 @@ func (s *ProjectRepo) GetById(ctx context.Context, projectID int) (domain.Projec
 	}
 	return toDomainProject(result), nil
 }
+
+func (s *ProjectRepo) Remove(ctx context.Context, projectID int) error {
+	record, err := gorm.G[projectRecord](s.db.From(ctx)).Where("id = ?", projectID).Delete(ctx)
+	if errors.Is(err, gorm.ErrRecordNotFound) || record == 0 {
+		return domain.ErrProjectNotFound
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}

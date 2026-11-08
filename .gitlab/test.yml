@@ -2,7 +2,7 @@ stages:
   - test
 
 variables:
-  GO_VERSION: "1.27.1"
+  GO_VERSION: "1.27.3"
 
 test:
   stage: test

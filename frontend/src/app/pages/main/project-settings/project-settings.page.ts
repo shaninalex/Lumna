@@ -8,9 +8,9 @@ import { ProjectEditFeature, ProjectRemoveFeature } from '@features/project';
     template: `
         <lu-main-layout>
             <div class="container-fluid py-4">
-                <lu-project-edit />
+                <lu-project-edit-feature />
                 <hr>
-                <lu-project-remove />
+                <lu-project-remove-feature />
             </div>
         </lu-main-layout>`,
 })
