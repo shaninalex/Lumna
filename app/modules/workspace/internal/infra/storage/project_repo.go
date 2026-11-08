@@ -2,7 +2,7 @@ package storage
 
 import (
 	"context"
-	"database/sql"
+	"errors"
 
 	"gitlab.com/shaninalex/lumna/app/modules/workspace/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
@@ -19,14 +19,8 @@ func NewProjectRepo(db *database.DB) *ProjectRepo {
 	return &ProjectRepo{db: db}
 }
 
-func (s *ProjectRepo) Save(ctx context.Context, t domain.Project) (domain.Project, error) {
-	record := projectRecord{
-		Title:       t.Title,
-		WorkspaceId: t.WorkspaceId,
-		OwnerId:     t.OwnerId,
-		Meta:        sql.NullString{String: t.Meta, Valid: t.Meta != ""},
-		CreatedAt:   t.CreatedAt,
-	}
+func (s *ProjectRepo) Save(ctx context.Context, project domain.Project) (domain.Project, error) {
+	record := toRecordProject(project)
 	if err := s.db.From(ctx).Save(&record).Error; err != nil {
 		return domain.Project{}, err
 	}
@@ -44,4 +38,23 @@ func (s *ProjectRepo) ByWorkspaceId(ctx context.Context, workspaceId int) ([]dom
 		projects[i] = toDomainProject(result[i])
 	}
 	return projects, nil
+}
+
+func (s *ProjectRepo) Update(ctx context.Context, project domain.Project) (domain.Project, error) {
+	record := toRecordProject(project)
+	if err := s.db.From(ctx).Where("id = ?", project.ID).Updates(&record).Error; err != nil {
+		return domain.Project{}, err
+	}
+	return toDomainProject(record), nil
+}
+
+func (s *ProjectRepo) GetById(ctx context.Context, projectID int) (domain.Project, error) {
+	result, err := gorm.G[projectRecord](s.db.From(ctx)).Where("id = ?", projectID).First(ctx)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return domain.Project{}, domain.ErrProjectNotFound
+	}
+	if err != nil {
+		return domain.Project{}, err
+	}
+	return toDomainProject(result), nil
 }

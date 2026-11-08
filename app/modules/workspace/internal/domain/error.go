@@ -13,4 +13,5 @@ var (
 	ErrUnknownRole                       = errs.Validation("WSP06", "unknown workspace role")
 	ErrUnableToAddUserToWorkspace        = errs.Conflict("WSP07", "unable to add user to workspace")
 	ErrMemberNotFound                    = errs.NotFound("WSP08", "member not found")
+	ErrProjectNotFound                   = errs.NotFound("WSP09", "project not found")
 )

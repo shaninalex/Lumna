@@ -62,6 +62,18 @@ func toDomainProject(project projectRecord) domain.Project {
 	}
 }
 
+func toRecordProject(project domain.Project) projectRecord {
+	return projectRecord{
+		ID:          project.ID,
+		Title:       project.Title,
+		WorkspaceId: project.WorkspaceId,
+		OwnerId:     project.OwnerId,
+		Meta:        sql.NullString{String: project.Meta, Valid: project.Meta != ""},
+		CreatedAt:   project.CreatedAt,
+		UpdatedAt:   sql.NullTime{Time: project.UpdatedAt, Valid: !project.UpdatedAt.IsZero()},
+	}
+}
+
 type workspaceInvitationRecord struct {
 	ID          int           `gorm:"primaryKey;autoIncrement"`
 	WorkspaceID int           `gorm:"column:workspace_id"`

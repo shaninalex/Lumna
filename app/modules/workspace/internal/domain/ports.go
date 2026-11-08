@@ -19,6 +19,8 @@ type IdentityWorkspaceRepo interface {
 type ProjectRepo interface {
 	Save(ctx context.Context, p Project) (Project, error)
 	ByWorkspaceId(ctx context.Context, workspaceId int) ([]Project, error)
+	Update(ctx context.Context, t Project) (Project, error)
+	GetById(ctx context.Context, projectID int) (Project, error)
 }
 
 type InvitationRepo interface {

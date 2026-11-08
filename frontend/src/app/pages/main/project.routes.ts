@@ -6,12 +6,17 @@ import { BoardsPage } from './boards';
 import { BoardCreatePage } from './board-create';
 import { BoardDetailPage } from './board-detail';
 import { TaskDetailPage } from './task-detail';
+import { ProjectSettingsPage } from './project-settings';
 
 export const projectRoutes: Routes = [
     {
         path: 'p/:projectId',
         canActivate: [activeProjectGuard],
         children: [
+            {
+                path: 'settings',
+                component: ProjectSettingsPage,
+            },
             {
                 path: 'inbox',
                 component: InboxPage,

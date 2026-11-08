@@ -13,6 +13,7 @@ import (
 func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET("", handleList(resolve))
 	router.POST("", handleCreate(resolve))
+	router.PATCH(":project_id", handleUpdate(resolve))
 }
 
 func handleList(resolve core.Resolve) gin.HandlerFunc {
@@ -65,6 +66,45 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 			Title:       data.Title,
 			OwnerId:     a.IdentityID,
 			WorkspaceId: data.WorkspaceId,
+		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		httpx.Success(c, projectDTO{
+			Id:          project.Id,
+			Title:       project.Title,
+			WorkspaceId: project.WorkspaceId,
+			OwnerId:     project.OwnerId,
+			Meta:        project.Meta,
+			CreatedAt:   project.CreatedAt,
+			UpdatedAt:   project.UpdatedAt,
+		})
+	}
+}
+
+func handleUpdate(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Param("project_id"))
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		var data projectCreateDTO
+		if err := c.ShouldBindJSON(&data); err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+		if err := data.Validate(); err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		project, err := contract.ExecUpdateProject(c.Request.Context(), resolve(), contract.UpdateProject{
+			ProjectID: id,
+			Title:     data.Title,
 		})
 		if err != nil {
 			httpx.Fail(c, err)

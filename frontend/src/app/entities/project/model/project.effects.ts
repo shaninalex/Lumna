@@ -39,7 +39,8 @@ export class ProjectEffects {
             ofType(actionProject.patch),
             exhaustMap((action) =>
                 this.projectsApi.Patch(action.id, action.data).pipe(
-                    switchMap((data) => of(actionProject.patchSuccessfull({ data })))
+                    switchMap((data) => of(actionProject.patchSuccessful({ data }))),
+                    catchError((err: HttpErrorResponse) => of(actionProject.patchFailed({ errors: fromErrorResponse(err) })))
                 ),
             ),
         ),

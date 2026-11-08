@@ -17,8 +17,8 @@ export const actionProject = createActionGroup({
         'set list': props<{ projects: ProjectModel[] }>(),
 
         patch: props<{ id: number; data: ProjectCreateModel }>(),
-        'patch successfull': props<{ data: ProjectCreateModel }>(),
-        'patch failed': props<{ errors: Error[] }>(),
+        patchSuccessful: props<{ data: ProjectCreateModel }>(),
+        patchFailed: props<{ errors: Error[] }>(),
 
         'set current': props<{ id: number | null }>(),
     },

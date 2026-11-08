@@ -1,9 +1,9 @@
 import type { Routes } from '@angular/router';
 import { SettingsRoot } from './settings.root';
 import { SessionsPage } from './sessions';
-import { SecurityPage } from './security';
+import { AccountSecurityPage } from './account-security';
 import { AccountPage } from './account';
-import { RemovePage } from './remove';
+import { AccountRemovePage } from './account-remove';
 
 export const settingsRoutes: Routes = [
     {
@@ -20,11 +20,11 @@ export const settingsRoutes: Routes = [
             },
             {
                 path: 'security',
-                component: SecurityPage
+                component: AccountSecurityPage
             },
             {
                 path: 'remove',
-                component: RemovePage,
+                component: AccountRemovePage,
             }
         ]
     }

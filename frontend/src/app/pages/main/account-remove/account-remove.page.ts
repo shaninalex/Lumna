@@ -6,5 +6,5 @@ import { AccountRemoveFeature } from "@features";
     selector: 'lu-remove',
     template: `<lu-account-remove-feature />`,
 })
-export class RemovePage {
+export class AccountRemovePage {
 }

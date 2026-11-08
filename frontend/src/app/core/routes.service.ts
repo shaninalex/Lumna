@@ -12,7 +12,7 @@ export class AppRoutes {
 
     private readonly projectId = this.store.selectSignal(selectProjects.currentProjectId);
 
-    private projectRoute(): unknown[] {
+    projectRoute(): unknown[] {
         return ['/app', 'w', this.workspaceId(), 'p', this.projectId()];
     }
 

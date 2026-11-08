@@ -1,2 +1,4 @@
-export { ProjectCreateFeature } from './project-create'
-export { ProjectDropdownComponent } from './project-dropdown'
+export * from './project-create'
+export * from './project-dropdown'
+export * from './project-edit'
+export * from './project-remove'

@@ -6,4 +6,4 @@ import { ChangePasswordFeature } from '@features';
     selector: 'lu-security-page',
     template: `<lu-change-password-feature/>`,
 })
-export class SecurityPage {}
+export class AccountSecurityPage {}

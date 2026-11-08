@@ -31,6 +31,7 @@ type Module struct {
 	removeWorkspace        *handlers.RemoveWorkspace
 	addIdentityToWorkspace *handlers.AddIdentityToWorkspace
 	createProject          *handlers.CreateProject
+	updateProject          *handlers.UpdateProject
 	createInvitation       *handlers.CreateInvitation
 	deleteInvitation       *handlers.InvitationDelete
 	revokeInvitation       *handlers.InvitationRevoke
@@ -61,6 +62,7 @@ func New(d Deps) *Module {
 		removeWorkspace:        handlers.NewRemoveWorkspace(workspaceRepo),
 		addIdentityToWorkspace: handlers.NewAddIdentityToWorkspace(identityWorkspaceRepo, d.Clock),
 		createProject:          handlers.NewCreateProject(projectRepo, d.Clock),
+		updateProject:          handlers.NewUpdateProject(projectRepo, d.Clock),
 		createInvitation:       handlers.NewCreateInvitation(invitationRepo, hasher, d.Clock, d.EventBus, d.Log),
 		deleteInvitation:       handlers.NewInvitationDelete(invitationRepo),
 		revokeInvitation:       handlers.NewInvitationRevoke(invitationRepo, d.Clock),
@@ -80,6 +82,7 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.createWorkspace.Handle),
 		bus.RegisterCommand(a.Commands, m.addIdentityToWorkspace.Handle),
 		bus.RegisterCommand(a.Commands, m.createProject.Handle),
+		bus.RegisterCommand(a.Commands, m.updateProject.Handle),
 		bus.RegisterCommand(a.Commands, m.createInvitation.Handle),
 		bus.RegisterCommand(a.Commands, m.deleteInvitation.Handle),
 		bus.RegisterCommand(a.Commands, m.revokeInvitation.Handle),
