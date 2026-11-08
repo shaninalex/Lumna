@@ -3,7 +3,6 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { reiconUserX } from '@ng-icons/reicon';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Store } from '@ngrx/store';
-import { actionWorkspace } from '@entities/workspace';
 import { actionMember } from '@entities/member/model';
 
 @Component({

@@ -4,7 +4,6 @@ import { actionProject, selectProjects } from '@entities/project';
 import { form, FormField, required } from '@angular/forms/signals';
 import { SpinnerComponent } from '@shared/ui';
 import { Actions, ofType } from '@ngrx/effects';
-import { actionUser } from '@entities/user';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 
