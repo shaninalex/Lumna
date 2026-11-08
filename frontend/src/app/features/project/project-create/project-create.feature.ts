@@ -59,12 +59,12 @@ export class ProjectCreateFeature {
         ).subscribe(() => this.loading.set(true))
 
         this.actions$.pipe(
-            ofType(actionProject.createSuccefull, actionProject.createFailed),
+            ofType(actionProject.createSuccessful, actionProject.createFailed),
             takeUntilDestroyed(this.destroyRef),
         ).subscribe(() => this.loading.set(false))
 
         this.actions$.pipe(
-            ofType(actionProject.createSuccefull),
+            ofType(actionProject.createSuccessful),
             takeUntilDestroyed(this.destroyRef),
             map(project => project.project),
         ).subscribe((project: ProjectModel) => this.router.navigate(

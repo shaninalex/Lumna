@@ -6,20 +6,20 @@ export const actionProject = createActionGroup({
     source: 'Project',
     events: {
         create: props<{ payload: ProjectCreateModel }>(),
-        'create succefull': props<{ project: ProjectModel }>(),
-        'create failed': props<{ errors: Error[] }>(),
+        createSuccessful: props<{ project: ProjectModel }>(),
+        createFailed: props<{ errors: Error[] }>(),
 
-        delete: props<{ project_id: number }>(),
-        'delete succefull': props<{ projectId: number }>(),
-        'delete failed': props<{ errors: Error[] }>(),
+        delete: props<{ projectId: number }>(),
+        deleteSuccessful: props<{ projectId: number }>(),
+        deleteFailed: props<{ errors: Error[] }>(),
 
-        'get list': props<{ workspaceId: number }>(),
-        'set list': props<{ projects: ProjectModel[] }>(),
+        getList: props<{ workspaceId: number }>(),
+        setList: props<{ projects: ProjectModel[] }>(),
 
         patch: props<{ id: number; data: ProjectCreateModel }>(),
         patchSuccessful: props<{ data: ProjectCreateModel }>(),
         patchFailed: props<{ errors: Error[] }>(),
 
-        'set current': props<{ id: number | null }>(),
+        setCurrent: props<{ id: number | null }>(),
     },
 });

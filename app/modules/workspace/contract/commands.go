@@ -117,3 +117,13 @@ func (UpdateProject) Permission() (action string, scope int) { return "", 0 }
 func ExecUpdateProject(ctx context.Context, a *core.App, cmd UpdateProject) (ProjectView, error) {
 	return bus.Execute[UpdateProject, ProjectView](ctx, a.Commands, cmd)
 }
+
+type RemoveProject struct {
+	ProjectID int
+}
+
+func (RemoveProject) Permission() (action string, scope int) { return "", 0 }
+
+func ExecRemoveProject(ctx context.Context, a *core.App, cmd RemoveProject) (bool, error) {
+	return bus.Execute[RemoveProject, bool](ctx, a.Commands, cmd)
+}

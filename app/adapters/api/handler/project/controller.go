@@ -14,6 +14,7 @@ func Register(resolve core.Resolve, router *gin.RouterGroup) {
 	router.GET("", handleList(resolve))
 	router.POST("", handleCreate(resolve))
 	router.PATCH(":project_id", handleUpdate(resolve))
+	router.DELETE(":project_id", handleDelete(resolve))
 }
 
 func handleList(resolve core.Resolve) gin.HandlerFunc {
@@ -120,5 +121,25 @@ func handleUpdate(resolve core.Resolve) gin.HandlerFunc {
 			CreatedAt:   project.CreatedAt,
 			UpdatedAt:   project.UpdatedAt,
 		})
+	}
+}
+
+func handleDelete(resolve core.Resolve) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Param("project_id"))
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		_, err = contract.ExecRemoveProject(c.Request.Context(), resolve(), contract.RemoveProject{
+			ProjectID: id,
+		})
+		if err != nil {
+			httpx.Fail(c, err)
+			return
+		}
+
+		httpx.Success(c, nil)
 	}
 }

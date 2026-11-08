@@ -10,7 +10,7 @@ import { tap } from 'rxjs';
 
 @Component({
     imports: [FormField, SpinnerComponent],
-    selector: 'lu-project-edit',
+    selector: 'lu-project-edit-feature',
     template: `
         <form (submit)="onSubmit($event)">
             <div class="mb-4">
