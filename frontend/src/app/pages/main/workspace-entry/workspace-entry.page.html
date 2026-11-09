@@ -1,0 +1,508 @@
+<lu-main-layout>
+    <div class="alert alert-warning">This is example content</div>
+    @if (workspace$ | async; as workspace) {
+        <div class="container-fluid py-4">
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <h1 class="h3 mb-1">{{ workspace.title }}</h1>
+                    <p class="text-muted mb-0">Here's what's happening across your workspace.</p>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-plus-lg me-1"></i> Invite members
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Create project
+                    </button>
+                </div>
+            </div>
+
+            <!-- Overview Stats -->
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted small">My open tasks</span>
+                                <i class="bi bi-check2-square text-primary fs-5"></i>
+                            </div>
+                            <h3 class="mb-1">24</h3>
+                            <span class="text-muted small">Across 5 projects</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted small">Due this week</span>
+                                <i class="bi bi-calendar-event text-info fs-5"></i>
+                            </div>
+                            <h3 class="mb-1">8</h3>
+                            <span class="text-muted small">3 due today</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted small">Overdue tasks</span>
+                                <i class="bi bi-exclamation-circle text-danger fs-5"></i>
+                            </div>
+                            <h3 class="mb-1">3</h3>
+                            <span class="text-danger small">Requires your attention</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted small">Active projects</span>
+                                <i class="bi bi-folder2-open text-success fs-5"></i>
+                            </div>
+                            <h3 class="mb-1">5</h3>
+                            <span class="text-muted small">12 boards in total</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+
+                <!-- Main Content -->
+                <div class="col-12 col-xl-8">
+
+                    <!-- My Tasks -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header border-0 pt-3 pb-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">Assigned to me</h5>
+                                    <p class="text-muted small">Tasks that need your attention</p>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-secondary">View all</a>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0 mt-3">
+                            <div class="list-group list-group-flush">
+
+                                <a href="#" class="list-group-item list-group-item-action px-3 py-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <input type="checkbox" class="form-check-input mt-1">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between gap-2">
+                                                <span class="fw-medium">Implement user authentication</span>
+                                                <span class="badge text-bg-warning">In progress</span>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2 mt-2 small text-muted">
+                                                <span>WEB-124</span>
+                                                <span>·</span>
+                                                <span><i class="bi bi-folder2 me-1"></i>Website Redesign</span>
+                                                <span>·</span>
+                                                <span><i class="bi bi-calendar3 me-1"></i>Nov 11</span>
+                                            </div>
+                                        </div>
+                                        <span class="badge text-bg-danger">High</span>
+                                    </div>
+                                </a>
+
+                                <a href="#" class="list-group-item list-group-item-action px-3 py-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <input type="checkbox" class="form-check-input mt-1">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between gap-2">
+                                                <span class="fw-medium">Fix navigation menu on mobile</span>
+                                                <span class="badge text-bg-info">In review</span>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2 mt-2 small text-muted">
+                                                <span>WEB-118</span>
+                                                <span>·</span>
+                                                <span><i class="bi bi-folder2 me-1"></i>Website Redesign</span>
+                                                <span>·</span>
+                                                <span><i class="bi bi-calendar3 me-1"></i>Nov 12</span>
+                                            </div>
+                                        </div>
+                                        <span class="badge text-bg-secondary">Medium</span>
+                                    </div>
+                                </a>
+
+                                <a href="#" class="list-group-item list-group-item-action px-3 py-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <input type="checkbox" class="form-check-input mt-1">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between gap-2">
+                                                <span class="fw-medium">Update API documentation</span>
+                                                <span class="badge text-bg-primary">To do</span>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2 mt-2 small text-muted">
+                                                <span>API-56</span>
+                                                <span>·</span>
+                                                <span><i class="bi bi-folder2 me-1"></i>Backend Development</span>
+                                                <span>·</span>
+                                                <span><i class="bi bi-calendar3 me-1"></i>Nov 14</span>
+                                            </div>
+                                        </div>
+                                        <span class="badge text-bg-secondary">Low</span>
+                                    </div>
+                                </a>
+
+                                <a href="#" class="list-group-item list-group-item-action px-3 py-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <input type="checkbox" class="form-check-input mt-1">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between gap-2">
+                                                <span class="fw-medium">Review database migration</span>
+                                                <span class="badge text-bg-warning">In progress</span>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2 mt-2 small text-muted">
+                                                <span>API-49</span>
+                                                <span>·</span>
+                                                <span><i class="bi bi-folder2 me-1"></i>Backend Development</span>
+                                                <span>·</span>
+                                                <span><i class="bi bi-calendar3 me-1"></i>Nov 15</span>
+                                            </div>
+                                        </div>
+                                        <span class="badge text-bg-danger">High</span>
+                                    </div>
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Deadlines -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header  border-0 pt-3 pb-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">Upcoming deadlines</h5>
+                                    <p class="text-muted small">Don't let anything slip through the cracks</p>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-secondary">View calendar</a>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex gap-3 align-items-center mb-3">
+                                <div class="text-center border rounded p-2" style="min-width:60px">
+                                    <div class="small text-muted">NOV</div>
+                                    <div class="fs-4 fw-semibold">10</div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">Prepare release notes</div>
+                                    <div class="small text-muted">MOBILE-32 · Mobile App</div>
+                                </div>
+                                <span class="badge text-bg-danger">Tomorrow</span>
+                            </div>
+
+                            <div class="d-flex gap-3 align-items-center mb-3">
+                                <div class="text-center border rounded p-2" style="min-width:60px">
+                                    <div class="small text-muted">NOV</div>
+                                    <div class="fs-4 fw-semibold">11</div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">Implement user authentication</div>
+                                    <div class="small text-muted">WEB-124 · Website Redesign</div>
+                                </div>
+                                <span class="badge text-bg-warning">In 2 days</span>
+                            </div>
+
+                            <div class="d-flex gap-3 align-items-center mb-3">
+                                <div class="text-center border rounded p-2" style="min-width:60px">
+                                    <div class="small text-muted">NOV</div>
+                                    <div class="fs-4 fw-semibold">12</div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">Fix navigation menu on mobile</div>
+                                    <div class="small text-muted">WEB-118 · Website Redesign</div>
+                                </div>
+                                <span class="badge text-bg-secondary">In 3 days</span>
+                            </div>
+
+                            <div class="d-flex gap-3 align-items-center">
+                                <div class="text-center border rounded p-2" style="min-width:60px">
+                                    <div class="small text-muted">NOV</div>
+                                    <div class="fs-4 fw-semibold">14</div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">Update API documentation</div>
+                                    <div class="small text-muted">API-56 · Backend Development</div>
+                                </div>
+                                <span class="badge text-bg-secondary">In 5 days</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header  border-0 pt-3">
+                            <h5 class="mb-1">Recent activity</h5>
+                            <p class="text-muted small mb-0">What's happening in your workspace</p>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex gap-3 mb-4">
+                                <div class="rounded-circle bg-light p-2" style="width: 3rem; height: 3rem">
+                                    <i class="bi bi-chat-left-text"></i>
+                                </div>
+                                <div>
+                                    <div><strong>Sarah Johnson</strong> commented on <a href="#">WEB-124</a></div>
+                                    <div class="text-muted small">"I've pushed the authentication changes. Ready for
+                                        review."
+                                    </div>
+                                    <div class="text-muted small mt-1">15 minutes ago · Website Redesign</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-3 mb-4">
+                                <div class="rounded-circle bg-light p-2" style="width: 3rem; height: 3rem">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                                <div>
+                                    <div><strong>Michael Brown</strong> completed <a href="#">API-42</a></div>
+                                    <div class="text-muted small">Added pagination support to the users endpoint.</div>
+                                    <div class="text-muted small mt-1">1 hour ago · Backend Development</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-3 mb-4">
+                                <div class="rounded-circle bg-light p-2" style="width: 3rem; height: 3rem">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div>
+                                    <div><strong>Emily Davis</strong> created a new task <a href="#">MOBILE-35</a></div>
+                                    <div class="text-muted small">Improve onboarding experience.</div>
+                                    <div class="text-muted small mt-1">3 hours ago · Mobile App</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-3">
+                                <div class="rounded-circle bg-light p-2" style="width: 3rem; height: 3rem">
+                                    <i class="bi bi-person-plus"></i>
+                                </div>
+                                <div>
+                                    <div><strong>Alex Wilson</strong> joined the workspace</div>
+                                    <div class="text-muted small mt-1">Yesterday</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-12 col-xl-4">
+
+                    <!-- Quick Actions -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header  border-0 pt-3">
+                            <h5 class="mb-0">Quick actions</h5>
+                        </div>
+                        <div class="card-body d-grid gap-2">
+                            <button class="btn btn-primary text-start">
+                                <i class="bi bi-plus-circle me-2"></i> Create a task
+                            </button>
+                            <button class="btn btn-outline-secondary text-start">
+                                <i class="bi bi-folder-plus me-2"></i> Create a project
+                            </button>
+                            <button class="btn btn-outline-secondary text-start">
+                                <i class="bi bi-kanban me-2"></i> Create a board
+                            </button>
+                            <button class="btn btn-outline-secondary text-start">
+                                <i class="bi bi-person-plus me-2"></i> Invite a member
+                            </button>
+                            <button class="btn btn-outline-secondary text-start">
+                                <i class="bi bi-calendar-plus me-2"></i> Schedule an event
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Projects -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header  border-0 pt-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Your projects</h5>
+                                <a href="#" class="small text-decoration-none">See all</a>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <a href="#" class="d-flex align-items-center gap-3 text-decoration-none text-dark mb-3">
+                                <div class="rounded bg-primary bg-opacity-10 p-2">
+                                    <i class="bi bi-window text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">Website Redesign</div>
+                                    <div class="small text-muted">4 boards · 18 tasks</div>
+                                </div>
+                                <span class="badge text-bg-success">Active</span>
+                            </a>
+
+                            <a href="#" class="d-flex align-items-center gap-3 text-decoration-none text-dark mb-3">
+                                <div class="rounded bg-success bg-opacity-10 p-2">
+                                    <i class="bi bi-server text-success"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">Backend Development</div>
+                                    <div class="small text-muted">3 boards · 24 tasks</div>
+                                </div>
+                                <span class="badge text-bg-success">Active</span>
+                            </a>
+
+                            <a href="#" class="d-flex align-items-center gap-3 text-decoration-none text-dark mb-3">
+                                <div class="rounded bg-warning bg-opacity-10 p-2">
+                                    <i class="bi bi-phone text-warning"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">Mobile App</div>
+                                    <div class="small text-muted">2 boards · 12 tasks</div>
+                                </div>
+                                <span class="badge text-bg-success">Active</span>
+                            </a>
+
+                            <a href="#" class="d-flex align-items-center gap-3 text-decoration-none text-dark">
+                                <div class="rounded bg-info bg-opacity-10 p-2">
+                                    <i class="bi bi-megaphone text-info"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">Marketing Campaign</div>
+                                    <div class="small text-muted">2 boards · 8 tasks</div>
+                                </div>
+                                <span class="badge text-bg-secondary">On hold</span>
+                            </a>
+                        </div>
+
+                        <div class="card-footer  border-0">
+                            <a href="#" class="text-decoration-none small">
+                                <i class="bi bi-plus-lg me-1"></i> Create new project
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Overdue Tasks -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header  border-0 pt-3">
+                            <h5 class="mb-1">Overdue tasks</h5>
+                            <p class="text-muted small mb-0">These tasks are past their deadline</p>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="border-start border-3 border-danger ps-3 mb-3">
+                                <div class="fw-medium small">
+                                    <a href="#" class="text-decoration-none text-dark">Fix payment gateway error</a>
+                                </div>
+                                <div class="text-muted small">PAY-18 · Payments</div>
+                                <div class="text-danger small mt-1">Overdue by 3 days</div>
+                            </div>
+
+                            <div class="border-start border-3 border-danger ps-3 mb-3">
+                                <div class="fw-medium small">
+                                    <a href="#" class="text-decoration-none text-dark">Update privacy policy</a>
+                                </div>
+                                <div class="text-muted small">WEB-109 · Website Redesign</div>
+                                <div class="text-danger small mt-1">Overdue by 1 day</div>
+                            </div>
+
+                            <div class="border-start border-3 border-danger ps-3">
+                                <div class="fw-medium small">
+                                    <a href="#" class="text-decoration-none text-dark">Add unit tests for user
+                                        service</a>
+                                </div>
+                                <div class="text-muted small">API-38 · Backend Development</div>
+                                <div class="text-danger small mt-1">Overdue by 5 hours</div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer  border-0">
+                            <a href="#" class="small text-decoration-none">View all overdue tasks</a>
+                        </div>
+                    </div>
+
+                    <!-- Workspace Members -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header  border-0 pt-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Workspace members</h5>
+                                <a href="#" class="small text-decoration-none">Manage</a>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div
+                                        class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                        style="width:34px;height:34px">SJ
+                                    </div>
+                                    <div>
+                                        <div class="small fw-medium">Sarah Johnson</div>
+                                        <div class="text-muted" style="font-size:11px">Admin</div>
+                                    </div>
+                                </div>
+                                <span class="badge text-bg-success">Online</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div
+                                        class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center"
+                                        style="width:34px;height:34px">MB
+                                    </div>
+                                    <div>
+                                        <div class="small fw-medium">Michael Brown</div>
+                                        <div class="text-muted" style="font-size:11px">Member</div>
+                                    </div>
+                                </div>
+                                <span class="text-muted small">Away</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div
+                                        class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center"
+                                        style="width:34px;height:34px">ED
+                                    </div>
+                                    <div>
+                                        <div class="small fw-medium">Emily Davis</div>
+                                        <div class="text-muted" style="font-size:11px">Member</div>
+                                    </div>
+                                </div>
+                                <span class="badge text-bg-success">Online</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div
+                                        class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center"
+                                        style="width:34px;height:34px">AW
+                                    </div>
+                                    <div>
+                                        <div class="small fw-medium">Alex Wilson</div>
+                                        <div class="text-muted" style="font-size:11px">Member</div>
+                                    </div>
+                                </div>
+                                <span class="text-muted small">Offline</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer  border-0">
+                            <a href="#" class="text-decoration-none small">
+                                <i class="bi bi-person-plus me-1"></i> Invite more members
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+</lu-main-layout>

@@ -3,27 +3,20 @@ import { UiService } from '@shared/ui';
 import { MainLayout } from '@core/layout';
 import { Router, RouterLink } from '@angular/router';
 import { AppRoutes } from '@core';
+import { Store } from '@ngrx/store';
+import { selectProjects } from '@entities/project';
 
 @Component({
     selector: 'lu-inbox-page',
     imports: [MainLayout, RouterLink],
-    template: `
-        <lu-main-layout>
-            <div class="container-fluid py-4">
-                <h4>Few latest tasks</h4>
-                <h4>Latest comments</h4>
-                <h4>Latest assignments, attachments and other activity</h4>
-                <hr />
-
-                <a [routerLink]="[...appRoutes.projectRoute(), 'settings']" class="btn btn-primary">Settings</a>
-            </div>
-        </lu-main-layout>
-    `,
+    templateUrl: "./index.page.html"
 })
 export class InboxPage {
-    private ui = inject(UiService);
     router = inject(Router);
     readonly appRoutes = inject(AppRoutes);
+    private ui = inject(UiService);
+    private store = inject(Store);
+    project = this.store.selectSignal(selectProjects.currentProject);
 
     constructor() {
         this.ui.setPageTitle('Inbox');

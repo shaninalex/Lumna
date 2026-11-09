@@ -9,14 +9,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'lu-workspace-entry-page',
     imports: [MainLayout, AsyncPipe],
-
-    template: `
-        <lu-main-layout>
-            @if (workspace$ | async; as workspace) {
-                <h1>{{ workspace.title }} workspace</h1>
-            }
-        </lu-main-layout>
-    `,
+    templateUrl: "./workspace-entry.page.html",
 })
 export class WorkspaceEntryPage {
     private store = inject(Store);
