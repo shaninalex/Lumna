@@ -1,17 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { UiService } from '@shared/ui';
 import { MainLayout } from '@core/layout';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AppRoutes } from '@core';
 import { Store } from '@ngrx/store';
 import { selectProjects } from '@entities/project';
+import { ProjectOverviewFeature } from '@features';
 
 @Component({
     selector: 'lu-inbox-page',
-    imports: [MainLayout, RouterLink],
-    templateUrl: "./index.page.html"
+    imports: [MainLayout, ProjectOverviewFeature],
+    templateUrl: "./project.page.html"
 })
-export class InboxPage {
+export class ProjectPage {
     router = inject(Router);
     readonly appRoutes = inject(AppRoutes);
     private ui = inject(UiService);
@@ -19,6 +20,9 @@ export class InboxPage {
     project = this.store.selectSignal(selectProjects.currentProject);
 
     constructor() {
-        this.ui.setPageTitle('Inbox');
+        const project = this.project()
+        if (!project) { return }
+
+        this.ui.setPageTitle(project.title);
     }
 }
