@@ -138,119 +138,9 @@
 
                 <div class="card-body">
                     <div class="row g-3">
-
-                        <div class="col-12 col-md-6">
-                            <a href="#" class="card h-100 text-decoration-none text-dark border shadow-none">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div class="rounded bg-primary bg-opacity-10 p-2">
-                                            <i class="bi bi-kanban text-primary fs-5"></i>
-                                        </div>
-                                        <span class="badge text-bg-success">Active</span>
-                                    </div>
-                                    <h6 class="mb-1">Development</h6>
-                                    <p class="text-muted small mb-3">Main development tasks and sprints</p>
-
-                                    <div class="d-flex justify-content-between small mb-2">
-                                        <span class="text-muted">Progress</span>
-                                        <span class="fw-medium">75%</span>
-                                    </div>
-                                    <div class="progress mb-3" style="height:5px">
-                                        <div class="progress-bar" style="width:75%"></div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between text-muted small">
-                                        <span><i class="bi bi-list-task me-1"></i>24 tasks</span>
-                                        <span><i class="bi bi-clock me-1"></i>Updated 20m ago</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <a href="#" class="card h-100 text-decoration-none text-dark border shadow-none">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div class="rounded bg-success bg-opacity-10 p-2">
-                                            <i class="bi bi-list-ul text-success fs-5"></i>
-                                        </div>
-                                        <span class="badge text-bg-success">Active</span>
-                                    </div>
-                                    <h6 class="mb-1">Design & UX</h6>
-                                    <p class="text-muted small mb-3">Design tasks, mockups and reviews</p>
-
-                                    <div class="d-flex justify-content-between small mb-2">
-                                        <span class="text-muted">Progress</span>
-                                        <span class="fw-medium">60%</span>
-                                    </div>
-                                    <div class="progress mb-3" style="height:5px">
-                                        <div class="progress-bar bg-success" style="width:60%"></div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between text-muted small">
-                                        <span><i class="bi bi-list-task me-1"></i>12 tasks</span>
-                                        <span><i class="bi bi-clock me-1"></i>Updated 2h ago</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <a href="#" class="card h-100 text-decoration-none text-dark border shadow-none">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div class="rounded bg-warning bg-opacity-10 p-2">
-                                            <i class="bi bi-bug text-warning fs-5"></i>
-                                        </div>
-                                        <span class="badge text-bg-success">Active</span>
-                                    </div>
-                                    <h6 class="mb-1">Bugs & Issues</h6>
-                                    <p class="text-muted small mb-3">Reported bugs and technical issues</p>
-
-                                    <div class="d-flex justify-content-between small mb-2">
-                                        <span class="text-muted">Progress</span>
-                                        <span class="fw-medium">45%</span>
-                                    </div>
-                                    <div class="progress mb-3" style="height:5px">
-                                        <div class="progress-bar bg-warning" style="width:45%"></div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between text-muted small">
-                                        <span><i class="bi bi-list-task me-1"></i>9 tasks</span>
-                                        <span><i class="bi bi-clock me-1"></i>Updated yesterday</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <a href="#" class="card h-100 text-decoration-none text-dark border shadow-none">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div class="rounded bg-info bg-opacity-10 p-2">
-                                            <i class="bi bi-clipboard-check text-info fs-5"></i>
-                                        </div>
-                                        <span class="badge text-bg-secondary">On hold</span>
-                                    </div>
-                                    <h6 class="mb-1">Quality Assurance</h6>
-                                    <p class="text-muted small mb-3">Testing and quality assurance</p>
-
-                                    <div class="d-flex justify-content-between small mb-2">
-                                        <span class="text-muted">Progress</span>
-                                        <span class="fw-medium">30%</span>
-                                    </div>
-                                    <div class="progress mb-3" style="height:5px">
-                                        <div class="progress-bar bg-info" style="width:30%"></div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between text-muted small">
-                                        <span><i class="bi bi-list-task me-1"></i>5 tasks</span>
-                                        <span><i class="bi bi-clock me-1"></i>Updated 3 days ago</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-
+                        @for (board of boards(); track board.id) {
+                            <lu-board-card [board]="board" />
+                        }
                     </div>
                 </div>
 
@@ -503,7 +393,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center gap-2">
                             <div
-                                class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center"
+                                class="rounded-circle bg-warning d-flex align-items-center justify-content-center"
                                 style="width:34px;height:34px">ED
                             </div>
                             <div>
@@ -568,21 +458,21 @@
 
                 <div class="card-body">
                     <div class="border-start border-3 border-danger ps-3 mb-3">
-                        <div class="small fw-medium"><a href="#" class="text-decoration-none text-dark">Finalize
+                        <div class="small fw-medium"><a href="#" class="text-decoration-none">Finalize
                             homepage design</a></div>
                         <div class="text-muted small">DES-42 · Emily Davis</div>
                         <div class="text-danger small mt-1">Due tomorrow</div>
                     </div>
 
                     <div class="border-start border-3 border-warning ps-3 mb-3">
-                        <div class="small fw-medium"><a href="#" class="text-decoration-none text-dark">Implement
+                        <div class="small fw-medium"><a href="#" class="text-decoration-none">Implement
                             authentication</a></div>
                         <div class="text-muted small">WEB-124 · Michael Brown</div>
                         <div class="text-muted small mt-1">Due Nov 12</div>
                     </div>
 
                     <div class="border-start border-3 border-secondary ps-3">
-                        <div class="small fw-medium"><a href="#" class="text-decoration-none text-dark">Prepare SEO
+                        <div class="small fw-medium"><a href="#" class="text-decoration-none">Prepare SEO
                             metadata</a></div>
                         <div class="text-muted small">WEB-126 · Alex Wilson</div>
                         <div class="text-muted small mt-1">Due Nov 14</div>
@@ -603,19 +493,19 @@
                 <div class="card-body">
                     <a href="#" class="d-flex align-items-center gap-2 text-decoration-none mb-3">
                         <i class="bi bi-file-earmark-pdf text-danger fs-5"></i>
-                        <span class="small text-dark flex-grow-1">Project requirements.pdf</span>
+                        <span class="small flex-grow-1">Project requirements.pdf</span>
                         <i class="bi bi-box-arrow-up-right text-muted small"></i>
                     </a>
 
                     <a href="#" class="d-flex align-items-center gap-2 text-decoration-none mb-3">
                         <i class="bi bi-link-45deg text-primary fs-5"></i>
-                        <span class="small text-dark flex-grow-1">Figma design files</span>
+                        <span class="small flex-grow-1">Figma design files</span>
                         <i class="bi bi-box-arrow-up-right text-muted small"></i>
                     </a>
 
                     <a href="#" class="d-flex align-items-center gap-2 text-decoration-none">
                         <i class="bi bi-file-earmark-text text-secondary fs-5"></i>
-                        <span class="small text-dark flex-grow-1">Technical specifications</span>
+                        <span class="small flex-grow-1">Technical specifications</span>
                         <i class="bi bi-box-arrow-up-right text-muted small"></i>
                     </a>
                 </div>
