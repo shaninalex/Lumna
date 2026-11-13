@@ -3,7 +3,7 @@ import type { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: 'auth',
-        loadChildren: () => import('../pages/auth/auth.routes').then((m) => m.routes),
+        loadChildren: () => import('../pages/auth.routes').then((m) => m.routes),
     },
     {
         path: 'app',
@@ -15,12 +15,8 @@ export const routes: Routes = [
         redirectTo: 'app',
     },
     {
-        path: 'ui-system',
-        loadComponent: () => import('../pages/system/ui-system/ui-system.page').then((m) => m.UiSystemPage),
-    },
-    {
         path: '404',
-        loadComponent: () => import('../pages/system/page-404').then((m) => m.Page404),
+        loadComponent: () => import('../pages/page-404').then((m) => m.Page404),
     },
     {
         path: '**',

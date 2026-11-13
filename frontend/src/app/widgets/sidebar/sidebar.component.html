@@ -5,10 +5,10 @@
                 <li class="nav-item">
                     <a
                         class="nav-link text-body"
-                        [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id, 'inbox']"
+                        [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id]"
                         title="Inbox"
                     >
-                        <ng-icon name="reiconInbox" />
+                        <ng-icon name="reiconInbox"/>
                         <span class="sidebar-nav-link">Inbox</span>
                     </a>
                 </li>
@@ -18,18 +18,30 @@
                         [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id, 'boards']"
                         title="Boards"
                     >
-                        <ng-icon name="reiconPage" />
+                        <ng-icon name="reiconPage"/>
                         <span class="sidebar-nav-link">Boards</span>
                     </a>
                 </li>
             }
+            <li class="nav-item">
+                <a href="#" class="nav-link text-body">For you</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-body">Recent</a>
+            </li>
+            <li class="nav-item">
+                <hr>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-body">Workspaces</a>
+            </li>
         </ul>
 
         <div>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link text-body" [routerLink]="appRoutes.workspaceRoot(['settings'])">
-                        <ng-icon name="reiconSettings2" />
+                        <ng-icon name="reiconSettings2"/>
                         <span class="sidebar-nav-link">Workspace settings</span>
                     </a>
                 </li>
