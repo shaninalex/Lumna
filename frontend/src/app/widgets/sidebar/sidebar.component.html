@@ -37,18 +37,16 @@
             }
         </ul>
 
-        <div>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <hr class="mb-0" />
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-body" [routerLink]="appRoutes.workspaceRoot(['settings'])">
-                        <ng-icon name="reiconSettings2"/>
-                        <span class="sidebar-nav-link">Workspace settings</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <hr class="mb-0"/>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-body" [routerLink]="appRoutes.workspaceRoot(['settings'])">
+                    <ng-icon name="reiconSettings2"/>
+                    <span class="sidebar-nav-link">Workspace settings</span>
+                </a>
+            </li>
+        </ul>
     </nav>
 }

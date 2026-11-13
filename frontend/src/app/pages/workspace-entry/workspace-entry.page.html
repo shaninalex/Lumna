@@ -1,22 +1,20 @@
 <lu-main-layout>
-    <div class="alert alert-warning">This is example content</div>
-    @if (workspace$ | async; as workspace) {
-        <div class="container-fluid py-4">
+    <div class="container-fluid py-4">
 
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-start mb-4">
                 <div>
-                    <h1 class="h3 mb-1">{{ workspace.title }}</h1>
+                    <h1 class="h3 mb-1">{{ workspace()?.title }}</h1>
                     <p class="text-muted mb-0">Here's what's happening across your workspace.</p>
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button class="btn btn-outline-secondary">
-                        <i class="bi bi-plus-lg me-1"></i> Invite members
-                    </button>
-                    <button class="btn btn-primary">
-                        <i class="bi bi-plus-lg me-1"></i> Create project
-                    </button>
+                    <a [routerLink]="appRoutes.workspaceRoot(['settings', 'members', 'invitations'])" class="btn btn-outline-secondary">
+                        <ng-icon name="reiconPlus" /> Invite members
+                    </a>
+                    <a [routerLink]="appRoutes.workspaceRoot(['projects', 'create'])" class="btn btn-primary">
+                        <ng-icon name="reiconPlus" /> Create project
+                    </a>
                 </div>
             </div>
 
@@ -302,88 +300,37 @@
                 <!-- Sidebar -->
                 <div class="col-12 col-xl-4">
 
-                    <!-- Quick Actions -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-header  border-0 pt-3">
-                            <h5 class="mb-0">Quick actions</h5>
-                        </div>
-                        <div class="card-body d-grid gap-2">
-                            <button class="btn btn-primary text-start">
-                                <i class="bi bi-plus-circle me-2"></i> Create a task
-                            </button>
-                            <button class="btn btn-outline-secondary text-start">
-                                <i class="bi bi-folder-plus me-2"></i> Create a project
-                            </button>
-                            <button class="btn btn-outline-secondary text-start">
-                                <i class="bi bi-kanban me-2"></i> Create a board
-                            </button>
-                            <button class="btn btn-outline-secondary text-start">
-                                <i class="bi bi-person-plus me-2"></i> Invite a member
-                            </button>
-                            <button class="btn btn-outline-secondary text-start">
-                                <i class="bi bi-calendar-plus me-2"></i> Schedule an event
-                            </button>
-                        </div>
-                    </div>
-
                     <!-- Projects -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header  border-0 pt-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Your projects</h5>
-                                <a href="#" class="small text-decoration-none">See all</a>
+                                <a [routerLink]="appRoutes.workspaceRoot(['projects'])" class="small text-decoration-none">
+                                    See all
+                                </a>
                             </div>
                         </div>
 
                         <div class="card-body">
-                            <a href="#" class="d-flex align-items-center gap-3 text-decoration-none text-dark mb-3">
-                                <div class="rounded bg-primary bg-opacity-10 p-2">
-                                    <i class="bi bi-window text-primary"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="fw-medium">Website Redesign</div>
-                                    <div class="small text-muted">4 boards · 18 tasks</div>
-                                </div>
-                                <span class="badge text-bg-success">Active</span>
-                            </a>
 
-                            <a href="#" class="d-flex align-items-center gap-3 text-decoration-none text-dark mb-3">
-                                <div class="rounded bg-success bg-opacity-10 p-2">
-                                    <i class="bi bi-server text-success"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="fw-medium">Backend Development</div>
-                                    <div class="small text-muted">3 boards · 24 tasks</div>
-                                </div>
-                                <span class="badge text-bg-success">Active</span>
-                            </a>
-
-                            <a href="#" class="d-flex align-items-center gap-3 text-decoration-none text-dark mb-3">
-                                <div class="rounded bg-warning bg-opacity-10 p-2">
-                                    <i class="bi bi-phone text-warning"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="fw-medium">Mobile App</div>
-                                    <div class="small text-muted">2 boards · 12 tasks</div>
-                                </div>
-                                <span class="badge text-bg-success">Active</span>
-                            </a>
-
-                            <a href="#" class="d-flex align-items-center gap-3 text-decoration-none text-dark">
-                                <div class="rounded bg-info bg-opacity-10 p-2">
-                                    <i class="bi bi-megaphone text-info"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="fw-medium">Marketing Campaign</div>
-                                    <div class="small text-muted">2 boards · 8 tasks</div>
-                                </div>
-                                <span class="badge text-bg-secondary">On hold</span>
-                            </a>
+                            @for (project of projects(); track project.id) {
+                                <a [routerLink]="appRoutes.projectDetail(project.id)" class="d-flex align-items-center gap-3 text-decoration-none mb-3">
+                                    <div class="rounded bg-primary bg-opacity-10 p-2">
+                                        <i class="bi bi-window text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium">{{ project.title }}</div>
+                                        <div class="small text-muted">4 boards · 18 tasks</div>
+                                    </div>
+                                    <span class="badge text-bg-success">Active</span>
+                                </a>
+                            }
                         </div>
 
                         <div class="card-footer  border-0">
-                            <a href="#" class="text-decoration-none small">
-                                <i class="bi bi-plus-lg me-1"></i> Create new project
+                            <a [routerLink]="appRoutes.workspaceRoot(['projects', 'create'])" class="text-decoration-none small">
+                                <ng-icon name="reiconPlus" />
+                                Create new project
                             </a>
                         </div>
                     </div>
@@ -398,7 +345,7 @@
                         <div class="card-body">
                             <div class="border-start border-3 border-danger ps-3 mb-3">
                                 <div class="fw-medium small">
-                                    <a href="#" class="text-decoration-none text-dark">Fix payment gateway error</a>
+                                    <a href="#" class="text-decoration-none">Fix payment gateway error</a>
                                 </div>
                                 <div class="text-muted small">PAY-18 · Payments</div>
                                 <div class="text-danger small mt-1">Overdue by 3 days</div>
@@ -406,7 +353,7 @@
 
                             <div class="border-start border-3 border-danger ps-3 mb-3">
                                 <div class="fw-medium small">
-                                    <a href="#" class="text-decoration-none text-dark">Update privacy policy</a>
+                                    <a href="#" class="text-decoration-none">Update privacy policy</a>
                                 </div>
                                 <div class="text-muted small">WEB-109 · Website Redesign</div>
                                 <div class="text-danger small mt-1">Overdue by 1 day</div>
@@ -414,7 +361,7 @@
 
                             <div class="border-start border-3 border-danger ps-3">
                                 <div class="fw-medium small">
-                                    <a href="#" class="text-decoration-none text-dark">Add unit tests for user
+                                    <a href="#" class="text-decoration-none">Add unit tests for user
                                         service</a>
                                 </div>
                                 <div class="text-muted small">API-38 · Backend Development</div>
@@ -468,7 +415,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="d-flex align-items-center gap-2">
                                     <div
-                                        class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center"
+                                        class="rounded-circle bg-warning d-flex align-items-center justify-content-center"
                                         style="width:34px;height:34px">ED
                                     </div>
                                     <div>
@@ -504,5 +451,4 @@
                 </div>
             </div>
         </div>
-    }
 </lu-main-layout>

@@ -16,6 +16,11 @@ export class    AppRoutes {
         return ['/app', 'w', this.workspaceId(), 'p', this.projectId()];
     }
 
+    projectDetail(id: number): unknown[] {
+        return ['/app', 'w', this.workspaceId(), 'p', id];
+    }
+
+
     projectsCreate(): unknown[] {
         return ['/app', 'w', this.workspaceId(), 'projects', 'create']
     }
