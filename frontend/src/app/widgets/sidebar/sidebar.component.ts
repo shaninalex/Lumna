@@ -7,7 +7,7 @@ import { filter, map, switchMap } from 'rxjs';
 import { selectProjects } from '@entities/project';
 import { selectUI } from "@core/store/ui";
 import { AppRoutes } from '@core';
-import { reiconInbox, reiconPage, reiconSettings2 } from '@ng-icons/reicon';
+import { reiconInbox, reiconPage, reiconSettings2, reiconBell, reiconClockSquare } from '@ng-icons/reicon';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 
 @Component({
@@ -15,7 +15,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
     imports: [NgClass, RouterLink, AsyncPipe, NgIcon],
     styleUrl: './sidebar.component.scss',
     templateUrl: './sidebar.component.html',
-    providers: [provideIcons({reiconSettings2, reiconInbox, reiconPage})]
+    providers: [provideIcons({reiconSettings2, reiconInbox, reiconPage, reiconBell, reiconClockSquare})]
 })
 export class SidebarComponent {
     readonly appRoutes = inject(AppRoutes);

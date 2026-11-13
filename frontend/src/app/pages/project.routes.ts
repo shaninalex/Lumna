@@ -1,12 +1,12 @@
 import type { Routes } from '@angular/router';
 import { paramMatches, paramMatchesDigitsOnly } from '@shared/utils';
 import { activeProjectGuard } from "./project.guard";
-import { InboxPage } from "./inbox";
 import { BoardsPage } from './boards';
 import { BoardCreatePage } from './board-create';
 import { BoardDetailPage } from './board-detail';
 import { TaskDetailPage } from './task-detail';
 import { ProjectSettingsPage } from './project-settings';
+import { ProjectPage } from './project';
 
 export const projectRoutes: Routes = [
     {
@@ -14,12 +14,12 @@ export const projectRoutes: Routes = [
         canActivate: [activeProjectGuard],
         children: [
             {
-                path: 'settings',
-                component: ProjectSettingsPage,
+                path: '',
+                component: ProjectPage,
             },
             {
-                path: 'inbox',
-                component: InboxPage,
+                path: 'settings',
+                component: ProjectSettingsPage,
             },
             {
                 path: 'boards',
@@ -39,12 +39,7 @@ export const projectRoutes: Routes = [
                         canMatch: [paramMatches("taskId", paramMatchesDigitsOnly)]
                     },
                 ]
-            },
-            {
-                path: '',
-                pathMatch: 'full',
-                redirectTo: 'inbox',
-            },
+            }
         ],
     }
 ]

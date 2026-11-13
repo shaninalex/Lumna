@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"slices"
 )
 
 type QueryBus struct {
@@ -31,8 +32,8 @@ func RegisterQuery[C any, R any](b *QueryBus, h func(context.Context, C) (R, err
 	call := Invoke(func(ctx context.Context, msg any) (any, error) {
 		return h(ctx, msg.(C))
 	})
-	for i := len(b.chain) - 1; i >= 0; i-- {
-		call = b.chain[i](call)
+	for _, v := range slices.Backward(b.chain) {
+		call = v(call)
 	}
 	b.handlers[key] = call
 	return nil

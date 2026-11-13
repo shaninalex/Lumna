@@ -5,7 +5,6 @@
 
     grid-template-columns: 12rem 1fr;
     grid-template-rows: auto 1fr;
-
     grid-template-areas:
         "header header"
         "sidebar content";
@@ -24,5 +23,5 @@
 }
 
 .dashboard.sidebar-closed {
-    grid-template-columns: 3.5rem 1fr;
+    grid-template-columns: 3rem 1fr;
 }

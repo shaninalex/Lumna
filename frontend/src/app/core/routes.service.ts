@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 
 
 @Injectable()
-export class AppRoutes {
+export class    AppRoutes {
     private readonly store = inject(Store);
 
     private readonly workspaceId = this.store.selectSignal(selectWorkspaces.currentWorkspaceId);

@@ -5,11 +5,11 @@
                 <li class="nav-item">
                     <a
                         class="nav-link text-body"
-                        [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id, 'inbox']"
+                        [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id]"
                         title="Inbox"
                     >
-                        <ng-icon name="reiconInbox" />
-                        <span class="sidebar-nav-link">Inbox</span>
+                        <ng-icon name="reiconInbox"/>
+                        <span class="sidebar-nav-link">Overview</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -18,8 +18,20 @@
                         [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id, 'boards']"
                         title="Boards"
                     >
-                        <ng-icon name="reiconPage" />
+                        <ng-icon name="reiconPage"/>
                         <span class="sidebar-nav-link">Boards</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-body">
+                        <ng-icon name="reiconBell"/>
+                        <span class="sidebar-nav-link">For you</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-body">
+                        <ng-icon name="reiconClockSquare"/>
+                        <span class="sidebar-nav-link">Recent</span>
                     </a>
                 </li>
             }
@@ -28,8 +40,11 @@
         <div>
             <ul class="nav flex-column">
                 <li class="nav-item">
+                    <hr class="mb-0" />
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-body" [routerLink]="appRoutes.workspaceRoot(['settings'])">
-                        <ng-icon name="reiconSettings2" />
+                        <ng-icon name="reiconSettings2"/>
                         <span class="sidebar-nav-link">Workspace settings</span>
                     </a>
                 </li>
