@@ -1,13 +1,17 @@
 import { Component, inject, input } from '@angular/core';
-import { BoardModel } from '@entities/board';
-import { AppRoutes } from '@core';
 import { RouterLink } from '@angular/router';
+
+import { BoardModel } from '../../model';
+import { AppRoutes } from '@core';
+
 
 @Component({
     imports: [RouterLink],
     selector: 'lu-board-card',
+    styleUrl: './board-card.component.scss',
     template: `
-        <a [routerLink]="appRoutes.board(board().id)" class="card h-100 text-decoration-none border shadow-none">
+        <a [routerLink]="appRoutes.board(board().id)"
+           class="card board-card h-100 text-decoration-none border shadow-none">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div class="rounded bg-primary bg-opacity-10 p-2">

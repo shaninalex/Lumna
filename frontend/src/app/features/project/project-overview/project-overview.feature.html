@@ -43,10 +43,11 @@
     <!-- Project Navigation -->
     <div class="border-bottom mb-4">
         <nav class="nav gap-3">
-            <a class="nav-link active border-bottom border-primary border-2 text-primary fw-medium px-2" href="#">
+            <a class="nav-link active border-bottom border-primary border-2 text-primary fw-medium px-2"
+               [routerLink]="appRoutes.projectRoute()">
                 Overview
             </a>
-            <a class="nav-link text-muted px-2" href="#">
+            <a class="nav-link text-muted px-2" [routerLink]="[...appRoutes.projectRoute(), 'boards']">
                 <i class="bi bi-kanban me-1"></i> Boards
             </a>
             <a class="nav-link text-muted px-2" href="#">
@@ -125,14 +126,14 @@
             <!-- Boards -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header border-0 pt-3 pb-0">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h5 class="mb-1">Project boards</h5>
                             <p class="text-muted small">Organize and track work across your boards</p>
                         </div>
-                        <button class="btn btn-sm btn-outline-secondary">
+                        <a [routerLink]="[...appRoutes.projectRoute(), 'board', 'create']" class="btn btn-sm btn-outline-secondary">
                             <i class="bi bi-plus-lg me-1"></i> Create board
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -145,8 +146,10 @@
                 </div>
 
                 <div class="card-footer border-0">
-                    <a href="#" class="text-decoration-none small">View all boards <i
-                        class="bi bi-arrow-right ms-1"></i></a>
+                    <a [routerLink]="[...appRoutes.projectRoute(), 'boards']" class="text-decoration-none small">
+                        View all boards
+                        <ng-icon name="reiconChevronRight" />
+                    </a>
                 </div>
             </div>
 

@@ -4,10 +4,13 @@ import { AppRoutes } from '@core';
 import { Store } from '@ngrx/store';
 import { selectProjects } from '@entities/project';
 import { BoardCardComponent, BoardModel, selectBoard } from '@entities/board';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { reiconChevronRight } from '@ng-icons/reicon';
 
 @Component({
-    imports: [RouterLink, BoardCardComponent],
+    imports: [RouterLink, BoardCardComponent, NgIcon],
     selector: 'lu-project-overview-feature',
+    providers: [provideIcons({reiconChevronRight})],
     templateUrl: './project-overview.feature.html',
 })
 export class ProjectOverviewFeature {
