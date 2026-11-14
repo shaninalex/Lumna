@@ -18,7 +18,6 @@ import (
 	"gitlab.com/shaninalex/lumna/app/adapters/web"
 	"gitlab.com/shaninalex/lumna/app/adapters/ws"
 	"gitlab.com/shaninalex/lumna/app/core"
-	"gitlab.com/shaninalex/lumna/app/platform/config"
 )
 
 // appRef resolves the application after PersistentPreRunE has built it.
@@ -31,8 +30,7 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 		Use:   "serve",
 		Short: "Run http server",
 		Run: func(cmd *cobra.Command, args []string) {
-			path, _ := cmd.Flags().GetString("config")
-			cfg := config.ReadConfig(path)
+			cfg := app().Config
 
 			ctx, stop := signal.NotifyContext(cmd.Context(), syscall.SIGINT, syscall.SIGTERM)
 			defer stop()

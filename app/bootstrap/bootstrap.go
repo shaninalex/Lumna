@@ -20,6 +20,7 @@ import (
 
 type Instance struct {
 	Core     *core.App
+	Config   *config.Config
 	Log      *slog.Logger
 	Clock    clock.Clock
 	Bridges  Bridges
@@ -83,6 +84,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 
 	return &Instance{
 		Core:     c,
+		Config:   cfg,
 		Log:      log,
 		Clock:    clk,
 		Bridges:  bridges,
