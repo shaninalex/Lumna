@@ -2,11 +2,11 @@ import { Component, effect, inject, signal, Signal } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { selectWorkspaces, WorkspaceModel } from '@entities/workspace';
+import { selectWorkspaces } from '@entities/workspace';
 import { ProjectModel, selectProjects } from '@entities/project';
 import { selectUI } from "@core/store/ui";
 import { AppRoutes } from '@core';
-import { reiconInbox, reiconPage, reiconSettings2, reiconBell, reiconClockSquare } from '@ng-icons/reicon';
+import { reiconInbox, reiconPage, reiconSettings2, reiconBell, reiconClockSquare, reiconPlug2 } from '@ng-icons/reicon';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 
 @Component({
@@ -14,7 +14,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
     imports: [NgClass, RouterLink, NgIcon],
     styleUrl: './sidebar.component.scss',
     templateUrl: './sidebar.component.html',
-    providers: [provideIcons({reiconSettings2, reiconInbox, reiconPage, reiconBell, reiconClockSquare})]
+    providers: [provideIcons({reiconSettings2, reiconInbox, reiconPage, reiconBell, reiconClockSquare, reiconPlug2})]
 })
 export class SidebarComponent {
     readonly appRoutes = inject(AppRoutes);
@@ -23,7 +23,6 @@ export class SidebarComponent {
     hideSidebar = this.store.selectSignal(selectUI.sidebarOpen);
     workspaces = this.store.selectSignal(selectWorkspaces.all)
     projects: Signal<ProjectModel[]> = signal<ProjectModel[]>([])
-
     currentWorkspace = this.store.selectSignal(selectWorkspaces.currentWorkspace)
     currentProject = this.store.selectSignal(selectProjects.currentProject);
 

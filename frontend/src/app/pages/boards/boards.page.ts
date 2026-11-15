@@ -14,6 +14,18 @@ import { reiconPlus } from '@ng-icons/reicon';
     template: `
         <lu-main-layout>
             <div class="container-fluid py-4">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <a [routerLink]=""
+                       class="text-muted text-decoration-none small">
+                        Workspace
+                    </a>
+                    <i class="text-muted small">></i>
+                    <a [routerLink]=""
+                       class="text-muted text-decoration-none small">
+                        Project
+                    </a>
+                </div>
+
                 <!-- Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>

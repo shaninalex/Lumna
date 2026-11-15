@@ -1,34 +1,38 @@
 <nav class="sidebar h-100 bg-body-tertiary" [ngClass]="{ 'sidebar-closed': !hideSidebar() }">
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a href="#" class="nav-link text-body">
-                <ng-icon name="reiconClockSquare"/>
+            <a href="#" class="nav-link text-body fs-6">
+                <ng-icon name="reiconInbox"/>
                 <span class="sidebar-nav-link">Overview</span>
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link text-body">
+            <a href="#" class="nav-link text-body fs-6">
                 <ng-icon name="reiconClockSquare"/>
                 <span class="sidebar-nav-link">Recent</span>
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link disabled" aria-disabled="true">
-                <ng-icon name="reiconClockSquare"/>
+            <a href="#" class="nav-link text-body fs-6">
+                <ng-icon name="reiconBell"/>
+                <span class="sidebar-nav-link">Notifications</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link disabled fs-6" aria-disabled="true">
+                <ng-icon name="reiconPlug2"/>
                 <span class="sidebar-nav-link">Plugins</span>
             </a>
         </li>
-
         <li class="nav-item">
-            <a href="#" class="nav-link"
+            <span class="nav-link fs-6"
                [ngClass]="{
                     'disabled': projects().length === 0,
                     'text-body': projects().length > 0,
-               }"
-            >
-                <ng-icon name="reiconClockSquare"/>
+               }">
+                <ng-icon name="reiconPage"/>
                 <span class="sidebar-nav-link">Projects</span>
-            </a>
+            </span>
             <ul>
                 @for (p of projects(); track p.id) {
                     <li>
@@ -43,10 +47,10 @@
         </li>
 
         <li class="nav-item">
-            <a href="#" class="nav-link text-body">
+            <span class="nav-link text-body fs-6">
                 <ng-icon name="reiconClockSquare"/>
                 <span class="sidebar-nav-link">Workspaces</span>
-            </a>
+            </span>
             <ul>
                 @for (wp of workspaces(); track wp.id) {
                     <li>
@@ -66,9 +70,9 @@
             <hr class="mb-0"/>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-body" [routerLink]="appRoutes.workspaceRoot(['settings'])">
+            <a class="nav-link text-body fs-6" [routerLink]="['/app/settings']">
                 <ng-icon name="reiconSettings2"/>
-                <span class="sidebar-nav-link">Workspace settings</span>
+                <span class="sidebar-nav-link">Settings</span>
             </a>
         </li>
     </ul>
