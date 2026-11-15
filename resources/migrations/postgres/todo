@@ -1,3 +1,0 @@
-Postgres database schema implementation for Lumna project require stable SQLite3 version.
-Right now it's actively developed, I add new tables, columns all the time. So there are no
-point to update postgres db schema.

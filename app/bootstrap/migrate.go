@@ -45,7 +45,7 @@ func NewMigrateApplyCmd(app func() *Instance, assets Assets) *cobra.Command {
 
 const (
 	migrationDateFormat  = "20060102150405"
-	migrationsSqlitePath = "./resources/migrations/sqlite"
+	migrationsSqlitePath = "./resources/migrations"
 )
 
 func NewMigrateCreateCmd() *cobra.Command {
