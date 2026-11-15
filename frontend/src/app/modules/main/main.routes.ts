@@ -18,10 +18,11 @@ import { KanbanApi } from '@widgets/kanban-widget/api';
 import { WebSocketService } from './websocket.service';
 import { ActivityApi } from '@entities/activity/api';
 import { activityFeature } from '@entities/activity';
-import { workspacesRoutes,
+import {
+    workspacesRoutes,
     workspaceRoutes,
     projectRoutes,
-    settingsRoutes
+    settingsRoutes, workRoutes
 } from '@pages';
 import { MemberApi } from '@entities/member/api/member.api';
 import { memberFeature } from '@entities/member/provider';
@@ -64,6 +65,7 @@ export const routes: Routes = [
         ],
         children: [
             ...workspacesRoutes,
+            ...workRoutes,
             {
                 path: 'w/:workspaceId',
                 canActivate: [activeWorkspaceGuard],

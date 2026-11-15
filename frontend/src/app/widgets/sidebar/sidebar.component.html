@@ -1,28 +1,31 @@
 <nav class="sidebar h-100 bg-body-tertiary" [ngClass]="{ 'sidebar-closed': !hideSidebar() }">
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a href="#" class="nav-link text-body fs-6">
+            <a routerLink="/app/overview" class="nav-link text-body fs-6">
                 <ng-icon name="reiconInbox"/>
                 <span class="sidebar-nav-link">Overview</span>
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link text-body fs-6">
+            <a routerLink="/app/recent" class="nav-link text-body fs-6">
                 <ng-icon name="reiconClockSquare"/>
                 <span class="sidebar-nav-link">Recent</span>
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link text-body fs-6">
+            <a routerLink="/app/notifications" class="nav-link text-body fs-6">
                 <ng-icon name="reiconBell"/>
                 <span class="sidebar-nav-link">Notifications</span>
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link disabled fs-6" aria-disabled="true">
+            <a routerLink="/app/plugins" class="nav-link text-body fs-6">
                 <ng-icon name="reiconPlug2"/>
                 <span class="sidebar-nav-link">Plugins</span>
             </a>
+        </li>
+        <li>
+            <hr>
         </li>
         <li class="nav-item">
             <span class="nav-link fs-6"
