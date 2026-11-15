@@ -53,6 +53,9 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	// ======= Platform (logger, db, clock...) =======
 	log := slog.New(slog.NewTextHandler(os.Stderr, nil))
 	db := database.New(cfg)
+	closers := []func(context.Context) error{
+		func(context.Context) error { return db.Close() },
+	}
 	clk := clock.System()
 	hub := realtime.NewHub(64)
 
@@ -69,6 +72,7 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 	// ======= Modules =======
 	mods, bridges, workers, err := buildModules(cfg, db, log, clk, c.Events, hub)
 	if err != nil {
+		_ = db.Close()
 		return nil, err
 	}
 	for _, m := range mods {
@@ -91,5 +95,6 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 		Workers:  workers,
 		modules:  mods,
 		Realtime: hub,
+		closers:  closers,
 	}, nil
 }

@@ -12,6 +12,14 @@ type DB struct {
 	gorm *gorm.DB
 }
 
+func (d *DB) Close() error {
+	sqlDB, err := d.gorm.DB()
+	if err != nil {
+		return err
+	}
+	return sqlDB.Close()
+}
+
 func New(cfg *config.Config) *DB {
 	gdb, err := gorm.Open(
 		sqlite.Open(cfg.String("database.url")),
