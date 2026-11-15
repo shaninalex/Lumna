@@ -1,52 +1,75 @@
-@if (workspace$ | async; as workspace) {
-    <nav class="sidebar h-100 bg-body-tertiary" [ngClass]="{ 'sidebar-closed': !hideSidebar() }">
-        <ul class="nav flex-column">
-            @if (currentProject(); as project) {
-                <li class="nav-item">
-                    <a
-                        class="nav-link text-body"
-                        [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id]"
-                        title="Inbox"
-                    >
-                        <ng-icon name="reiconInbox"/>
-                        <span class="sidebar-nav-link">Overview</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a
-                        class="nav-link text-body"
-                        [routerLink]="['/app/w', workspace.workspaceId, 'p', project.id, 'boards']"
-                        title="Boards"
-                    >
-                        <ng-icon name="reiconPage"/>
-                        <span class="sidebar-nav-link">Boards</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-body">
-                        <ng-icon name="reiconBell"/>
-                        <span class="sidebar-nav-link">For you</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-body">
-                        <ng-icon name="reiconClockSquare"/>
-                        <span class="sidebar-nav-link">Recent</span>
-                    </a>
-                </li>
-            }
-        </ul>
+<nav class="sidebar h-100 bg-body-tertiary" [ngClass]="{ 'sidebar-closed': !hideSidebar() }">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a href="#" class="nav-link text-body">
+                <ng-icon name="reiconClockSquare"/>
+                <span class="sidebar-nav-link">Overview</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link text-body">
+                <ng-icon name="reiconClockSquare"/>
+                <span class="sidebar-nav-link">Recent</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link disabled" aria-disabled="true">
+                <ng-icon name="reiconClockSquare"/>
+                <span class="sidebar-nav-link">Plugins</span>
+            </a>
+        </li>
 
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <hr class="mb-0"/>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-body" [routerLink]="appRoutes.workspaceRoot(['settings'])">
-                    <ng-icon name="reiconSettings2"/>
-                    <span class="sidebar-nav-link">Workspace settings</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-}
+        <li class="nav-item">
+            <a href="#" class="nav-link"
+               [ngClass]="{
+                    'disabled': projects().length === 0,
+                    'text-body': projects().length > 0,
+               }"
+            >
+                <ng-icon name="reiconClockSquare"/>
+                <span class="sidebar-nav-link">Projects</span>
+            </a>
+            <ul>
+                @for (p of projects(); track p.id) {
+                    <li>
+                        <a [routerLink]="appRoutes.projectDetail(p.id)"
+                           class="text-body text-decoration-none"
+                           [ngClass]="{'fw-bold': p.id === currentProject()?.id}">
+                            {{ p.title }}
+                        </a>
+                    </li>
+                }
+            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a href="#" class="nav-link text-body">
+                <ng-icon name="reiconClockSquare"/>
+                <span class="sidebar-nav-link">Workspaces</span>
+            </a>
+            <ul>
+                @for (wp of workspaces(); track wp.id) {
+                    <li>
+                        <a [routerLink]="appRoutes.workspaceDetail(wp.id)"
+                           class="text-body text-decoration-none"
+                           [ngClass]="{'fw-bold': wp.id === currentWorkspace()?.id}">
+                            {{ wp.title }}
+                        </a>
+                    </li>
+                }
+            </ul>
+        </li>
+    </ul>
+
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <hr class="mb-0"/>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-body" [routerLink]="appRoutes.workspaceRoot(['settings'])">
+                <ng-icon name="reiconSettings2"/>
+                <span class="sidebar-nav-link">Workspace settings</span>
+            </a>
+        </li>
+    </ul>
+</nav>

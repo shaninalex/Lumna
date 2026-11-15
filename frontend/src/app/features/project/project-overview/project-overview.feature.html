@@ -3,9 +3,15 @@
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
         <div>
             <div class="d-flex align-items-center gap-2 mb-2">
-                <a href="#" class="text-muted text-decoration-none small">Workspace</a>
-                <i class="bi bi-chevron-right text-muted small"></i>
-                <span class="text-muted small">Projects</span>
+                <a [routerLink]="workspaceLink"
+                   class="text-muted text-decoration-none small">
+                    Workspace
+                </a>
+                <i class="text-muted small">></i>
+                <a [routerLink]="projectsLink"
+                   class="text-muted text-decoration-none small">
+                    Projects
+                </a>
             </div>
 
             <div class="d-flex align-items-center gap-2 mb-2">
@@ -131,7 +137,8 @@
                             <h5 class="mb-1">Project boards</h5>
                             <p class="text-muted small">Organize and track work across your boards</p>
                         </div>
-                        <a [routerLink]="[...appRoutes.projectRoute(), 'board', 'create']" class="btn btn-sm btn-outline-secondary">
+                        <a [routerLink]="[...appRoutes.projectRoute(), 'board', 'create']"
+                           class="btn btn-sm btn-outline-secondary">
                             <i class="bi bi-plus-lg me-1"></i> Create board
                         </a>
                     </div>
@@ -140,7 +147,7 @@
                 <div class="card-body">
                     <div class="row g-3">
                         @for (board of boards(); track board.id) {
-                            <lu-board-card [board]="board" />
+                            <lu-board-card [board]="board"/>
                         }
                     </div>
                 </div>
@@ -148,7 +155,7 @@
                 <div class="card-footer border-0">
                     <a [routerLink]="[...appRoutes.projectRoute(), 'boards']" class="text-decoration-none small">
                         View all boards
-                        <ng-icon name="reiconChevronRight" />
+                        <ng-icon name="reiconChevronRight"/>
                     </a>
                 </div>
             </div>

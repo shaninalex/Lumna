@@ -20,6 +20,9 @@ export class    AppRoutes {
         return ['/app', 'w', this.workspaceId(), 'p', id];
     }
 
+    workspaceDetail(id: number): unknown[] {
+        return ['/app', 'w', id];
+    }
 
     projectsCreate(): unknown[] {
         return ['/app', 'w', this.workspaceId(), 'projects', 'create']

@@ -26,6 +26,7 @@ type Instance struct {
 	Bridges  Bridges
 	Workers  Workers
 	Realtime *realtime.Hub
+	DB       *database.DB
 
 	modules []core.Module
 	closers []func(context.Context) error
@@ -93,8 +94,9 @@ func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, err
 		Clock:    clk,
 		Bridges:  bridges,
 		Workers:  workers,
-		modules:  mods,
 		Realtime: hub,
+		DB:       db,
+		modules:  mods,
 		closers:  closers,
 	}, nil
 }

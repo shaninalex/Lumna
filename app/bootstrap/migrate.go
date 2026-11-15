@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"time"
@@ -11,14 +12,10 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/spf13/cobra"
-	"gitlab.com/shaninalex/lumna"
-	"gitlab.com/shaninalex/lumna/app/core"
-	"gitlab.com/shaninalex/lumna/app/platform/config"
-	"gitlab.com/shaninalex/lumna/app/platform/database"
 	"gorm.io/gorm"
 )
 
-func migrateCmd(app core.Resolve) *cobra.Command {
+func migrateCmd(app func() *Instance, assets Assets) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "migrate",
 		Short: "Migrate db schema",
@@ -27,29 +24,19 @@ func migrateCmd(app core.Resolve) *cobra.Command {
 		},
 	}
 
-	cmd.AddCommand(NewMigrateApplyCmd())
+	cmd.AddCommand(NewMigrateApplyCmd(app, assets))
 	cmd.AddCommand(NewMigrateCreateCmd())
 
 	return cmd
 }
 
-func NewMigrateApplyCmd() *cobra.Command {
+func NewMigrateApplyCmd(app func() *Instance, assets Assets) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "apply",
 		Short: "Apply migrations",
 		Args:  cobra.ArbitraryArgs,
-		Run: func(cmd *cobra.Command, args []string) {
-			configPath, err := cmd.Flags().GetString("config")
-			if err != nil {
-				panic(err)
-			}
-
-			cfg := config.ProvideConfig(configPath)
-			db := database.New(cfg)
-
-			if err := MigrateSQLite(db.From(cmd.Context())); err != nil {
-				panic(err)
-			}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return MigrateSQLite(app().DB.From(cmd.Context()), assets.Migrations)
 		},
 	}
 
@@ -59,7 +46,6 @@ func NewMigrateApplyCmd() *cobra.Command {
 const (
 	migrationDateFormat  = "20060102150405"
 	migrationsSqlitePath = "./resources/migrations/sqlite"
-	//migrationsPostgresPath = "./resources/migrations/postgres"
 )
 
 func NewMigrateCreateCmd() *cobra.Command {
@@ -91,12 +77,12 @@ func NewMigrateCreateCmd() *cobra.Command {
 	return cmd
 }
 
-func MigrateSQLite(db *gorm.DB) error {
+func MigrateSQLite(db *gorm.DB, migrateFs fs.FS) error {
 	sqlDB, err := db.DB()
 	if err != nil {
 		return err
 	}
-	sourceDriver, err := iofs.New(lumna.StaticFS("resources/migrations/sqlite"), ".")
+	sourceDriver, err := iofs.New(migrateFs, ".")
 	if err != nil {
 		return err
 	}

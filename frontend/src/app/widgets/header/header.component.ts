@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 import { UserMenuComponent } from '@entities/user';
 import { NotificationsDropdownComponent } from '@entities/notification';
 import { ThemeSwitcherComponent } from '@shared/ui';
-import { ProjectDropdownComponent } from '@features/project';
 import { WorkspaceSwitcherComponent } from '@features';
 import { actionUI, selectUI } from '@core/store/ui';
 import { NgClass } from '@angular/common';
@@ -16,7 +15,6 @@ import { reiconChevronLeft, reiconMenu } from '@ng-icons/reicon';
         UserMenuComponent,
         ThemeSwitcherComponent,
         NotificationsDropdownComponent,
-        ProjectDropdownComponent,
         WorkspaceSwitcherComponent,
         NgClass,
         NgIcon,
@@ -37,7 +35,7 @@ import { reiconChevronLeft, reiconMenu } from '@ng-icons/reicon';
                             <img src="images/logo-icon.svg">
                         }
                     </button>
-                    <lu-project-dropdown />
+                    <h3 class="my-0">Lumna</h3>
                 </div>
 
                 <div class="flex align-items-center">

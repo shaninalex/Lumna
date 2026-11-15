@@ -3,7 +3,6 @@ import { MainLayout } from '@core/layout';
 import { UiService } from '@shared/ui';
 import { Store } from '@ngrx/store';
 import { selectWorkspaces} from '@entities/workspace';
-import { AsyncPipe } from '@angular/common';
 import { AppRoutes } from '@core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -12,7 +11,7 @@ import { ProjectModel, selectProjects } from '@entities/project';
 
 @Component({
     selector: 'lu-workspace-entry-page',
-    imports: [MainLayout, AsyncPipe, RouterLink, NgIcon],
+    imports: [MainLayout, RouterLink, NgIcon],
     templateUrl: "./workspace-entry.page.html",
     providers: [provideIcons({reiconPlus})],
 })
