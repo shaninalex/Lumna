@@ -3,43 +3,32 @@ package handlers
 import (
 	"context"
 
-	"gitlab.com/shaninalex/lumna/app/modules/notifications/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications/internal/domain"
 	workspaceContract "gitlab.com/shaninalex/lumna/app/modules/workspace/contract"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
 type InvitationAccepted struct {
-	pusher contract.Pusher
-	clk    clock.Clock
-	repo   domain.NotificationRepo
+	clk     clock.Clock
+	deliver *Deliverer
 }
 
-func NewInvitationAccepted(
-	pusher contract.Pusher,
-	clk clock.Clock,
-	repo domain.NotificationRepo,
-) *InvitationAccepted {
-	return &InvitationAccepted{pusher, clk, repo}
+func NewInvitationAccepted(clk clock.Clock, deliver *Deliverer) *InvitationAccepted {
+	return &InvitationAccepted{clk: clk, deliver: deliver}
 }
 
-func (s *InvitationAccepted) Handle(ctx context.Context, event workspaceContract.InvitationAccepted) error {
-	n := domain.Notification{
-		NotificationType: event.EventName(),
-		Content:          "Invitation accepted",
-		Created:          s.clk.Now(),
-	}
-
-	n, err := s.repo.Save(ctx, n)
+func (s *InvitationAccepted) Handle(ctx context.Context, e workspaceContract.InvitationAccepted) error {
+	data, err := content(map[string]any{"invitation_id": e.InvitationId})
 	if err != nil {
 		return err
 	}
-	s.pusher.Push(ctx, event.RecipientsIds, contract.NotificationView{
-		ID:        n.ID,
-		Type:      event.EventName(),
-		Content:   n.Content,
-		CreatedAt: n.Created,
-	})
-
-	return nil
+	n := domain.Notification{
+		NotificationType: e.EventName(),
+		Content:          data,
+		RefId:            e.WorkspaceId,
+		RefType:          "workspace",
+		Created:          s.clk.Now(),
+	}
+	n.AddRecipients(0, e.RecipientsIds...)
+	return s.deliver.Deliver(ctx, n)
 }

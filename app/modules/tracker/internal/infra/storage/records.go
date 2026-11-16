@@ -147,39 +147,3 @@ func workItemsToDomain(records []workItemRecord) []domain.WorkItem {
 	}
 	return workItems
 }
-
-type activityRecord struct {
-	ID         int `gorm:"primaryKey;autoIncrement"`
-	IdentityID int
-	EntityID   int
-	EntityType string
-	EventType  string
-	Content    string
-	CreatedAt  time.Time `gorm:"autoCreateTime"`
-}
-
-func (activityRecord) TableName() string { return "activities" }
-
-func activityToDomain(record activityRecord) domain.Activity {
-	return domain.Activity{
-		ID:         record.ID,
-		IdentityID: record.IdentityID,
-		EntityID:   record.EntityID,
-		EntityType: record.EntityType,
-		EventType:  record.EventType,
-		Content:    record.Content,
-		CreatedAt:  record.CreatedAt,
-	}
-}
-
-func activityToRecord(record domain.Activity) activityRecord {
-	return activityRecord{
-		ID:         record.ID,
-		IdentityID: record.IdentityID,
-		EntityID:   record.EntityID,
-		EntityType: record.EntityType,
-		EventType:  record.EventType,
-		Content:    record.Content,
-		CreatedAt:  record.CreatedAt,
-	}
-}

@@ -1,8 +1,11 @@
 package contract
 
+// NotificationCreated is published after a notification and its recipients
+// are stored.
 type NotificationCreated struct {
-	Source string
-	// todo: rest of the fields
+	NotificationId int
+	Type           string
+	RecipientIds   []int
 }
 
 func (n NotificationCreated) EventName() string {

@@ -17,33 +17,55 @@ func NewNotificationRepo(db *database.DB) *NotificationRepo { return &Notificati
 
 var _ domain.NotificationRepo = (*NotificationRepo)(nil)
 
+// Save stores the notification together with its recipients. It runs in the
+// caller's transaction when there is one.
 func (r *NotificationRepo) Save(ctx context.Context, n domain.Notification) (domain.Notification, error) {
 	record := notificationRecord{
-		IdentityID: sql.NullInt64{Int64: int64(n.IdentityId), Valid: n.IdentityId != 0},
-		Type:       n.NotificationType,
-		Content:    n.Content,
-		RefID:      sql.NullInt64{Int64: int64(n.RefId), Valid: n.RefId != 0},
-		Priority:   sql.NullString{String: n.Priority, Valid: n.Priority != ""},
-		CreatedAt:  n.Created,
+		Type:      n.NotificationType,
+		Content:   n.Content,
+		RefID:     sql.NullInt64{Int64: int64(n.RefId), Valid: n.RefId != 0},
+		RefType:   sql.NullString{String: n.RefType, Valid: n.RefType != ""},
+		Priority:  sql.NullString{String: n.Priority, Valid: n.Priority != ""},
+		CreatedAt: n.Created,
 	}
-	if err := r.db.From(ctx).Save(&record).Error; err != nil {
+	tx := r.db.From(ctx)
+	if err := tx.Create(&record).Error; err != nil {
 		return domain.Notification{}, err
 	}
-	return toNotificationDomain(record), nil
+
+	recipients := make([]notificationRecipientRecord, len(n.Recipients))
+	for i, rc := range n.Recipients {
+		recipients[i] = notificationRecipientRecord{IdentityID: rc.IdentityID, NotificationID: record.ID}
+	}
+	if len(recipients) > 0 {
+		if err := tx.Create(&recipients).Error; err != nil {
+			return domain.Notification{}, err
+		}
+	}
+
+	return toNotificationDomain(record, recipients), nil
 }
 
-func toNotificationDomain(n notificationRecord) domain.Notification {
+func toNotificationDomain(n notificationRecord, recipients []notificationRecipientRecord) domain.Notification {
 	dn := domain.Notification{
 		ID:               n.ID,
-		IdentityId:       int(n.IdentityID.Int64),
 		NotificationType: n.Type,
 		Content:          n.Content,
 		RefId:            int(n.RefID.Int64),
+		RefType:          n.RefType.String,
 		Priority:         n.Priority.String,
 		Created:          n.CreatedAt,
+		Recipients:       make([]domain.Recipient, len(recipients)),
 	}
-	if n.ReadAt.Valid {
-		dn.ReadAt = n.ReadAt.Time
+	for i, r := range recipients {
+		dn.Recipients[i] = domain.Recipient{
+			ID:             r.ID,
+			NotificationID: r.NotificationID,
+			IdentityID:     r.IdentityID,
+		}
+		if r.ReadAt.Valid {
+			dn.Recipients[i].ReadAt = r.ReadAt.Time
+		}
 	}
 	return dn
 }

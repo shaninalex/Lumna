@@ -102,3 +102,53 @@ func TestEventBus_HandlerError(t *testing.T) {
 		t.Fatalf("expected error to wrap handler error, got: %v", err)
 	}
 }
+
+type namedEvent interface {
+	bus.Event
+	Name() string
+}
+
+type OtherEvent struct{}
+
+func (OtherEvent) EventName() string { return "other.event" }
+
+func (e TestEvent) Name() string { return e.Message }
+
+func TestEventBus_SubscribeTo(t *testing.T) {
+	b := bus.NewEventBus()
+	ctx := context.Background()
+
+	var order []string
+	_ = bus.Subscribe(b, func(ctx context.Context, e TestEvent) error {
+		order = append(order, "concrete")
+		return nil
+	})
+	err := bus.SubscribeTo(b, func(ctx context.Context, e namedEvent) error {
+		order = append(order, "iface:"+e.Name())
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("unexpected subscribe error: %v", err)
+	}
+	b.Seal()
+
+	if err := b.Publish(ctx, TestEvent{Message: "hi"}); err != nil {
+		t.Fatalf("unexpected publish error: %v", err)
+	}
+	// OtherEvent does not implement namedEvent and must not reach the handler.
+	if err := b.Publish(ctx, OtherEvent{}); err != nil {
+		t.Fatalf("unexpected publish error: %v", err)
+	}
+
+	if len(order) != 2 || order[0] != "concrete" || order[1] != "iface:hi" {
+		t.Fatalf("unexpected calls: %+v", order)
+	}
+}
+
+func TestEventBus_SubscribeToRejectsConcreteType(t *testing.T) {
+	b := bus.NewEventBus()
+	err := bus.SubscribeTo(b, func(ctx context.Context, e TestEvent) error { return nil })
+	if err == nil {
+		t.Fatal("expected error for non-interface type, got nil")
+	}
+}

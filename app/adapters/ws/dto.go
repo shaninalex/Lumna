@@ -17,6 +17,7 @@ type NotificationDTO struct {
 	Type      string    `json:"type"`
 	Content   string    `json:"content"`
 	RefID     int       `json:"ref_id"`
+	RefType   string    `json:"ref_type"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -35,6 +36,7 @@ func toNotificationDTO(n contract.NotificationView) NotificationDTO {
 		Type:      n.Type,
 		Content:   n.Content,
 		RefID:     n.RefID,
+		RefType:   n.RefType,
 		CreatedAt: n.CreatedAt,
 	}
 }

@@ -3,7 +3,7 @@ package handlers
 import (
 	"context"
 
-	"gitlab.com/shaninalex/lumna/app/core/actor"
+	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
@@ -12,12 +12,14 @@ import (
 type WorkItemAssignment struct {
 	items domain.WorkingItemRepo
 	clock clock.Clock
+	bus   *bus.EventBus
 }
 
-func NewWorkItemAssignment(items domain.WorkingItemRepo, clock clock.Clock) *WorkItemAssignment {
+func NewWorkItemAssignment(items domain.WorkingItemRepo, clock clock.Clock, bus *bus.EventBus) *WorkItemAssignment {
 	return &WorkItemAssignment{
 		items: items,
 		clock: clock,
+		bus:   bus,
 	}
 }
 
@@ -27,19 +29,13 @@ func (s *WorkItemAssignment) Handle(ctx context.Context, cmd contract.WorkItemAs
 		return false, err
 	}
 
-	activity := domain.Activity{
-		EntityID:   cmd.WorkItemId,
-		EntityType: "work_item",
-		EventType:  "work_item/assignment",
-	}
+	var e bus.Event = contract.WorkItemUnassigned{WorkItemId: cmd.WorkItemId, AssigneeId: cmd.IdentityId, ActorId: actorID(ctx)}
 	if assigned {
-		activity.Content = "Item was assigned user"
-	} else {
-		activity.Content = "User was unassigned from this work item"
+		e = contract.WorkItemAssigned{WorkItemId: cmd.WorkItemId, AssigneeId: cmd.IdentityId, ActorId: actorID(ctx)}
 	}
-	if a, ok := actor.From(ctx); ok {
-		activity.IdentityID = a.IdentityID
+	if err := s.bus.Publish(ctx, e); err != nil {
+		return false, err
 	}
 
-	return true, nil
+	return assigned, nil
 }

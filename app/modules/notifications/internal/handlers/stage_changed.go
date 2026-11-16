@@ -3,66 +3,34 @@ package handlers
 import (
 	"context"
 
-	"gitlab.com/shaninalex/lumna/app/core/actor"
-	"gitlab.com/shaninalex/lumna/app/core/bus"
-	"gitlab.com/shaninalex/lumna/app/modules/notifications/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications/internal/domain"
 	trackerContract "gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
 )
 
+// WorkItemStageChanged notifies the work item's assignees, except the one
+// who moved it.
 type WorkItemStageChanged struct {
-	c        clock.Clock
-	repo     domain.NotificationRepo
-	eventBus *bus.EventBus
-	pusher   contract.Pusher
+	c       clock.Clock
+	deliver *Deliverer
 }
 
-func NewWorkItemStageChanged(
-	repo domain.NotificationRepo,
-	c clock.Clock,
-	eventBus *bus.EventBus,
-	pusher contract.Pusher,
-) *WorkItemStageChanged {
-	return &WorkItemStageChanged{
-		c:        c,
-		repo:     repo,
-		eventBus: eventBus,
-		pusher:   pusher,
-	}
+func NewWorkItemStageChanged(c clock.Clock, deliver *Deliverer) *WorkItemStageChanged {
+	return &WorkItemStageChanged{c: c, deliver: deliver}
 }
 
-func (s *WorkItemStageChanged) Handle(ctx context.Context, changed trackerContract.WorkItemStageChanged) error {
-	n := domain.Notification{
-		NotificationType: changed.EventName(),
-		Content:          "Work item stage changed", // todo: use i18n _(""), use standard message library
-		RefId:            changed.WorkItemId,
-		Created:          s.c.Now(),
-	}
-	if a, ok := actor.From(ctx); ok {
-		n.IdentityId = a.IdentityID
-	}
-
-	n, err := s.repo.Save(ctx, n)
+func (s *WorkItemStageChanged) Handle(ctx context.Context, e trackerContract.WorkItemStageChanged) error {
+	data, err := content(map[string]any{"actor_id": e.ActorId, "stage_id": e.StageId})
 	if err != nil {
 		return err
 	}
-
-	// to internal subscribers
-	notify := contract.NotificationCreated{Source: changed.EventName()}
-	if err := s.eventBus.Publish(ctx, notify); err != nil {
-		return err
+	n := domain.Notification{
+		NotificationType: e.EventName(),
+		Content:          data,
+		RefId:            e.WorkItemId,
+		RefType:          refWorkItem,
+		Created:          s.c.Now(),
 	}
-
-	// to adapters
-	// NOTE: assignees id's and watchers
-	s.pusher.Push(ctx, []int{n.IdentityId}, contract.NotificationView{
-		ID:        n.ID,
-		Type:      changed.EventName(),
-		Content:   n.Content,
-		RefID:     n.RefId,
-		CreatedAt: n.Created,
-	})
-
-	return nil
+	n.AddRecipients(e.ActorId, e.AssigneeIds...)
+	return s.deliver.Deliver(ctx, n)
 }

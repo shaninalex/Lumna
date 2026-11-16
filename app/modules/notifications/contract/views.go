@@ -7,5 +7,6 @@ type NotificationView struct {
 	Type      string
 	Content   string
 	RefID     int
+	RefType   string
 	CreatedAt time.Time
 }

@@ -11,6 +11,7 @@ import (
 	"gitlab.com/shaninalex/lumna/app/modules/auth"
 	authc "gitlab.com/shaninalex/lumna/app/modules/auth/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/identity"
+	"gitlab.com/shaninalex/lumna/app/modules/journal"
 	"gitlab.com/shaninalex/lumna/app/modules/notifications"
 	notificationsc "gitlab.com/shaninalex/lumna/app/modules/notifications/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker"
@@ -100,6 +101,12 @@ func buildModules(
 		EventBus: e,
 	})
 
+	journalModule := journal.New(journal.Deps{
+		DB:    db,
+		Log:   log,
+		Clock: clk,
+	})
+
 	notificationsModule := notifications.New(notifications.Deps{
 		DB:       db,
 		Log:      log,
@@ -115,6 +122,7 @@ func buildModules(
 		authModule,
 		trackerModule,
 		workspaceModule,
+		journalModule,
 		notificationsModule,
 	}
 

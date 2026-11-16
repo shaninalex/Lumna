@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 
-	"gitlab.com/shaninalex/lumna/app/core/actor"
 	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
@@ -53,16 +52,7 @@ func (s *WorkItemTransfer) Handle(ctx context.Context, cmd contract.WorkItemTran
 		return contract.WorkItemView{}, err
 	}
 
-	e := contract.WorkItemStageChanged{WorkItemId: cmd.WorkItemId, StageId: cmd.StageId}
-	activity := domain.Activity{
-		EntityID:   r.ID,
-		EntityType: "work_item",
-		EventType:  e.EventName(),
-		Content:    "Item was moved to another stage",
-	}
-	if a, ok := actor.From(ctx); ok {
-		activity.IdentityID = a.IdentityID
-	}
+	e := contract.WorkItemStageChanged{WorkItemId: cmd.WorkItemId, StageId: cmd.StageId, ActorId: actorID(ctx), AssigneeIds: r.AssigneeIDs}
 
 	err = s.bus.Publish(ctx, e)
 	if err != nil {

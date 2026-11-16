@@ -6,17 +6,25 @@ import (
 )
 
 type notificationRecord struct {
-	ID         int            `gorm:"primaryKey;autoIncrement"`
-	IdentityID sql.NullInt64  `gorm:"column:identity_id"`
-	Type       string         `gorm:"column:type;not null"`
-	Content    string         `gorm:"column:content;not null"`
-	RefID      sql.NullInt64  `gorm:"column:ref_id"`
-	Priority   sql.NullString `gorm:"column:priority"`
-	ReadAt     sql.NullTime   `gorm:"column:read_at;default:null"`
-	CreatedAt  time.Time      `gorm:"autoCreateTime"`
+	ID        int            `gorm:"primaryKey;autoIncrement"`
+	Type      string         `gorm:"column:type;not null"`
+	Content   string         `gorm:"column:content;not null"`
+	RefID     sql.NullInt64  `gorm:"column:ref_id"`
+	RefType   sql.NullString `gorm:"column:ref_type"`
+	Priority  sql.NullString `gorm:"column:priority"`
+	CreatedAt time.Time      `gorm:"autoCreateTime"`
 }
 
 func (notificationRecord) TableName() string { return "notifications" }
+
+type notificationRecipientRecord struct {
+	ID             int          `gorm:"primaryKey;autoIncrement"`
+	IdentityID     int          `gorm:"column:identity_id"`
+	NotificationID int          `gorm:"column:notification_id"`
+	ReadAt         sql.NullTime `gorm:"column:read_at;default:null"`
+}
+
+func (notificationRecipientRecord) TableName() string { return "notification_recipients" }
 
 type recordEmail struct {
 	ID        int `gorm:"primaryKey;autoIncrement"`

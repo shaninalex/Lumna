@@ -59,7 +59,7 @@ func New(d Deps) *Module {
 		workItemMove:       handlers.NewWorkItemMove(workItemRepo, d.Clock),
 		workItemTransfer:   handlers.NewWorkItemTransfer(workItemRepo, stageRepo, d.Clock, d.EventBus),
 		workItemUpdate:     handlers.NewWorkItemUpdate(workItemRepo, d.Clock),
-		workItemAssignment: handlers.NewWorkItemAssignment(workItemRepo, d.Clock),
+		workItemAssignment: handlers.NewWorkItemAssignment(workItemRepo, d.Clock, d.EventBus),
 		workItemDelete:     handlers.NewWorkItemDelete(workItemRepo),
 	}
 }

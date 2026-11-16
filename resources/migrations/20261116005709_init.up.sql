@@ -18,12 +18,6 @@ CREATE TABLE identities
 	CONSTRAINT uni_identities_email UNIQUE (email)
 );
 
-CREATE TABLE sqlite_sequence
-(
-	name,
-	seq
-);
-
 CREATE TABLE credentials
 (
 	id               integer PRIMARY KEY AUTOINCREMENT,
@@ -88,18 +82,20 @@ CREATE TABLE projects
 	FOREIGN KEY (owner_id) REFERENCES identities (id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS "events"
+CREATE TABLE IF NOT EXISTS "journal"
 (
 	id          INTEGER PRIMARY KEY AUTOINCREMENT,
-	identity_id INTEGER NULL,
-	entity_id   INTEGER NULL,
-	entity_type TEXT    NULL,
+	actor_id    INTEGER NULL,
+	entity_type TEXT    NOT NULL,
+	entity_id   INTEGER NOT NULL,
 	event_type  TEXT    NOT NULL,
 	data        TEXT    NULL,
 	created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-	FOREIGN KEY (identity_id) REFERENCES identities (id) ON DELETE SET NULL
+	FOREIGN KEY (actor_id) REFERENCES identities (id) ON DELETE SET NULL
 );
+
+CREATE INDEX journal_entity_idx ON journal (entity_type, entity_id, created_at);
 
 CREATE TABLE scopes
 (
@@ -192,16 +188,12 @@ CREATE TABLE IF NOT EXISTS "work_items"
 CREATE TABLE notifications
 (
 	id          INTEGER PRIMARY KEY AUTOINCREMENT,
-	identity_id INTEGER,
 	type        TEXT NOT NULL,
 	content     TEXT NOT NULL,
 	ref_id      INTEGER,
+	ref_type    TEXT,
 	priority    TEXT,
-	created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-	FOREIGN KEY (identity_id)
-		REFERENCES identities (id)
-		ON DELETE CASCADE
+	created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE workspace_invitations
@@ -243,10 +235,11 @@ CREATE TABLE email_queue
 CREATE TABLE notification_recipients
 (
 	id              INTEGER PRIMARY KEY AUTOINCREMENT,
-	identity_id     INTEGER,
-	notification_id INTEGER,
+	identity_id     INTEGER NOT NULL,
+	notification_id INTEGER NOT NULL,
 	read_at         DATETIME DEFAULT NULL,
-	created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+	CONSTRAINT notification_recipients_unique UNIQUE(notification_id, identity_id),
 
 	FOREIGN KEY (identity_id)
 		REFERENCES identities (id)
@@ -256,3 +249,5 @@ CREATE TABLE notification_recipients
 		REFERENCES notifications (id)
 		ON DELETE CASCADE
 );
+
+CREATE INDEX notification_recipients_inbox_idx ON notification_recipients (identity_id, read_at);
