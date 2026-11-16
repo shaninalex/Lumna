@@ -9,8 +9,8 @@ import (
 
 type EntryType string
 
-var (
-	InvitationEntryType EntryType = "invitation"
+const (
+	InvitationEntryType = "invitation"
 )
 
 type EmailStatus string

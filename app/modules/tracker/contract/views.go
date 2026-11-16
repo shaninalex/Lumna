@@ -43,12 +43,3 @@ type WorkItemView struct {
 	UpdatedAt   time.Time
 	Assignees   []int
 }
-
-type ActivityView struct {
-	Id         int
-	Message    string
-	EventType  string
-	EntityId   int
-	EntityType string
-	CreatedAt  time.Time
-}

@@ -25,12 +25,6 @@ import {
 } from 'ngx-editor';
 import { FormsModule } from '@angular/forms';
 import { defaultToolbar, SpinnerComponent } from '@shared/ui';
-import {
-    actionActivity,
-    ActivityListComponent,
-    ActivityModel,
-    selectActivity
-} from '@entities/activity';
 import { Actions, ofType } from '@ngrx/effects';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -45,7 +39,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
         NgxEditorComponent,
         NgxEditorMenuComponent,
         FormsModule,
-        ActivityListComponent,
         SpinnerComponent,
     ],
     templateUrl: './task-detail-view.html',
@@ -69,7 +62,6 @@ export class TaskDetailView implements OnInit, OnDestroy {
     editor: Editor;
     toolbar: Toolbar = defaultToolbar;
     html: Record<string, unknown> | string = '';
-    activities: Observable<ActivityModel[]>;
     loading: boolean = false;
 
     private store = inject(Store);
@@ -87,8 +79,6 @@ export class TaskDetailView implements OnInit, OnDestroy {
                 this.html = toDoc(task.body || '', this.editor.schema);
             }),
         );
-        this.store.dispatch(actionActivity.getList({entityId: this.taskId(), entityType: "work_item"}));
-        this.activities = this.store.select(selectActivity.byIdAndType(this.taskId(), "work_item"));
         this.actions$.pipe(
             ofType(actionTask.updateTask),
             tap(() => this.loading = true),

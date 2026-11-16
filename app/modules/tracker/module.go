@@ -22,12 +22,6 @@ type Deps struct {
 type Module struct {
 	deps Deps
 
-	// repositories
-	//scopeRepo    domain.ScopeRepo
-	//stageRepo    domain.StageRepo
-	//workItemRepo domain.WorkingItemRepo
-	//activityRepo domain.ActivityRepo
-
 	// commands
 	createScope        *handlers.ScopeCreate
 	createStage        *handlers.StateCreate
@@ -44,14 +38,12 @@ type Module struct {
 	scopeList    *handlers.ScopeList
 	stageList    *handlers.StageList
 	workItemList *handlers.WorkItemList
-	activityList *handlers.ActivityList
 }
 
 func New(d Deps) *Module {
 	scopeRepo := storage.NewScopeRepo(d.DB)
 	stageRepo := storage.NewStageRepo(d.DB)
 	workItemRepo := storage.NewWorkingItemRepo(d.DB, d.Clock)
-	activityRepo := storage.NewActivityRepo(d.DB, d.Clock)
 
 	return &Module{
 		deps: d,
@@ -65,11 +57,10 @@ func New(d Deps) *Module {
 		createWorkItem:     handlers.NewWorkItemCreate(workItemRepo, d.Clock),
 		workItemList:       handlers.NewWorkItemList(workItemRepo, d.Clock),
 		workItemMove:       handlers.NewWorkItemMove(workItemRepo, d.Clock),
-		workItemTransfer:   handlers.NewWorkItemTransfer(workItemRepo, stageRepo, activityRepo, d.Clock, d.EventBus),
-		workItemUpdate:     handlers.NewWorkItemUpdate(workItemRepo, activityRepo, d.Clock),
-		workItemAssignment: handlers.NewWorkItemAssignment(workItemRepo, activityRepo, d.Clock),
+		workItemTransfer:   handlers.NewWorkItemTransfer(workItemRepo, stageRepo, d.Clock, d.EventBus),
+		workItemUpdate:     handlers.NewWorkItemUpdate(workItemRepo, d.Clock),
+		workItemAssignment: handlers.NewWorkItemAssignment(workItemRepo, d.Clock),
 		workItemDelete:     handlers.NewWorkItemDelete(workItemRepo),
-		activityList:       handlers.NewActivityList(activityRepo),
 	}
 }
 
@@ -92,6 +83,5 @@ func (m *Module) Register(a *core.App) error {
 		bus.RegisterCommand(a.Commands, m.workItemAssignment.Handle),
 		bus.RegisterCommand(a.Commands, m.workItemDelete.Handle),
 		bus.RegisterQuery(a.Queries, m.workItemList.Handle),
-		bus.RegisterQuery(a.Queries, m.activityList.Handle),
 	)
 }

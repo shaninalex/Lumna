@@ -10,16 +10,14 @@ import (
 )
 
 type WorkItemAssignment struct {
-	items    domain.WorkingItemRepo
-	clock    clock.Clock
-	activity domain.ActivityRepo
+	items domain.WorkingItemRepo
+	clock clock.Clock
 }
 
-func NewWorkItemAssignment(items domain.WorkingItemRepo, activity domain.ActivityRepo, clock clock.Clock) *WorkItemAssignment {
+func NewWorkItemAssignment(items domain.WorkingItemRepo, clock clock.Clock) *WorkItemAssignment {
 	return &WorkItemAssignment{
-		items:    items,
-		clock:    clock,
-		activity: activity,
+		items: items,
+		clock: clock,
 	}
 }
 
@@ -41,10 +39,6 @@ func (s *WorkItemAssignment) Handle(ctx context.Context, cmd contract.WorkItemAs
 	}
 	if a, ok := actor.From(ctx); ok {
 		activity.IdentityID = a.IdentityID
-	}
-
-	if _, err := s.activity.Create(ctx, activity); err != nil {
-		return false, err
 	}
 
 	return true, nil
