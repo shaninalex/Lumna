@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 
+	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
 	"gitlab.com/shaninalex/lumna/app/platform/clock"
@@ -11,12 +12,14 @@ import (
 type WorkItemUpdate struct {
 	items domain.WorkingItemRepo
 	clock clock.Clock
+	bus   *bus.EventBus
 }
 
-func NewWorkItemUpdate(items domain.WorkingItemRepo, clock clock.Clock) *WorkItemUpdate {
+func NewWorkItemUpdate(items domain.WorkingItemRepo, clock clock.Clock, bus *bus.EventBus) *WorkItemUpdate {
 	return &WorkItemUpdate{
 		items: items,
 		clock: clock,
+		bus:   bus,
 	}
 }
 
@@ -33,6 +36,11 @@ func (s *WorkItemUpdate) Handle(ctx context.Context, cmd contract.WorkItemUpdate
 	if err := s.items.Update(ctx, r); err != nil {
 		return contract.WorkItemView{}, err
 	}
+
+	_ = s.bus.Publish(ctx, contract.WorkItemChanged{
+		WorkItemId: cmd.WorkItemId,
+		ActorId:    actorID(ctx),
+	})
 
 	return toWorkItemView(r), nil
 }

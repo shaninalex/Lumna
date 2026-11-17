@@ -52,10 +52,13 @@ func (s *WorkItemTransfer) Handle(ctx context.Context, cmd contract.WorkItemTran
 		return contract.WorkItemView{}, err
 	}
 
-	e := contract.WorkItemStageChanged{WorkItemId: cmd.WorkItemId, StageId: cmd.StageId, ActorId: actorID(ctx), AssigneeIds: r.AssigneeIDs}
-
-	err = s.bus.Publish(ctx, e)
-	if err != nil {
+	e := contract.WorkItemStageChanged{
+		WorkItemId:  cmd.WorkItemId,
+		StageId:     cmd.StageId,
+		ActorId:     actorID(ctx),
+		AssigneeIds: r.AssigneeIDs,
+	}
+	if err = s.bus.Publish(ctx, e); err != nil {
 		return contract.WorkItemView{}, err
 	}
 

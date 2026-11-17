@@ -1,13 +1,14 @@
 @if (task$ | async; as t) {
-    <nav class="mb-3 d-flex gap-2">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a [routerLink]="appRoutes.board(t.boardId)">Development</a></li>
-        </ol>
-    </nav>
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="mb-3">
+            <div class="mb-3 d-flex gap-2 justify-content-between">
+                <nav class="">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a [routerLink]="appRoutes.board(t.boardId)">Development</a></li>
+                    </ol>
+                </nav>
+
                 <button
                     class="btn btn-sm btn-primary d-inline-flex align-items-center"
                     type="submit"

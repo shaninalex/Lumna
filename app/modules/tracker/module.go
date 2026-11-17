@@ -54,13 +54,13 @@ func New(d Deps) *Module {
 		scopeList:          handlers.NewScopeList(scopeRepo, stageRepo, workItemRepo),
 		stageList:          handlers.NewStageList(stageRepo),
 		stageMove:          handlers.NewStageMove(stageRepo, d.Clock),
-		createWorkItem:     handlers.NewWorkItemCreate(workItemRepo, d.Clock),
+		createWorkItem:     handlers.NewWorkItemCreate(workItemRepo, d.Clock, d.EventBus),
 		workItemList:       handlers.NewWorkItemList(workItemRepo, d.Clock),
 		workItemMove:       handlers.NewWorkItemMove(workItemRepo, d.Clock),
 		workItemTransfer:   handlers.NewWorkItemTransfer(workItemRepo, stageRepo, d.Clock, d.EventBus),
-		workItemUpdate:     handlers.NewWorkItemUpdate(workItemRepo, d.Clock),
+		workItemUpdate:     handlers.NewWorkItemUpdate(workItemRepo, d.Clock, d.EventBus),
 		workItemAssignment: handlers.NewWorkItemAssignment(workItemRepo, d.Clock, d.EventBus),
-		workItemDelete:     handlers.NewWorkItemDelete(workItemRepo),
+		workItemDelete:     handlers.NewWorkItemDelete(workItemRepo, d.EventBus),
 	}
 }
 

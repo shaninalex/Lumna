@@ -8,7 +8,17 @@ var (
 	_ journal.Recordable = WorkItemStageChanged{}
 	_ journal.Recordable = WorkItemAssigned{}
 	_ journal.Recordable = WorkItemUnassigned{}
+	_ journal.Recordable = WorkItemChanged{}
 )
+
+type WorkItemChanged struct {
+	WorkItemId int
+	ActorId    int
+}
+
+func (e WorkItemChanged) EventName() string             { return "work_item/changed" }
+func (e WorkItemChanged) JournalSubject() (string, int) { return entityWorkItem, e.WorkItemId }
+func (e WorkItemChanged) JournalActor() int             { return e.ActorId }
 
 type WorkItemStageChanged struct {
 	WorkItemId int
@@ -41,3 +51,21 @@ type WorkItemUnassigned struct {
 func (e WorkItemUnassigned) EventName() string             { return "work_item/unassigned" }
 func (e WorkItemUnassigned) JournalSubject() (string, int) { return entityWorkItem, e.WorkItemId }
 func (e WorkItemUnassigned) JournalActor() int             { return e.ActorId }
+
+type WorkItemDeleted struct {
+	WorkItemId int
+	ActorId    int
+}
+
+func (e WorkItemDeleted) EventName() string             { return "work_item/deleted" }
+func (e WorkItemDeleted) JournalSubject() (string, int) { return entityWorkItem, e.WorkItemId }
+func (e WorkItemDeleted) JournalActor() int             { return e.ActorId }
+
+type WorkItemCreated struct {
+	WorkItemId int
+	ActorId    int
+}
+
+func (e WorkItemCreated) EventName() string             { return "work_item/created" }
+func (e WorkItemCreated) JournalSubject() (string, int) { return entityWorkItem, e.WorkItemId }
+func (e WorkItemCreated) JournalActor() int             { return e.ActorId }

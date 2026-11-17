@@ -29,7 +29,11 @@ func (s *WorkItemAssignment) Handle(ctx context.Context, cmd contract.WorkItemAs
 		return false, err
 	}
 
-	var e bus.Event = contract.WorkItemUnassigned{WorkItemId: cmd.WorkItemId, AssigneeId: cmd.IdentityId, ActorId: actorID(ctx)}
+	var e bus.Event = contract.WorkItemUnassigned{
+		WorkItemId: cmd.WorkItemId,
+		AssigneeId: cmd.IdentityId,
+		ActorId:    actorID(ctx),
+	}
 	if assigned {
 		e = contract.WorkItemAssigned{WorkItemId: cmd.WorkItemId, AssigneeId: cmd.IdentityId, ActorId: actorID(ctx)}
 	}

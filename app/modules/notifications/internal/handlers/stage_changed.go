@@ -20,7 +20,11 @@ func NewWorkItemStageChanged(c clock.Clock, deliver *Deliverer) *WorkItemStageCh
 }
 
 func (s *WorkItemStageChanged) Handle(ctx context.Context, e trackerContract.WorkItemStageChanged) error {
-	data, err := content(map[string]any{"actor_id": e.ActorId, "stage_id": e.StageId})
+	data, err := content(map[string]any{
+		"actor_id": e.ActorId,
+		"stage_id": e.StageId,
+	})
+
 	if err != nil {
 		return err
 	}

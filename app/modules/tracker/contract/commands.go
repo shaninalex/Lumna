@@ -54,9 +54,9 @@ func ExecWorkItemCreate(ctx context.Context, a *core.App, cmd WorkItemCreate) (W
 // WorkItemMove - a post request data described moving item in a single column
 // TODO: rename properties and tags
 type WorkItemMove struct {
-	Rank       float64 `json:"rank"`
-	ScopeId    int     `json:"board_id"`
-	WorkItemId int     `json:"task_id"`
+	Rank       float64
+	ScopeId    int
+	WorkItemId int
 }
 
 func (WorkItemMove) Permission() (action string, scope int) { return "", 0 }
@@ -68,10 +68,10 @@ func ExecWorkItemMove(ctx context.Context, a *core.App, cmd WorkItemMove) (WorkI
 // WorkItemTransfer - moves an item into another stage of the same scope,
 // placing it at Rank within that stage.
 type WorkItemTransfer struct {
-	Rank       float64 `json:"rank"`
-	ScopeId    int     `json:"board_id"`
-	StageId    int     `json:"column_id"`
-	WorkItemId int     `json:"task_id"`
+	Rank       float64
+	ScopeId    int
+	StageId    int
+	WorkItemId int
 }
 
 func (WorkItemTransfer) Permission() (action string, scope int) { return "", 0 }
@@ -82,9 +82,9 @@ func ExecWorkItemTransfer(ctx context.Context, a *core.App, cmd WorkItemTransfer
 
 // StageMove - reorders a stage within its scope.
 type StageMove struct {
-	Position float64 `json:"position"`
-	ScopeId  int     `json:"board_id"`
-	StageId  int     `json:"column_id"`
+	Position float64
+	ScopeId  int
+	StageId  int
 }
 
 func (StageMove) Permission() (action string, scope int) { return "", 0 }

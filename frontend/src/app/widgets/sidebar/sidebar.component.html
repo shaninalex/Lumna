@@ -42,7 +42,7 @@
                         <a [routerLink]="appRoutes.projectDetail(p.id)"
                            class="text-body text-decoration-none"
                            [ngClass]="{'fw-bold': p.id === currentProject()?.id}">
-                            {{ p.title }}
+                            <span class="sidebar-nav-link">{{ p.title }}</span>
                         </a>
                     </li>
                 }
@@ -51,7 +51,7 @@
 
         <li class="nav-item">
             <span class="nav-link text-body fs-6">
-                <ng-icon name="reiconClockSquare"/>
+                <ng-icon name="reiconNotebookSquare"/>
                 <span class="sidebar-nav-link">Workspaces</span>
             </span>
             <ul>
@@ -60,7 +60,7 @@
                         <a [routerLink]="appRoutes.workspaceDetail(wp.id)"
                            class="text-body text-decoration-none"
                            [ngClass]="{'fw-bold': wp.id === currentWorkspace()?.id}">
-                            {{ wp.title }}
+                            <span class="sidebar-nav-link">{{ wp.title }}</span>
                         </a>
                     </li>
                 }
