@@ -3,82 +3,41 @@ import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { Store } from '@ngrx/store';
 import { actionTask } from '@entities/task/model/task.actions';
 import { TaskModel } from '@entities/task/model';
-import { selectUser } from '@entities/user';
-import { filter } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { reiconUserCircle } from '@ng-icons/reicon';
+import { Member, selectMember } from '@entities/member';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'lu-assignment-dropdown',
-    imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, AsyncPipe, NgIcon],
-    providers: [provideIcons({ reiconUserCircle })],
+    imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, NgIcon, FormsModule],
+    providers: [provideIcons({reiconUserCircle})],
     template: `
         <div
             class="text-muted d-inline-flex align-items-center lh-1"
             [cdkMenuTriggerFor]="assignmentMenu"
         >
             @if (task.assignees !== null && task.assignees.length > 0) {
-                <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
+                <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px"/>
             } @else {
-                <ng-icon name="reiconUserCircle" />
+                <ng-icon name="reiconUserCircle"/>
             }
         </div>
         <ng-template #assignmentMenu>
             <div class="card" cdkMenu>
-                @if (user$ | async; as user) {
-                    <button
-                        class="btn btn-outline-secondary border-0 border-bottom text-start"
-                        cdkMenuItem
-                        (click)="assign(task.id, user.id)"
-                    >
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
-                        Assign yourself
-                    </button>
-                }
-                <!-- TODO: users list -->
-                <input type="text" class="form-control border-0" placeholder="Search..." />
+                <input type="text" class="form-control border-0" placeholder="Search..." [(ngModel)]="search"/>
                 <div class="list-group list-group-flush">
-                    <button
-                        type="button"
-                        class="list-group-item list-group-item-action"
-                        cdkMenuItem
-                    >
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
-                        Garry Hudini
-                    </button>
-                    <button
-                        type="button"
-                        class="list-group-item list-group-item-action"
-                        cdkMenuItem
-                    >
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
-                        Garry Hudini
-                    </button>
-                    <button
-                        type="button"
-                        class="list-group-item list-group-item-action"
-                        cdkMenuItem
-                    >
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
-                        Garry Hudini
-                    </button>
-                    <button
-                        type="button"
-                        class="list-group-item list-group-item-action"
-                        cdkMenuItem
-                    >
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
-                        Garry Hudini
-                    </button>
-                    <button
-                        type="button"
-                        class="list-group-item list-group-item-action"
-                        cdkMenuItem
-                    >
-                        <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px" />
-                        Garry Hudini
-                    </button>
+                    @for (member of printMembers(); track member.id) {
+                        <button
+                            type="button"
+                            class="list-group-item list-group-item-action"
+                            cdkMenuItem
+                            (click)="assign(task.id, member.id)"
+                        >
+                            <img src="images/7.png" alt="" class="rounded-circle" style="width: 16px"/>
+                            {{ member.fullName }}
+                        </button>
+                    }
                 </div>
             </div>
         </ng-template>
@@ -86,13 +45,19 @@ import { reiconUserCircle } from '@ng-icons/reicon';
 })
 export class AssignmentDropdown {
     @Input() task: TaskModel;
+    search: string = ''
 
     private store = inject(Store);
-    readonly user$ = this.store.select(selectUser.user).pipe(filter((user) => !!user));
+    readonly members = this.store.selectSignal(selectMember.all)
+
+    printMembers(): Member[] {
+        if (this.search === "") return this.members()
+        return this.members().filter(m => m.fullName.toLowerCase().includes(this.search.toLowerCase()))
+    }
 
     assign(taskId: number, identityId: number) {
         this.store.dispatch(
-            actionTask.assignTask({ action: { taskId: taskId, identityId: identityId } }),
+            actionTask.assignTask({action: {taskId: taskId, identityId: identityId}}),
         );
     }
 }

@@ -7,6 +7,7 @@ import { actionBoard } from '@entities/board';
 import { actionSession } from '@core/store';
 import { actionWorkspace } from '@entities/workspace';
 import { actionProject } from '@entities/project';
+import { actionMember } from '@entities/member';
 
 @Injectable()
 export class MainEffects {
@@ -40,21 +41,21 @@ export class MainEffects {
         ),
     );
 
-    // loadProjectTasks$ = createEffect(() =>
-    //     this.actions$.pipe(
-    //         ofType(actionProject.setCurrent),
-    //         map((action) => action.id),
-    //         filter((id) => id !== null),
-    //         map((id) => actionTask.getList({ query: { project_id: id } })),
-    //     ),
-    // );
-
     onSetCurrentProject$ = createEffect(() =>
         this.actions$.pipe(
             ofType(actionProject.setCurrent),
             map((action) => action.id),
             filter((id) => id !== null),
             map((id) => actionBoard.getList({ projectId: id })),
+        ),
+    );
+
+    onSetCurrentWorkspace$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(actionWorkspace.setCurrent),
+            map((action) => action.id),
+            filter((id) => id !== null),
+            map((id) => actionMember.getList({ workspaceId: id })),
         ),
     );
 }
