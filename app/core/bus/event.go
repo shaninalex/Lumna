@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"slices"
 )
 
 type Event interface {
@@ -39,18 +38,13 @@ func Subscribe[E Event](b *EventBus, h func(context.Context, E) error) error {
 		return errors.New("bus: subscription after Seal()")
 	}
 	key := reflect.TypeFor[E]()
-	call := Invoke(func(ctx context.Context, msg any) (any, error) {
+	call := wrap(b.chain, func(ctx context.Context, msg any) (any, error) {
 		return nil, h(ctx, msg.(E))
 	})
-	for _, v := range slices.Backward(b.chain) {
-		call = v(call)
-	}
 	b.subs[key] = append(b.subs[key], call)
 	return nil
 }
 
-// SubscribeTo subscribes h to every published event whose type implements
-// the interface I. Concrete-type subscribers run first, then interface ones.
 func SubscribeTo[I any](b *EventBus, h func(context.Context, I) error) error {
 	if b.sealed {
 		return errors.New("bus: subscription after Seal()")
@@ -59,12 +53,9 @@ func SubscribeTo[I any](b *EventBus, h func(context.Context, I) error) error {
 	if iface.Kind() != reflect.Interface {
 		return fmt.Errorf("bus: SubscribeTo requires an interface type, got %s", iface)
 	}
-	call := Invoke(func(ctx context.Context, msg any) (any, error) {
+	call := wrap(b.chain, func(ctx context.Context, msg any) (any, error) {
 		return nil, h(ctx, msg.(I))
 	})
-	for _, v := range slices.Backward(b.chain) {
-		call = v(call)
-	}
 	b.ifaces = append(b.ifaces, ifaceSub{iface: iface, call: call})
 	return nil
 }
