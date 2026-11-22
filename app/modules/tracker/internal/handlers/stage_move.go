@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 
+	"gitlab.com/shaninalex/lumna/app/core/bus"
 	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/internal/domain"
@@ -12,12 +13,14 @@ import (
 type StageMove struct {
 	repo  domain.StageRepo
 	clock clock.Clock
+	bus   *bus.EventBus
 }
 
-func NewStageMove(repo domain.StageRepo, clock clock.Clock) *StageMove {
+func NewStageMove(repo domain.StageRepo, clock clock.Clock, bus *bus.EventBus) *StageMove {
 	return &StageMove{
 		repo:  repo,
 		clock: clock,
+		bus:   bus,
 	}
 }
 
@@ -35,6 +38,11 @@ func (s *StageMove) Handle(ctx context.Context, cmd contract.StageMove) (contrac
 	if err := s.repo.Update(ctx, stage); err != nil {
 		return contract.StageView{}, err
 	}
+
+	_ = s.bus.Publish(ctx, contract.StageMoved{
+		StageID: cmd.StageId,
+		ActorID: actorID(ctx),
+	})
 
 	return toStageView(stage), nil
 }

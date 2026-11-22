@@ -3,12 +3,14 @@ package contract
 import journal "gitlab.com/shaninalex/lumna/app/modules/journal/contract"
 
 const entityWorkItem = "work_item"
+const entityStage = "stage"
 
 var (
 	_ journal.Recordable = WorkItemStageChanged{}
 	_ journal.Recordable = WorkItemAssigned{}
 	_ journal.Recordable = WorkItemUnassigned{}
 	_ journal.Recordable = WorkItemChanged{}
+	_ journal.Recordable = WorkItemMoved{}
 )
 
 type WorkItemChanged struct {
@@ -69,3 +71,22 @@ type WorkItemCreated struct {
 func (e WorkItemCreated) EventName() string             { return "work_item/created" }
 func (e WorkItemCreated) JournalSubject() (string, int) { return entityWorkItem, e.WorkItemId }
 func (e WorkItemCreated) JournalActor() int             { return e.ActorId }
+
+type WorkItemMoved struct {
+	WorkItemId int
+	Assignees  []int
+	ActorId    int
+}
+
+func (e WorkItemMoved) EventName() string             { return "work_item/moved" }
+func (e WorkItemMoved) JournalSubject() (string, int) { return entityWorkItem, e.WorkItemId }
+func (e WorkItemMoved) JournalActor() int             { return e.ActorId }
+
+type StageMoved struct {
+	StageID int
+	ActorID int
+}
+
+func (e StageMoved) EventName() string             { return "stage/moved" }
+func (e StageMoved) JournalSubject() (string, int) { return entityStage, e.StageID }
+func (e StageMoved) JournalActor() int             { return e.ActorID }

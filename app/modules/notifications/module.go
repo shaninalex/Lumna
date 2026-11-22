@@ -35,6 +35,7 @@ type Module struct {
 	workItemStageChanged *handlers.WorkItemStageChanged
 	workItemAssigned     *handlers.WorkItemAssigned
 	workItemUnassigned   *handlers.WorkItemUnassigned
+	workItemMoved        *handlers.WorkItemMoved
 	invitationCreated    *handlers.InvitationCreated
 	invitationAccepted   *handlers.InvitationAccepted
 }
@@ -53,6 +54,7 @@ func New(d Deps) *Module {
 		workItemStageChanged: handlers.NewWorkItemStageChanged(d.Clock, deliverer),
 		workItemAssigned:     handlers.NewWorkItemAssigned(d.Clock, deliverer),
 		workItemUnassigned:   handlers.NewWorkItemUnassigned(d.Clock, deliverer),
+		workItemMoved:        handlers.NewWorkItemMoved(d.Clock, deliverer),
 		invitationCreated:    handlers.NewInvitationCreated(emailRepo, d.Clock, d.BaseUrl),
 		invitationAccepted:   handlers.NewInvitationAccepted(d.Clock, deliverer),
 	}
