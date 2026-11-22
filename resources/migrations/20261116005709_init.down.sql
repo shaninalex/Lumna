@@ -1,0 +1,17 @@
+DROP TABLE IF EXISTS notification_recipients;
+DROP TABLE IF EXISTS email_queue;
+DROP TABLE IF EXISTS workspace_invitations;
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS work_items_assignees;
+DROP TABLE IF EXISTS work_item_relations;
+DROP TABLE IF EXISTS work_items;
+DROP TABLE IF EXISTS sprints;
+DROP TABLE IF EXISTS stages;
+DROP TABLE IF EXISTS scopes;
+DROP TABLE IF EXISTS journal;
+DROP TABLE IF EXISTS projects;
+DROP TABLE IF EXISTS identity_workspaces;
+DROP TABLE IF EXISTS workspaces;
+DROP TABLE IF EXISTS refresh_tokens;
+DROP TABLE IF EXISTS credentials;
+DROP TABLE IF EXISTS identities;
