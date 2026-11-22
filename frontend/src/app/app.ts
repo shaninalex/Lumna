@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import packageJson from '@root/package.json';
 
 @Component({
     selector: 'lu-root',
@@ -12,5 +11,5 @@ import packageJson from '@root/package.json';
     `,
 })
 export class App {
-    version: string = packageJson.version;
+    version: string = "todo";
 }

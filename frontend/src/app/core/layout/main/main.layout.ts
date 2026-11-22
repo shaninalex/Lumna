@@ -8,8 +8,6 @@ import { selectUI } from '@core/store/ui';
     selector: 'lu-main-layout',
     imports: [SidebarComponent, HeaderComponent, NgClass],
     styleUrl: './main.layout.scss',
-    standalone: true,
-
     template: `
         <div class="dashboard" [ngClass]="{ 'sidebar-closed': !sidebarOpen() }">
             <div class="dashboard-header">
