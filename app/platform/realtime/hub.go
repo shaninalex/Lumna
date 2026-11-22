@@ -36,14 +36,18 @@ func (h *Hub) Attach(identityID int) (*Subscriber, func()) {
 	defer h.mu.Unlock()
 
 	subscriber := &Subscriber{ch: make(chan Envelope, h.buf)}
-	m := make(map[*Subscriber]any)
-	m[subscriber] = struct{}{}
-	h.subs[identityID] = m
+	if h.subs[identityID] == nil {
+		h.subs[identityID] = make(map[*Subscriber]any)
+	}
+	h.subs[identityID][subscriber] = struct{}{}
 
 	return subscriber, func() {
 		h.mu.Lock()
 		defer h.mu.Unlock()
-		delete(h.subs, identityID)
+		delete(h.subs[identityID], subscriber)
+		if len(h.subs[identityID]) == 0 {
+			delete(h.subs, identityID)
+		}
 	}
 }
 
@@ -62,9 +66,12 @@ func (h *Hub) Send(identityIDs []int, e Envelope) {
 
 // Close closes all subscriber channels on shutdown
 func (h *Hub) Close() {
-	h.mu.RLock()
-	defer h.mu.RUnlock()
-	for k := range h.subs {
-		delete(h.subs, k)
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	for id, subs := range h.subs {
+		for s := range subs {
+			close(s.ch)
+		}
+		delete(h.subs, id)
 	}
 }
