@@ -39,6 +39,7 @@ func NewCLI(assets Assets) (*cobra.Command, func()) {
 
 	root := &cobra.Command{
 		Use:           "lumna",
+		Version:       assets.Version,
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {

@@ -12,6 +12,6 @@ func main() {
 		Migrations: lumna.StaticFS("resources/migrations"),
 		OpenAPI:    lumna.StaticFS("resources/openapi"),
 		SPA:        lumna.StaticFS("resources/assets"),
-		Version:    lumna.Version,
+		Version:    lumna.VersionString(),
 	}))
 }
