@@ -1,6 +1,7 @@
 # resources/ is embedded into the binary: build the frontend into
 # resources/assets first, or the result serves no UI.
 build:
+	yarn --cwd=./frontend build
 	go build -o bin/lumna ./app
 
 migrate:

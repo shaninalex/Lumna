@@ -68,8 +68,7 @@ func Validation(code, msg string) *Error {
 
 // KindOf reports the classification of err, unwrapping as needed.
 func KindOf(err error) Kind {
-	var e *Error
-	if errors.As(err, &e) {
+	if e, ok := errors.AsType[*Error](err); ok {
 		return e.Kind
 	}
 	return KindInternal
@@ -77,8 +76,7 @@ func KindOf(err error) Kind {
 
 // CodeOf returns the machine-readable code of a classified error, or "".
 func CodeOf(err error) string {
-	var e *Error
-	if errors.As(err, &e) {
+	if e, ok := errors.AsType[*Error](err); ok {
 		return e.Code
 	}
 	return ""
@@ -106,6 +104,16 @@ func Unauthenticated(code, msg string) *Error {
 func Platform(code, msg string) *Error {
 	return &Error{
 		Kind:    KindPlatform,
+		Code:    code,
+		Message: msg,
+		Fields:  nil,
+		cause:   errors.New(msg),
+	}
+}
+
+func RateLimited(code, msg string) *Error {
+	return &Error{
+		Kind:    KindRateLimited,
 		Code:    code,
 		Message: msg,
 		Fields:  nil,

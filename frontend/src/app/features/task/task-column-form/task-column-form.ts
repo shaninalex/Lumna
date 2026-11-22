@@ -50,7 +50,8 @@ export class TaskColumnForm implements OnInit {
         data.columnId = this.columnId()
         data.boardId = this.boardId()
         this.store.dispatch(actionTask.create({data}));
-        this.visible.set(false);
+        this.taskEditForm().reset();
+        this.taskEditFormModel.set(taskCreateModelDefault);
     }
 
     ngOnInit() {
@@ -58,10 +59,7 @@ export class TaskColumnForm implements OnInit {
             ofType(actionUI.taskColumnForm),
             takeUntilDestroyed(this.destroyRef),
             tap(action => {
-                this.visible.set(
-                    this.position() === action.position &&
-                    this.columnId() === action.columnId
-                );
+                this.visible.set(this.position() === action.position && this.columnId() === action.columnId);
                 this.taskEditForm().reset();
                 this.taskEditFormModel.set(taskCreateModelDefault)
             })

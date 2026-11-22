@@ -21,3 +21,6 @@ cover.out
 !.git/hooks/post-tag
 resources/frontend_build/*
 !resources/frontend_build/.gitkeep
+
+# binary
+lumna

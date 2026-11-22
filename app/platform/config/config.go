@@ -83,10 +83,6 @@ func ReadConfig(path string) *Config {
 	return s
 }
 
-func ProvideConfig(configPath string) *Config {
-	return ReadConfig(configPath)
-}
-
 type EmailerConfig struct {
 	From      string
 	Host      string

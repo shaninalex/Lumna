@@ -28,7 +28,8 @@ func RunCLI(assets Assets) int {
 	}()
 
 	if err := root.Execute(); err != nil {
-		panic(err)
+		fmt.Println(err)
+		return 1
 	}
 	return 0
 }
