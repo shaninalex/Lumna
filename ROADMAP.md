@@ -162,7 +162,7 @@ More extensions and more features, prioritised by real usage. Candidates from
 `docs/feature-ideas.md`:
 
 - Webhooks and outbound integrations; inbound integrations (Git commits linked to tasks)
-- Pages, notes and documentation with a Markdown editor
+- Pages, notes and documentation with a Markdown editor ( find better markdown editor )
 - Calendar view, reminders, Google/Outlook calendar sync
 - Time tracking and a pomodoro mode (as extensions)
 - Custom email templates
@@ -170,7 +170,6 @@ More extensions and more features, prioritised by real usage. Candidates from
 - Board backgrounds and personalisation
 - Terminal UI mode (LazyGit-style) and man-style CLI documentation
 - Data export and import (JSON), migration from other tools
-- More runtimes for extensions (Python workers, Starlark), if needed
 - Delivery: Docker images, Windows build, desktop packaging
 
 ---
