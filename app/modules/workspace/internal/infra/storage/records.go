@@ -83,7 +83,7 @@ type workspaceInvitationRecord struct {
 	InvitedBy   sql.NullInt32 `gorm:"column:invited_by"`
 	ExpiresAt   time.Time     `gorm:"column:expires_at"`
 	AcceptedAt  sql.NullTime  `gorm:"column:accepted_at"`
-	RevokedAt   sql.NullTime  `gorm:"column:accepted_at"`
+	RevokedAt   sql.NullTime  `gorm:"column:revoked_at"`
 	CreatedAt   time.Time     `gorm:"column:created_at;autoCreateTime"`
 }
 

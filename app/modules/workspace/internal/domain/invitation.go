@@ -17,16 +17,39 @@ type Invitation struct {
 	CreatedAt   time.Time
 }
 
-// Revoke - revoke invitation. Also removes TokenHash
-func (s *Invitation) Revoke(t time.Time) {
+func (s *Invitation) Revoke(t time.Time) error {
+	if s.IsAccepted() {
+		return InvitationAlreadyAcceptedError
+	}
+	if s.IsRevoked() {
+		return InvitationAlreadyRevokedError
+	}
+
 	s.RevokedAt = t
 	s.TokenHash = ""
+
+	return nil
 }
 
-// Accept - revoke invitation. Also removes TokenHash
-func (s *Invitation) Accept(t time.Time) {
+func (s *Invitation) CanAccept(t time.Time) error {
+	if s.IsAccepted() {
+		return InvitationAlreadyAcceptedError
+	}
+	if s.IsRevoked() || s.IsExpired(t) {
+		return InvitationExpiredOrAcceptedError
+	}
+	return nil
+}
+
+func (s *Invitation) Accept(t time.Time) error {
+	if err := s.CanAccept(t); err != nil {
+		return err
+	}
+
 	s.AcceptedAt = t
 	s.TokenHash = ""
+
+	return nil
 }
 
 func (s *Invitation) IsExpired(t time.Time) bool {

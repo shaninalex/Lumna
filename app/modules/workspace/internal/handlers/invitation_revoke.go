@@ -22,7 +22,9 @@ func (s *InvitationRevoke) Handle(ctx context.Context, cmd contract.RevokeInvita
 	if err != nil {
 		return contract.InvitationView{}, err
 	}
-	invitation.Revoke(s.clock.Now())
+	if err = invitation.Revoke(s.clock.Now()); err != nil {
+		return contract.InvitationView{}, err
+	}
 	if err = s.repo.Update(ctx, invitation); err != nil {
 		return contract.InvitationView{}, err
 	}

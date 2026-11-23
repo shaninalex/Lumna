@@ -44,12 +44,12 @@ func (s *CreateInvitation) Handle(ctx context.Context, cmd contract.CreateInvita
 	for _, inv := range invitations {
 		if inv.Email == cmd.Invitation.Email {
 			if !inv.AcceptedAt.IsZero() {
-				return contract.InvitationView{}, domain.CreateInvitationAlreadyAcceptedError
+				return contract.InvitationView{}, domain.InvitationAlreadyAcceptedError
 			} else if !inv.RevokedAt.IsZero() {
-				return contract.InvitationView{}, domain.CreateInvitationAlreadyRevokedError
+				return contract.InvitationView{}, domain.InvitationAlreadyRevokedError
 			}
 
-			return contract.InvitationView{}, domain.CreateInvitationAlreadyExistsError
+			return contract.InvitationView{}, domain.InvitationAlreadyExistsError
 		}
 	}
 

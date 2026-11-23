@@ -84,7 +84,10 @@ func (s *InvitationRepo) GetById(ctx context.Context, invitationId int) (domain.
 
 func (s *InvitationRepo) Update(ctx context.Context, invitation domain.Invitation) error {
 	inv := toInvitationRecord(invitation)
-	rowsAffected, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).Updates(ctx, inv)
+	rowsAffected, err := gorm.G[workspaceInvitationRecord](s.db.From(ctx)).
+		Where("id = ?", invitation.ID).
+		Select("role", "token_hash", "expires_at", "accepted_at", "revoked_at").
+		Updates(ctx, inv)
 	if err != nil {
 		return err
 	}

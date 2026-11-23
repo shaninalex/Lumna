@@ -34,8 +34,8 @@ func (s *AcceptInvitation) Handle(ctx context.Context, cmd contract.AcceptInvita
 		return contract.InvitationView{}, domain.InvitationNotFoundError
 	}
 
-	if !invitation.AcceptedAt.IsZero() {
-		return contract.InvitationView{}, domain.CreateInvitationAlreadyAcceptedError
+	if err = invitation.Accept(s.clk.Now()); err != nil {
+		return contract.InvitationView{}, err
 	}
 
 	_, err = s.repoIdentityWorkspace.Save(ctx, domain.IdentityWorkspace{
@@ -47,8 +47,6 @@ func (s *AcceptInvitation) Handle(ctx context.Context, cmd contract.AcceptInvita
 	if err != nil {
 		return contract.InvitationView{}, domain.InvitationUnableToSaveError
 	}
-
-	invitation.Accept(s.clk.Now())
 
 	err = s.repoInvitation.Update(ctx, invitation)
 	if err != nil {
