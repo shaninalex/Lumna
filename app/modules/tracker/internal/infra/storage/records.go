@@ -118,7 +118,7 @@ func workItemToDomain(record workItemRecord) domain.WorkItem {
 	wt := domain.WorkItem{
 		ID:          record.ID,
 		ProjectID:   record.ProjectID,
-		Type:        domain.WorkItemType(record.Type),
+		Type:        domain.WorkItemTypeFromString(record.Type),
 		ParentID:    int(record.ParentID.Int64),
 		Title:       record.Title,
 		Description: record.Description.String,
@@ -134,7 +134,7 @@ func workItemToDomain(record workItemRecord) domain.WorkItem {
 	}
 
 	if record.DueTo.Valid {
-		wt.UpdatedAt = record.DueTo.Time
+		wt.DueTo = record.DueTo.Time
 	}
 
 	return wt

@@ -5,12 +5,25 @@ import "time"
 type WorkItemType string
 
 const (
-	WorkItemTypeEpic    WorkItemType = "epic"
-	WorkItemTypeStory   WorkItemType = "story"
-	WorkItemTypeTask    WorkItemType = "task"
-	WorkItemTypeBug     WorkItemType = "bug"
-	WorkItemTypeSubtask WorkItemType = "subtask"
+	WorkItemTypeEpic    = "epic"
+	WorkItemTypeStory   = "story"
+	WorkItemTypeTask    = "task"
+	WorkItemTypeBug     = "bug"
+	WorkItemTypeSubtask = "subtask"
 )
+
+func WorkItemTypeFromString(s string) WorkItemType {
+	switch WorkItemType(s) {
+	case WorkItemTypeEpic,
+		WorkItemTypeStory,
+		WorkItemTypeTask,
+		WorkItemTypeBug,
+		WorkItemTypeSubtask:
+		return WorkItemType(s)
+	default:
+		return WorkItemTypeTask
+	}
+}
 
 type Priority string
 

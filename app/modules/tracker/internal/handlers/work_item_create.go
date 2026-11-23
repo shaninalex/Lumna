@@ -26,6 +26,7 @@ func NewWorkItemCreate(repo domain.WorkingItemRepo, clock clock.Clock, bus *bus.
 func (s *WorkItemCreate) Handle(ctx context.Context, cmd contract.WorkItemCreate) (contract.WorkItemView, error) {
 	w, err := s.repo.Create(ctx, domain.WorkItem{
 		Title:       cmd.Title,
+		Type:        domain.WorkItemTypeTask,
 		Description: cmd.Description,
 		ProjectID:   cmd.ProjectId,
 		Rank:        cmd.Position,
