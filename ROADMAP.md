@@ -23,12 +23,12 @@ consistent, and cover it with tests before adding features. The architecture epi
 [#41](https://gitlab.com/shaninalex/lumna/-/issues/41) describes the order of work in detail.
 
 ### 1.1 Critical bugs
-- [ ] Migration fails on a fresh database (#10)
+- [x] Migration fails on a fresh database (#10)
 - [ ] Authorization and tenant isolation (#11)
 - [ ] Inverted ownership check on refresh tokens (#12)
 - [ ] Nil pointer panic in task endpoints (#13)
 - [ ] Invitation `revoked_at` column mapping (#14)
-- [ ] Task due date lost on update (#15)
+- [x] Task due date lost on update (#15)
 - [ ] CSRF protection: SameSite cookies and content-type checks (#16)
 - [ ] SQLite pragmas per connection (#17)
 - [ ] Frontend: refresh interceptor and session flow (#42)
