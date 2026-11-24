@@ -12,7 +12,7 @@ export class RefreshTokenService {
 
     List(): Observable<RefreshToken[]> {
         return this.http
-            .get<APIResponse<RefreshTokenDTO[]>>(`/api/v1/sessions/refresh-tokens/`, {
+            .get<APIResponse<RefreshTokenDTO[]>>(`/api/v1/sessions/refresh-tokens`, {
                 withCredentials: true,
             })
             .pipe(map((response) => toRefreshTokens(response.data)));

@@ -5,8 +5,6 @@ export interface UserModelDTO {
     full_name: string;
     email: string;
     active: boolean;
-    created_at: Date;
-    updated_at: Date;
 }
 
 export function toUserModel(u: UserModelDTO): UserModel {
@@ -15,7 +13,5 @@ export function toUserModel(u: UserModelDTO): UserModel {
         fullName: u.full_name,
         email: u.email,
         active: u.active,
-        createdAt: u.created_at,
-        updatedAt: u.updated_at,
     }
 }

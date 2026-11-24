@@ -12,8 +12,8 @@ type projectDTO struct {
 	WorkspaceId int       `json:"workspace_id"`
 	OwnerId     int       `json:"owner_id"`
 	Meta        string    `json:"meta,omitempty"`
-	CreatedAt   time.Time `json:"created_At"`
-	UpdatedAt   time.Time `json:"updated_At,omitzero"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at,omitzero"`
 }
 
 type projectCreateDTO struct {

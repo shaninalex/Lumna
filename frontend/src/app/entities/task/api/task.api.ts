@@ -11,11 +11,12 @@ import type {
     TaskModel
 } from "../model/task.model";
 import {
-    TaskAssignModelDTO, TaskModelDTO,
-    toTaskAssignModel,
+    TaskModelDTO,
     toTaskAssignModelDTO,
     toTaskCreateModelDTO,
-    toTaskEditModelDTO, toTaskModel, toTaskModels
+    toTaskEditModelDTO,
+    toTaskModel,
+    toTaskModels
 } from './task.dto';
 
 @Injectable()
@@ -49,12 +50,12 @@ export class TaskApi {
             .pipe(map((response) => toTaskModel(response.data)));
     }
 
-    assign(data: TaskAssignModel): Observable<TaskAssignModel> {
+    assign(data: TaskAssignModel): Observable<boolean> {
         return this.http
             .patch<
-                APIResponse<TaskAssignModelDTO>
+                APIResponse<boolean>
             >(`/api/v1/tasks/${data.taskId}/assign`, toTaskAssignModelDTO(data), {withCredentials: true})
-            .pipe(map((response) => toTaskAssignModel(response.data)));
+            .pipe(map((response) => response.data));
     }
 
     delete(taskId: number): Observable<unknown> {

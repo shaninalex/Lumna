@@ -2,12 +2,12 @@ import { ColumnMeta, ColumnModel, ColumnPayloadModel } from '../model/column.mod
 
 export interface ColumnModelDTO {
     id: number;
-    title: number;
+    title: string;
     meta: ColumnMeta;
     board_id: number;
     position: number;
     created_at: Date;
-    update_at: Date;
+    updated_at: Date;
 }
 
 export function toColumnModel(c: ColumnModelDTO): ColumnModel {
@@ -18,7 +18,7 @@ export function toColumnModel(c: ColumnModelDTO): ColumnModel {
         boardId: c.board_id,
         position: c.position,
         createdAt: c.created_at,
-        updateAt: c.update_at,
+        updateAt: c.updated_at,
     }
 }
 

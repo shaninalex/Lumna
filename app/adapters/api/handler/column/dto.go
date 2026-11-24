@@ -69,6 +69,6 @@ func (a columnCreateDto) Validate() error {
 }
 
 type columnDeleteResponseDto struct {
-	Id           int   `json:"id"`
-	DeletedTasks []int `json:"deleted_tasks"`
+	Id    int   `json:"id"`
+	Tasks []int `json:"tasks"`
 }
