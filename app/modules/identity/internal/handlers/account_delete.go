@@ -18,7 +18,7 @@ func NewAccountDelete(repo domain.IdentityRepo) *AccountDelete {
 
 func (s *AccountDelete) Handle(ctx context.Context, cmd contract.AccountDelete) (bool, error) {
 	a, ok := actor.From(ctx)
-	if !ok && a.IdentityID != cmd.IdentityID {
+	if !ok || a.IdentityID != cmd.IdentityID {
 		return false, domain.ErrBadCredentials
 	}
 	if err := s.repo.Delete(ctx, cmd.IdentityID); err != nil {

@@ -23,7 +23,7 @@ func (s *RefreshTokenRevoke) Handle(ctx context.Context, cmd contract.RefreshTok
 	}
 
 	a, ok := actor.From(ctx)
-	if !ok && a.IdentityID != token.IdentityID {
+	if !ok || a.IdentityID != token.IdentityID {
 		return contract.RefreshTokenView{}, domain.ErrTokenNotBelongs
 	}
 

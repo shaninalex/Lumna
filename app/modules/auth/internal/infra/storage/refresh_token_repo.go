@@ -63,16 +63,18 @@ func (r *RefreshTokenRepo) Expired(ctx context.Context, now time.Time) ([]domain
 	return tokens, nil
 }
 
-func (r *RefreshTokenRepo) Remove(ctx context.Context, id int) error {
-	rows, err := gorm.G[refreshTokenRecord](r.db.From(ctx)).Where("id = ?", id).Delete(ctx)
-	if rows == 0 {
-		return domain.ErrTokenUnknown
-	}
+func (r *RefreshTokenRepo) Remove(ctx context.Context, identityID, id int) error {
+	rows, err := gorm.G[refreshTokenRecord](r.db.From(ctx)).
+		Where("id = ? AND identity_id = ?", id, identityID).
+		Delete(ctx)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return domain.ErrNotFound
 	}
 	if err != nil {
 		return err
+	}
+	if rows == 0 {
+		return domain.ErrTokenUnknown
 	}
 	return nil
 }
@@ -110,6 +112,9 @@ func (r *RefreshTokenRepo) ByID(ctx context.Context, id int) (domain.RefreshToke
 	record, err := gorm.G[refreshTokenRecord](r.db.From(ctx)).Where("id = ?", id).First(ctx)
 	if err != nil {
 		return domain.RefreshToken{}, err
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return domain.RefreshToken{}, domain.ErrNotFound
 	}
 
 	return toDomainRefreshToken(record), nil

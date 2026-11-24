@@ -18,7 +18,7 @@ func NewRefreshTokenList(repo domain.RefreshTokenRepo) *RefreshTokenList {
 func (s *RefreshTokenList) Handle(ctx context.Context, query contract.RefreshTokensList) ([]contract.RefreshTokenView, error) {
 	tokens, err := s.repo.ListIdentityID(ctx, query.IdentityID)
 	if err != nil {
-		return []contract.RefreshTokenView{}, nil
+		return []contract.RefreshTokenView{}, err
 	}
 
 	views := make([]contract.RefreshTokenView, 0, len(tokens))

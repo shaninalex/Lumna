@@ -23,11 +23,11 @@ func (s *RefreshTokenDelete) Handle(ctx context.Context, cmd contract.RefreshTok
 	}
 
 	a, ok := actor.From(ctx)
-	if !ok && a.IdentityID != token.IdentityID {
+	if !ok || a.IdentityID != token.IdentityID {
 		return false, domain.ErrTokenNotBelongs
 	}
 
-	if err = s.repo.Remove(ctx, token.ID); err != nil {
+	if err = s.repo.Remove(ctx, a.IdentityID, token.ID); err != nil {
 		return false, err
 	}
 

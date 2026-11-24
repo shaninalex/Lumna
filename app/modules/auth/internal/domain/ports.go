@@ -9,7 +9,7 @@ type RefreshTokenRepo interface {
 	Save(ctx context.Context, t RefreshToken) (RefreshToken, error)
 	ByHash(ctx context.Context, hash string) (RefreshToken, error)
 	Expired(ctx context.Context, now time.Time) ([]RefreshToken, error)
-	Remove(ctx context.Context, id int) error
+	Remove(ctx context.Context, identityID, id int) error
 	RemoveBatch(ctx context.Context, ids []int) error
 	ListIdentityID(ctx context.Context, identityID int) ([]RefreshToken, error)
 	ByID(ctx context.Context, id int) (RefreshToken, error)
