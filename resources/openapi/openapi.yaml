@@ -2,38 +2,49 @@ openapi: 3.0.3
 
 info:
   title: Lumna API
-  version: 0.35.0
+  version: 0.41.1
   description: |
-    HTTP API of the Lumna server.
+    HTTP API of the Lumna server. Source of truth: `app/adapters/api/router.go`
+    and the handlers in `app/adapters/api/handler/*`.
 
     ## Authentication
 
-    Authentication is **cookie based**. `POST /api/v1/auth/login` responds with two
-    `Set-Cookie` headers:
+    Authentication is **cookie based**. `POST /api/v1/auth/login` (and
+    `POST /api/v1/auth/refresh`) respond with two `Set-Cookie` headers:
 
-    | Cookie          | Lifetime | Purpose                                              |
-    | --------------- | -------- | ---------------------------------------------------- |
-    | `access_token`  | 15 min   | JWT read by the auth middleware on every private route |
-    | `refresh_token` | 30 days  | Opaque token, exchanged on `GET /api/v1/auth/refresh`  |
+    | Cookie          | Path           | Purpose                                                  |
+    | --------------- | -------------- | -------------------------------------------------------- |
+    | `access_token`  | `/`            | Short lived JWT read by the auth middleware on every private route |
+    | `refresh_token` | `/api/v1/auth` | Long lived opaque token, used by `/auth/refresh` and `/auth/logout` |
 
-    Both are issued `HttpOnly` and `Secure`, so they are invisible to JavaScript and
-    are attached by the browser automatically. Everything under `/api/v1` except the
-    `/api/v1/auth/*` group requires a valid `access_token`.
+    Both are `HttpOnly`. With secure cookies enabled they are also `Secure` and
+    `SameSite=None`, otherwise `SameSite=Lax`. Lifetimes come from the server config.
+
+    Everything under `/api/v1` except the `/api/v1/auth/*` group requires a valid
+    `access_token`; otherwise the middleware answers `401` with code `AUTH006`.
 
     ## Response envelope
 
-    Every handler answers with the same envelope (`APIResponse` in
-    `app/api/utils/response.go`): `status` is `false` for any status >= 400, `data`
-    carries the payload, `messages` and `errors` are omitted when empty.
+    Every handler answers with the same envelope (`httpx.APIResponse`):
+
+    - `status` is `false` for any HTTP status >= 400;
+    - `data` carries the payload and is **omitted** when the handler returns `nil`;
+    - `messages` and `errors` are omitted when empty.
+
+    ## Errors
+
+    Domain errors carry a kind that maps to the HTTP status
+    (validation → 400, unauthenticated → 401, forbidden → 403, not found → 404,
+    conflict → 409, rate limited → 429) and a `code`. Any other error (for example
+    a non-numeric path/query id or malformed JSON) is reported as
+    `500 INTERNAL_ERROR` with the message `internal server error`.
 
     ## Trying requests from Swagger UI
 
-    The bundled UI at `/docs` is served by the API itself, so it is same-origin and
-    the browser sends your real session cookies with every "Try it out" call
-    (`withCredentials` is on). CORS is configured with
-    `Access-Control-Allow-Credentials: false`, so a UI served from any other origin
-    cannot authenticate. Use the **Session cookies** panel above the operations to
-    paste tokens into real cookies on this origin.
+    The bundled UI at `/api-docs` is served by the API itself, so it is same-origin
+    and the browser sends your real session cookies with every "Try it out" call.
+    Use the **Session cookies** panel above the operations to paste tokens into
+    real cookies on this origin.
 
 servers:
   - url: /
@@ -42,59 +53,40 @@ servers:
     description: Local development server (serve.port in config.yaml)
 
 tags:
-  - name: health
-    description: Liveness probe
   - name: auth
     description: Login, logout and token refresh
   - name: user
-    description: Current identity
+    description: Current identity and account management
+  - name: sessions
+    description: Refresh tokens of the current identity
   - name: workspaces
     description: Top level tenant container
+  - name: members
+    description: Workspace members
+  - name: invitations
+    description: Email invitations into a workspace
   - name: projects
     description: Projects inside a workspace
   - name: boards
     description: Kanban boards of a project
   - name: columns
-    description: Columns of a board
+    description: Columns (stages) of a board
   - name: tasks
     description: Tasks placed on boards
-  - name: invitations
-    description: Email invitations
 
 security:
   - cookieAuth: []
 
 paths:
-  /_health:
-    get:
-      tags: [health]
-      summary: Health check
-      description: Liveness probe. Not part of `/api/v1` and requires no authentication.
-      operationId: health
-      security: []
-      responses:
-        '200':
-          description: Server is up
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: ok
-                  version:
-                    type: string
-                    example: 0.35.0
-
+  # ---------------------------------------------------------------- auth
   /api/v1/auth/login:
     post:
       tags: [auth]
       summary: Log in with email and password
       description: |
-        Verifies the credentials, stores a hashed refresh token for the
-        `angular-web-app` client and sets the `access_token` (15 min) and
-        `refresh_token` (30 days) cookies.
+        Verifies the credentials and sets the `access_token` and `refresh_token`
+        cookies. The body carries no `data`; load the identity with
+        `GET /api/v1/user/me`.
       operationId: login
       security: []
       requestBody:
@@ -108,73 +100,58 @@ paths:
           description: Authenticated
           headers:
             Set-Cookie:
-              description: |
-                Two headers are sent:
-                `access_token=<jwt>; Path=/; Max-Age=900; HttpOnly; Secure` and
-                `refresh_token=<token>; Path=/; Max-Age=2592000; HttpOnly; Secure`.
-              schema:
-                type: string
+              $ref: '#/components/headers/SessionCookies'
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/Identity'
-                      messages:
-                        type: array
-                        items:
-                          type: string
-                        example: ["Login successfull"]
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                status: true
+                messages: ["Login successful"]
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Invalid credentials (`AUTH001`)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
 
   /api/v1/auth/logout:
-    get:
+    post:
       tags: [auth]
       summary: Log out
       description: |
-        Deletes the stored refresh tokens of the current identity and expires both
+        Deletes the refresh token from the `refresh_token` cookie and expires both
         cookies.
-
-        Note: this route is registered on the public `/api/v1/auth` group, so the
-        auth middleware never runs and the user id read from the request context is
-        always `0`. Only the cookie clearing is reliable today.
       operationId: logout
       security:
-        - cookieAuth: []
+        - refreshCookie: []
       responses:
         '200':
           description: Logged out
           headers:
             Set-Cookie:
-              description: Both `access_token` and `refresh_token` are sent back with `Max-Age=-1`.
+              description: Both cookies are sent back with `Max-Age=-1`.
               schema:
                 type: string
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      messages:
-                        type: array
-                        items:
-                          type: string
-                        example: ["Logout successfull"]
-        '400':
-          $ref: '#/components/responses/BadRequest'
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                status: true
+                messages: ["Logged out"]
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /api/v1/auth/refresh:
-    get:
+    post:
       tags: [auth]
       summary: Rotate the token pair
       description: |
-        Reads the `refresh_token` cookie, looks it up by hash and issues a brand new
-        access/refresh pair as cookies. The response body carries no data.
+        Exchanges the `refresh_token` cookie for a new access/refresh pair. On any
+        failure both cookies are cleared.
       operationId: refresh
       security:
         - refreshCookie: []
@@ -183,22 +160,22 @@ paths:
           description: New cookies issued
           headers:
             Set-Cookie:
-              description: New `access_token` and `refresh_token` cookies.
-              schema:
-                type: string
+              $ref: '#/components/headers/SessionCookies'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+              example:
+                status: true
+                messages: ["Session refreshed"]
         '401':
-          description: Missing, empty or unknown refresh token
+          description: Refresh token unknown (`AUTH002`), expired (`AUTH003`) or revoked (`AUTH004`)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
+  # ---------------------------------------------------------------- user
   /api/v1/user/me:
     get:
       tags: [user]
@@ -215,28 +192,169 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Identity'
-        '400':
-          description: No user in the request context, or the identity no longer exists
+                        $ref: '#/components/schemas/Profile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/user:
+    patch:
+      tags: [user]
+      summary: Update the current identity
+      operationId: updateCurrentUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountChange'
+      responses:
+        '200':
+          description: Updated identity
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Profile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          description: Malformed JSON or an unparseable email address
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+
+  /api/v1/user/change-password:
+    post:
+      tags: [user]
+      summary: Change the password of the current identity
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessTrue'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: |
+            Passwords do not match (`AUTH003`), password too weak (`AUTH004`) or the
+            change was rejected (`AUTH002`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /api/v1/user/delete-account:
+    post:
+      tags: [user]
+      summary: Delete the current identity
+      description: Deletes the account and clears both session cookies.
+      operationId: deleteAccount
+      responses:
+        '200':
+          description: Account deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [deleted]
+                        properties:
+                          deleted:
+                            type: boolean
+                            example: true
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  # ---------------------------------------------------------------- sessions
+  /api/v1/sessions/refresh-tokens:
+    get:
+      tags: [sessions]
+      summary: List refresh tokens of the current identity
+      operationId: listRefreshTokens
+      responses:
+        '200':
+          description: Refresh tokens
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/RefreshToken'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/sessions/refresh-tokens/{id}:
+    parameters:
+      - $ref: '#/components/parameters/RefreshTokenId'
+    delete:
+      tags: [sessions]
+      summary: Delete a refresh token
+      operationId: deleteRefreshToken
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessTrue'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/sessions/refresh-tokens/{id}/revoke:
+    parameters:
+      - $ref: '#/components/parameters/RefreshTokenId'
+    patch:
+      tags: [sessions]
+      summary: Revoke a refresh token
+      operationId: revokeRefreshToken
+      responses:
+        '200':
+          description: The revoked token
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/RefreshToken'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ---------------------------------------------------------------- workspaces
   /api/v1/workspaces:
     get:
       tags: [workspaces]
       summary: List workspaces
       operationId: listWorkspaces
-      parameters:
-        - name: active
-          in: query
-          required: false
-          description: When set, only workspaces with this `active` flag are returned.
-          schema:
-            type: boolean
       responses:
         '200':
           description: Workspaces
@@ -253,12 +371,9 @@ paths:
                           $ref: '#/components/schemas/Workspace'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalError'
     post:
       tags: [workspaces]
       summary: Create a workspace
-      description: Creates a workspace owned by the current identity.
       operationId: createWorkspace
       requestBody:
         required: true
@@ -282,9 +397,171 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalError'
 
+  /api/v1/workspaces/{workspace_id}:
+    parameters:
+      - $ref: '#/components/parameters/WorkspaceId'
+    delete:
+      tags: [workspaces]
+      summary: Delete a workspace
+      operationId: deleteWorkspace
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessTrue'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/workspaces/{workspace_id}/members:
+    parameters:
+      - $ref: '#/components/parameters/WorkspaceId'
+    get:
+      tags: [members]
+      summary: List workspace members
+      operationId: listWorkspaceMembers
+      responses:
+        '200':
+          description: Members
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Member'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/workspaces/{workspace_id}/members/remove:
+    parameters:
+      - $ref: '#/components/parameters/WorkspaceId'
+    post:
+      tags: [members]
+      summary: Remove a member from a workspace
+      description: |
+        The handler reads `workspace_id` from the **body**; the path parameter is
+        not used.
+      operationId: removeWorkspaceMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberRemove'
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessTrue'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/workspaces/{workspace_id}/invitations:
+    parameters:
+      - $ref: '#/components/parameters/WorkspaceId'
+    get:
+      tags: [invitations]
+      summary: List invitations of a workspace
+      operationId: listInvitations
+      responses:
+        '200':
+          description: Invitations
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Invitation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [invitations]
+      summary: Invite someone into a workspace
+      description: |
+        `invited_by` is taken from the current identity. The handler reads
+        `workspace_id` from the **body**; the path parameter is not used.
+      operationId: createInvitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationCreate'
+      responses:
+        '200':
+          description: Created invitation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Invitation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/workspaces/invitations/{invitation_id}:
+    parameters:
+      - $ref: '#/components/parameters/InvitationId'
+    delete:
+      tags: [invitations]
+      summary: Delete an invitation
+      operationId: deleteInvitation
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessTrue'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/workspaces/invitations/{invitation_id}/revoke:
+    parameters:
+      - $ref: '#/components/parameters/InvitationId'
+    post:
+      tags: [invitations]
+      summary: Revoke an invitation
+      operationId: revokeInvitation
+      responses:
+        '200':
+          description: The revoked invitation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Invitation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  # ---------------------------------------------------------------- projects
   /api/v1/projects:
     get:
       tags: [projects]
@@ -294,10 +571,8 @@ paths:
         - name: workspace_id
           in: query
           required: true
-          description: Required. A missing or non numeric value answers 400.
           schema:
             type: integer
-            format: int64
       responses:
         '200':
           description: Projects
@@ -312,14 +587,12 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Project'
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
     post:
       tags: [projects]
       summary: Create a project
-      description: '`owner_id` is ignored in the body: the server overrides it with the current identity.'
+      description: The owner is the current identity.
       operationId: createProject
       requestBody:
         required: true
@@ -344,40 +617,22 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/projects/{id}:
+  /api/v1/projects/{project_id}:
     parameters:
       - $ref: '#/components/parameters/ProjectId'
-    get:
-      tags: [projects]
-      summary: Get a project
-      operationId: getProject
-      responses:
-        '200':
-          description: The project
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/Project'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
     patch:
       tags: [projects]
       summary: Rename a project
-      description: Only `title` is applied; every other field is ignored.
-      operationId: patchProject
+      description: |
+        Uses the same payload as create, so `workspace_id` is required by
+        validation even though only `title` is applied.
+      operationId: updateProject
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TitlePatch'
+              $ref: '#/components/schemas/ProjectCreate'
       responses:
         '200':
           description: Updated project
@@ -394,22 +649,25 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
     delete:
       tags: [projects]
       summary: Delete a project
       operationId: deleteProject
       responses:
         '200':
-          description: Deleted
+          description: Deleted (no `data`)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
+  # ---------------------------------------------------------------- boards
   /api/v1/boards:
     get:
       tags: [boards]
@@ -419,10 +677,8 @@ paths:
         - name: project_id
           in: query
           required: true
-          description: Required. A missing or non numeric value answers 400.
           schema:
             type: integer
-            format: int64
       responses:
         '200':
           description: Boards
@@ -437,8 +693,6 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Board'
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
     post:
@@ -468,116 +722,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/boards/{board_id}:
-    parameters:
-      - $ref: '#/components/parameters/BoardId'
-    get:
-      tags: [boards]
-      summary: Get a board
-      operationId: getBoard
-      responses:
-        '200':
-          description: The board
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/Board'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-    patch:
-      tags: [boards]
-      summary: Rename a board
-      description: |
-        Only `title` is applied; `project_id` is accepted but ignored.
-      operationId: patchBoard
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BoardCreate'
-      responses:
-        '200':
-          description: Updated board
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/Board'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-    delete:
-      tags: [boards]
-      summary: Delete a board
-      operationId: deleteBoard
-      responses:
-        '200':
-          description: Deleted
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      messages:
-                        type: array
-                        items:
-                          type: string
-                        example: ["Board deleted"]
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-
-  /api/v1/boards/{board_id}/order:
-    parameters:
-      - $ref: '#/components/parameters/BoardId'
-    patch:
-      tags: [boards]
-      summary: Reorder tasks and columns of a board
-      description: |
-        Persists the new positions after a drag and drop.
-
-        * `move_type: "task"` with `status_id` set - tasks moved inside one column,
-          only `tasks` is applied.
-        * `move_type: "task"` without `status_id` - tasks moved across columns.
-        * any other `move_type` - `statuses` is applied.
-
-        The `board_id` path parameter is not read by the handler; the payload is
-        self contained.
-      operationId: reorderBoard
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BoardReorderRequest'
-      responses:
-        '200':
-          description: Order persisted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-
+  # ---------------------------------------------------------------- columns
   /api/v1/columns:
     get:
       tags: [columns]
@@ -587,13 +732,11 @@ paths:
         - name: board_id
           in: query
           required: true
-          description: Required. A missing or non numeric value answers 400 with `no board_id provided or it's invalid`.
           schema:
             type: integer
-            format: int64
       responses:
         '200':
-          description: Columns, ordered by position
+          description: Columns
           content:
             application/json:
               schema:
@@ -605,8 +748,6 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Column'
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
     post:
@@ -636,40 +777,26 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/columns/reorder:
-    post:
-      tags: [columns]
-      summary: Reorder columns
-      description: |
-        Not implemented yet: the handler body is empty, so the route answers 200
-        with an empty response body and changes nothing. Use
-        `PATCH /api/v1/boards/{board_id}/order` in the meantime.
-      operationId: reorderColumns
-      responses:
-        '200':
-          description: Empty body, nothing was persisted
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-
   /api/v1/columns/{column_id}:
     parameters:
       - $ref: '#/components/parameters/ColumnId'
-    patch:
+    delete:
       tags: [columns]
-      summary: Update a column
+      summary: Delete a column
       description: |
-        Only `title` and `position` are applied; `meta` and the timestamps are
-        ignored.
-      operationId: patchColumn
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Column'
+        With `with_tasks=true` the tasks of the column are deleted as well and
+        their ids are returned in `tasks`.
+      operationId: deleteColumn
+      parameters:
+        - name: with_tasks
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
-          description: Updated column
+          description: Column deleted
           content:
             application/json:
               schema:
@@ -678,49 +805,32 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Column'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+                        $ref: '#/components/schemas/ColumnDeleteResult'
+              example:
+                status: true
+                data:
+                  id: 12
+                  tasks: [101, 102]
+                messages: ["Stage deleted"]
         '401':
           $ref: '#/components/responses/Unauthorized'
-    delete:
-      tags: [columns]
-      summary: Delete a column
-      operationId: deleteColumn
-      responses:
-        '200':
-          description: Deleted
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      messages:
-                        type: array
-                        items:
-                          type: string
-                        example: ["Column deleted"]
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
 
+  # ---------------------------------------------------------------- tasks
   /api/v1/tasks:
     get:
       tags: [tasks]
       summary: List tasks of a board
-      description: Each task is returned with the entity events recorded for it.
       operationId: listTasks
       parameters:
         - name: board_id
           in: query
           required: true
-          description: Required. Without it the request fails with `no query parameters`.
           schema:
             type: integer
-            format: int64
       responses:
         '200':
           description: Tasks
@@ -735,13 +845,11 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Task'
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
     post:
       tags: [tasks]
-      summary: Create a task on a board
+      summary: Create a task
       operationId: createTask
       requestBody:
         required: true
@@ -751,7 +859,7 @@ paths:
               $ref: '#/components/schemas/TaskCreate'
       responses:
         '200':
-          description: Created task, with an empty `task_events` list
+          description: Created task
           content:
             application/json:
               schema:
@@ -769,45 +877,28 @@ paths:
   /api/v1/tasks/move:
     post:
       tags: [tasks]
-      summary: Move task in a single column between other tasks
-      operationId: createTask
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TaskCreate'
-      responses:
-        '200':
-          description: Created task, with an empty `task_events` list
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/Task'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+      summary: Board action (move task, move column, change stage)
+      description: |
+        A single endpoint for drag and drop on a board. `action` selects the shape
+        of `data` and of the response:
 
-  /api/v1/tasks/transfer:
-    post:
-      tags: [tasks]
-      summary: Transfer task between columns
-      operationId: createTask
+        | `action`       | `data`               | response `data` |
+        | -------------- | -------------------- | --------------- |
+        | `move_task`    | `MoveTaskData`       | `Task`          |
+        | `change_stage` | `ChangeStageData`    | `Task`          |
+        | `move_column`  | `MoveColumnData`     | `Column`        |
+
+        An unknown action fails with `400 unknown_board_action`.
+      operationId: boardAction
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskCreate'
+              $ref: '#/components/schemas/BoardAction'
       responses:
         '200':
-          description: Created task, with an empty `task_events` list
+          description: Moved entity
           content:
             application/json:
               schema:
@@ -816,54 +907,32 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/Task'
+                        oneOf:
+                          - $ref: '#/components/schemas/Task'
+                          - $ref: '#/components/schemas/Column'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /api/v1/tasks/{task_id}:
     parameters:
       - $ref: '#/components/parameters/TaskId'
-    get:
-      tags: [tasks]
-      summary: Get a task
-      description: |
-        Unlike the list and create operations this returns the raw `models.Task`,
-        which carries no JSON tags, so the keys are Go field names
-        (`ID`, `Title`, `ProjectId`, ...) instead of snake_case.
-      operationId: getTask
-      responses:
-        '200':
-          description: The task
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/TaskModel'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
     patch:
       tags: [tasks]
       summary: Update a task
       description: |
-        Only `Title`, `Body` and `Completed` are applied. The request is decoded
-        into `models.Task`, which has no JSON tags, so keys are matched against Go
-        field names - `title` works (Go matches case insensitively) but `project_id`
-        does not. The response uses the same Go field names.
-      operationId: patchTask
+        The handler updates the task from `task_id` in the **body**; the path
+        parameter is not used.
+      operationId: updateTask
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskPatch'
+              $ref: '#/components/schemas/TaskUpdate'
       responses:
         '200':
           description: Updated task
@@ -875,20 +944,20 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/TaskModel'
+                        $ref: '#/components/schemas/Task'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-
-  /api/v1/invitations:
-    get:
-      tags: [invitations]
-      summary: List invitations
-      operationId: listInvitations
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [tasks]
+      summary: Delete a task
+      operationId: deleteTask
       responses:
         '200':
-          description: Invitations
+          description: Task deleted
           content:
             application/json:
               schema:
@@ -897,46 +966,46 @@ paths:
                   - type: object
                     properties:
                       data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Invitation'
+                        type: boolean
+                        example: true
+              example:
+                status: true
+                data: true
+                messages: ["Task [42] deleted."]
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '500':
-          description: Listing failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-    post:
-      tags: [invitations]
-      summary: Invite somebody by email
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/tasks/{task_id}/assign:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    patch:
+      tags: [tasks]
+      summary: Assign a task
       description: |
-        Creates a pending invitation and queues the invitation email. The token
-        itself is never returned; only its hash is stored.
-      operationId: createInvitation
+        The handler reads `task_id` from the **body**; the path parameter is not
+        used. The response carries no `data`.
+      operationId: assignTask
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InvitationCreate'
+              $ref: '#/components/schemas/TaskAssign'
       responses:
         '200':
-          description: Created invitation
+          description: Assigned (no `data`)
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/ApiResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/Invitation'
+                $ref: '#/components/schemas/ApiResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 components:
 
@@ -947,59 +1016,86 @@ components:
       name: access_token
       description: |
         Short lived JWT issued by `POST /api/v1/auth/login`. The cookie is
-        `HttpOnly`, so a browser attaches it automatically and scripts cannot read
-        or write it - the Authorize dialog of Swagger UI cannot set it either
-        (browsers forbid scripted `Cookie` headers). Use the **Session cookies**
-        panel on the documentation page, which writes a real cookie on this origin.
+        `HttpOnly`, so the Authorize dialog of Swagger UI cannot set it. Use the
+        **Session cookies** panel on the documentation page.
     refreshCookie:
       type: apiKey
       in: cookie
       name: refresh_token
-      description: Long lived opaque token, only used by `GET /api/v1/auth/refresh`.
+      description: |
+        Long lived opaque token, scoped to `Path=/api/v1/auth`. Used by
+        `/auth/refresh` and `/auth/logout`.
+
+  headers:
+    SessionCookies:
+      description: |
+        Two headers are sent:
+        `access_token=<jwt>; Path=/; Max-Age=<ttl>; HttpOnly[; Secure]` and
+        `refresh_token=<token>; Path=/api/v1/auth; Max-Age=<ttl>; HttpOnly[; Secure]`.
+      schema:
+        type: string
 
   parameters:
-    ProjectId:
+    WorkspaceId:
+      name: workspace_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    InvitationId:
+      name: invitation_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    RefreshTokenId:
       name: id
       in: path
       required: true
-      description: Project id
+      description: Refresh token id
       schema:
         type: integer
-        format: int64
-    BoardId:
-      name: board_id
+    ProjectId:
+      name: project_id
       in: path
       required: true
-      description: Board id
       schema:
         type: integer
-        format: int64
     ColumnId:
       name: column_id
       in: path
       required: true
-      description: Column id
+      description: Column (stage) id. Registered in the router as `:stage_id`.
       schema:
         type: integer
-        format: int64
     TaskId:
       name: task_id
       in: path
       required: true
-      description: Task id
       schema:
         type: integer
-        format: int64
 
   responses:
+    SuccessTrue:
+      description: Success, `data` is `true`
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - type: object
+                properties:
+                  data:
+                    type: boolean
+                    example: true
     BadRequest:
-      description: Invalid payload, invalid parameter or a rejected operation
+      description: Validation failed
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ApiErrorResponse'
     Unauthorized:
-      description: Missing, expired or unparseable `access_token` cookie
+      description: Missing, expired or invalid `access_token` cookie
       content:
         application/json:
           schema:
@@ -1007,32 +1103,40 @@ components:
           example:
             status: false
             errors:
-              - message: unauthorized
-                code: GENERIC_ERROR
-                meta: null
-    InternalError:
-      description: Unexpected server side failure
+              - message: access token is missing or invalid
+                code: AUTH006
+    Forbidden:
+      description: The current identity may not access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+    Conflict:
+      description: The operation conflicts with the current state
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ApiErrorResponse'
 
   schemas:
-
+    # ------------------------------------------------------------ envelope
     ApiResponse:
       type: object
-      description: Envelope shared by every endpoint. Empty members are omitted.
       required: [status]
       properties:
         status:
           type: boolean
-          description: '`true` for 2xx responses, `false` for anything >= 400.'
-          example: true
+          description: '`false` for any HTTP status >= 400'
         data:
-          description: Operation payload. Omitted when the handler returns nothing.
+          description: Payload; omitted when the handler returns nothing
         messages:
           type: array
-          description: Human readable notes attached by the handler.
           items:
             type: string
         errors:
@@ -1041,17 +1145,16 @@ components:
             $ref: '#/components/schemas/ApiError'
 
     ApiErrorResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          properties:
-            status:
-              type: boolean
-              example: false
-            errors:
-              type: array
-              items:
-                $ref: '#/components/schemas/ApiError'
+      type: object
+      required: [status, errors]
+      properties:
+        status:
+          type: boolean
+          example: false
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiError'
 
     ApiError:
       type: object
@@ -1059,16 +1162,13 @@ components:
       properties:
         message:
           type: string
-          example: unauthorized
         code:
           type: string
-          description: Always `GENERIC_ERROR` for errors built from a plain Go error.
-          example: GENERIC_ERROR
+          example: VALIDATION_ERROR
         meta:
-          description: |
-            Free form details, `null` unless the handler filled it in. Untyped on
-            purpose - it is an `any` on the Go side.
+          description: Optional details, e.g. per-field validation messages
 
+    # ------------------------------------------------------------ auth / user
     LoginRequest:
       type: object
       required: [email, password]
@@ -1076,99 +1176,196 @@ components:
         email:
           type: string
           format: email
-          example: owner@example.com
         password:
           type: string
           format: password
-          example: correct-horse-battery-staple
 
-    Identity:
+    Profile:
       type: object
+      required: [id, email, full_name, active]
       properties:
         id:
           type: integer
-          format: int64
-          example: 1
-        full_name:
-          type: string
-          example: Ada Lovelace
         email:
           type: string
           format: email
-          example: owner@example.com
+        full_name:
+          type: string
         active:
           type: boolean
-          example: true
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-          nullable: true
 
-    Workspace:
+    AccountChange:
       type: object
+      required: [email, full_name]
+      properties:
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+
+    ChangePassword:
+      type: object
+      required: [password, password_confirm]
+      properties:
+        password:
+          type: string
+          format: password
+        password_confirm:
+          type: string
+          format: password
+
+    RefreshToken:
+      type: object
+      required: [id, identity_id, client_id, scopes, expires_at, revoked, created_at]
       properties:
         id:
           type: integer
-          format: int64
-          example: 1
+        identity_id:
+          type: integer
+        client_id:
+          type: string
+        scopes:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+        revoked:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    # ------------------------------------------------------------ workspaces
+    Workspace:
+      type: object
+      required: [id, title, active, owner_email, created_at]
+      properties:
+        id:
+          type: integer
         title:
           type: string
-          example: Acme
         active:
           type: boolean
-          example: true
         owner_email:
           type: string
           format: email
         created_at:
           type: string
           format: date-time
-        updated_at:
-          type: string
-          format: date-time
-          nullable: true
 
     WorkspaceCreate:
       type: object
-      required: [title]
+      required: [title, email]
       properties:
         title:
           type: string
           minLength: 3
           maxLength: 50
-          example: Acme
+        email:
+          type: string
+          format: email
+          description: Owner email
 
-    Project:
+    Member:
       type: object
+      required: [id, email, full_name, role, date_joined, workspace_id]
       properties:
         id:
           type: integer
-          format: int64
-          example: 1
-        title:
+        email:
           type: string
-          example: Website redesign
+          format: email
+        full_name:
+          type: string
+        image:
+          type: string
+        role:
+          type: string
+        date_joined:
+          type: string
+          format: date-time
         workspace_id:
           type: integer
-          format: int64
-          example: 1
+
+    MemberRemove:
+      type: object
+      required: [identity_id, workspace_id]
+      properties:
+        identity_id:
+          type: integer
+        workspace_id:
+          type: integer
+
+    Invitation:
+      type: object
+      required: [id, workspace_id, email, role, expires_at, created_at]
+      properties:
+        id:
+          type: integer
+        workspace_id:
+          type: integer
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        invited_by:
+          type: integer
+        expires_at:
+          type: string
+          format: date-time
+        accepted_at:
+          type: string
+          format: date-time
+          description: Omitted until accepted
+        revoked_at:
+          type: string
+          format: date-time
+          description: Omitted until revoked
+        created_at:
+          type: string
+          format: date-time
+
+    InvitationCreate:
+      type: object
+      required: [workspace_id, email, role]
+      properties:
+        workspace_id:
+          type: integer
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+          description: Must not be in the past
+
+    # ------------------------------------------------------------ projects
+    Project:
+      type: object
+      required: [id, title, workspace_id, owner_id, created_at]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        workspace_id:
+          type: integer
         owner_id:
           type: integer
-          format: int64
-          nullable: true
         meta:
-          type: object
-          description: Reserved for project settings, currently always empty.
+          type: string
+          description: Omitted when empty
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-          nullable: true
+          description: Omitted when never updated
 
     ProjectCreate:
       type: object
@@ -1176,135 +1373,62 @@ components:
       properties:
         title:
           type: string
-          example: Website redesign
+          minLength: 3
+          maxLength: 50
         workspace_id:
           type: integer
-          format: int64
-          example: 1
-        owner_id:
-          type: integer
-          format: int64
-          nullable: true
-          description: Ignored - overwritten with the authenticated identity.
 
-    TitlePatch:
-      type: object
-      required: [title]
-      properties:
-        title:
-          type: string
-          example: New title
-
+    # ------------------------------------------------------------ boards
     Board:
       type: object
+      required: [id, title, project_id, stage_count, issue_count, created_at]
       properties:
         id:
           type: integer
-          format: int64
-          example: 1
         title:
           type: string
-          example: Sprint 12
         project_id:
           type: integer
-          format: int64
-          example: 1
+        stage_count:
+          type: integer
+          description: Number of columns
+        issue_count:
+          type: integer
+          description: Number of tasks
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-          nullable: true
+          description: Omitted when never updated
 
     BoardCreate:
       type: object
-      required: [project_id, title]
+      required: [title, project_id]
       properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 50
         project_id:
           type: integer
-          format: int64
-          example: 1
-        title:
-          type: string
-          example: Sprint 12
 
-    BoardReorderRequest:
-      type: object
-      required: [move_type]
-      properties:
-        move_type:
-          type: string
-          description: '`task` reorders tasks, anything else reorders columns.'
-          example: task
-        status_id:
-          type: integer
-          format: int64
-          nullable: true
-          description: Set when the tasks stayed inside a single column.
-          example: 3
-        tasks:
-          type: array
-          description: New task positions, applied when `move_type` is `task`.
-          items:
-            $ref: '#/components/schemas/TaskPosition'
-        statuses:
-          type: array
-          description: New column positions with their tasks, applied for other move types.
-          items:
-            $ref: '#/components/schemas/ColumnPosition'
-
-    TaskPosition:
-      type: object
-      required: [id, order]
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 42
-        order:
-          type: integer
-          format: int64
-          example: 0
-
-    ColumnPosition:
-      type: object
-      required: [id]
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 3
-        order:
-          type: integer
-          format: int64
-          nullable: true
-          example: 1
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskPosition'
-
+    # ------------------------------------------------------------ columns
     Column:
       type: object
+      required: [id, title, meta, board_id, position, created_at]
       properties:
         id:
           type: integer
-          format: int64
-          example: 3
         title:
           type: string
-          example: In progress
         meta:
           $ref: '#/components/schemas/ColumnMeta'
         board_id:
           type: integer
-          format: int64
-          example: 1
         position:
-          type: integer
-          format: int64
-          example: 1
+          type: number
         created_at:
           type: string
           format: date-time
@@ -1312,17 +1436,21 @@ components:
           type: string
           format: date-time
           nullable: true
+          description: |
+            Always present from `/columns`; omitted when never updated in the
+            `move_column` response.
 
     ColumnMeta:
       type: object
-      description: Presentation settings, stored as a JSON column.
+      description: Currently always the defaults below; not persisted yet.
+      required: [color, icon, expanded]
       properties:
         color:
           type: string
-          example: '#4f46e5'
+          example: default
         icon:
           type: string
-          example: play
+          example: default
         expanded:
           type: boolean
           example: true
@@ -1333,242 +1461,171 @@ components:
       properties:
         title:
           type: string
-          example: In progress
+          minLength: 3
+          maxLength: 50
+        order:
+          type: number
+          description: Position of the column (stored as `position`)
         board_id:
           type: integer
-          format: int64
-          example: 1
-        order:
-          type: integer
-          format: int64
-          description: Stored as the column `position`.
-          example: 1
 
-    Task:
+    ColumnDeleteResult:
       type: object
-      description: Task as returned by the list and create operations (`dto.TaskDto`).
+      required: [id, tasks]
       properties:
         id:
           type: integer
-          format: int64
-          example: 42
-        title:
-          type: string
-          example: Draft the landing page
-        body:
-          type: string
-          example: Copy and hero image
-        completed:
-          type: boolean
-          example: false
-        meta:
-          type: string
-          description: Opaque JSON string.
-          example: ''
-        project_id:
-          type: integer
-          format: int64
-          example: 1
-        boards:
+          description: Deleted column id
+        tasks:
           type: array
-          description: Placements of this task; a task on a kanban board has exactly one.
-          items:
-            $ref: '#/components/schemas/TaskBoard'
-        owner_id:
-          type: integer
-          format: int64
-          example: 1
-        assignees_ids:
-          type: array
+          nullable: true
+          description: Ids of the tasks deleted with the column
           items:
             type: integer
-            format: int64
+
+    # ------------------------------------------------------------ tasks
+    Task:
+      type: object
+      required: [id, title, completed, meta, project_id, position, owner_id, assignees, created_at]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        body:
+          type: string
+          description: Omitted when empty
+        completed:
+          type: boolean
+          description: Not implemented yet, always `false`
+        meta:
+          type: string
+          description: Not implemented yet, always empty
+        project_id:
+          type: integer
+        board_id:
+          type: integer
+          description: Omitted when `0`
+        column_id:
+          type: integer
+          description: Omitted when `0`
+        position:
+          type: number
+        owner_id:
+          type: integer
+          description: Not implemented yet, always `0`
+        assignees:
+          type: array
+          nullable: true
+          items:
+            type: integer
+        due_to:
+          type: string
+          format: date-time
+          description: Omitted when not set
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-        task_events:
-          type: array
-          description: Entity events recorded for this task, empty on create.
-          items:
-            $ref: '#/components/schemas/EntityEvent'
-
-    TaskBoard:
-      type: object
-      properties:
-        board_id:
-          type: integer
-          format: int64
-          example: 1
-        column_id:
-          type: integer
-          format: int64
-          example: 3
-        position:
-          type: integer
-          format: int64
-          example: 0
-
-    TaskModel:
-      type: object
-      description: |
-        Raw `models.Task`. It declares no JSON tags, so keys are Go field names.
-        Returned by `GET` and `PATCH /api/v1/tasks/{task_id}`.
-      properties:
-        ID:
-          type: integer
-          format: int64
-          example: 42
-        Title:
-          type: string
-        Body:
-          type: string
-        Completed:
-          type: boolean
-        Meta:
-          type: string
-        ProjectId:
-          type: integer
-          format: int64
-        OwnerId:
-          type: integer
-          format: int64
-        AssigneesIDs:
-          type: array
-          nullable: true
-          items:
-            type: integer
-            format: int64
-        CreatedAt:
-          type: string
-          format: date-time
-        UpdatedAt:
-          type: string
-          format: date-time
-        Boards:
-          type: array
-          nullable: true
-          items:
-            type: object
-            properties:
-              BoardId:
-                type: integer
-                format: int64
-              ColumnId:
-                type: integer
-                format: int64
-              Position:
-                type: integer
-                format: int64
+          description: Omitted when never updated
 
     TaskCreate:
       type: object
-      required: [title, board_id, column_id, project_id]
+      required: [title]
       properties:
         title:
           type: string
-          example: Draft the landing page
         body:
           type: string
-          example: Copy and hero image
-        position:
-          type: integer
-          format: int64
-          example: 0
-        board_id:
-          type: integer
-          format: int64
-          example: 1
-        column_id:
-          type: integer
-          format: int64
-          example: 3
         project_id:
           type: integer
-          format: int64
-          example: 1
-
-    TaskPatch:
-      type: object
-      description: Keys are matched against Go field names; only these three are applied.
-      properties:
-        Title:
-          type: string
-          example: Draft the landing page
-        Body:
-          type: string
-          example: Copy and hero image
-        Completed:
-          type: boolean
-          example: true
-
-    EntityEvent:
-      type: object
-      properties:
-        id:
+        position:
+          type: number
+        column_id:
           type: integer
-          format: int64
+        board_id:
+          type: integer
+        due_to:
+          type: string
+          format: date-time
+
+    TaskUpdate:
+      type: object
+      required: [task_id, title]
+      properties:
+        task_id:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+        body:
+          type: string
+
+    TaskAssign:
+      type: object
+      required: [task_id, identity_id]
+      properties:
+        task_id:
+          type: integer
         identity_id:
           type: integer
-          format: int64
-          nullable: true
-        entity_id:
-          type: integer
-          format: int64
-          nullable: true
-        entity_type:
+
+    BoardAction:
+      type: object
+      required: [action, data]
+      properties:
+        action:
           type: string
-          nullable: true
-          example: task
-        event_type:
-          type: string
-          enum: [task/created, task/updated, task/completed]
-          example: task/created
+          enum: [move_task, move_column, change_stage]
         data:
-          type: string
-          description: Opaque JSON string with the event details.
-        created_at:
-          type: string
-          format: date-time
+          oneOf:
+            - $ref: '#/components/schemas/MoveTaskData'
+            - $ref: '#/components/schemas/MoveColumnData'
+            - $ref: '#/components/schemas/ChangeStageData'
+      example:
+        action: change_stage
+        data:
+          task_id: 42
+          board_id: 3
+          column_id: 7
+          position: 1024.5
 
-    Invitation:
+    MoveTaskData:
       type: object
+      description: Reorder a task inside its column.
+      required: [board_id, task_id, position]
       properties:
-        id:
+        board_id:
           type: integer
-          format: int64
-          example: 1
-        email:
-          type: string
-          format: email
-        state:
-          type: string
-          enum: [pending, sent, accepted, validated, revoked]
-          example: pending
-        role:
-          type: string
-          example: member
-        created_at:
-          type: string
-          format: date-time
-        valid_until:
-          type: string
-          format: date-time
-        meta:
-          type: object
-          nullable: true
-          additionalProperties: true
+        task_id:
+          type: integer
+        position:
+          type: number
 
-    InvitationCreate:
+    MoveColumnData:
       type: object
-      required: [email, role]
+      description: Reorder a column on its board.
+      required: [board_id, column_id, position]
       properties:
-        email:
-          type: string
-          format: email
-          example: teammate@example.com
-        role:
-          type: string
-          example: member
+        board_id:
+          type: integer
+        column_id:
+          type: integer
+        position:
+          type: number
+
+    ChangeStageData:
+      type: object
+      description: Move a task into another column.
+      required: [task_id, board_id, column_id, position]
+      properties:
+        task_id:
+          type: integer
+        board_id:
+          type: integer
+        column_id:
+          type: integer
+        position:
+          type: number
