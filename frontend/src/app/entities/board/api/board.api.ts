@@ -22,11 +22,5 @@ export class BoardApi {
             .post<APIResponse<BoardModelDTO>>('/api/v1/boards', toBoardCreateDTO(payload), {withCredentials: true})
             .pipe(map((res) => toBoardModel(res.data)));
     }
-
-    get(boardId: number): Observable<BoardModel> {
-        return this.http
-            .get<APIResponse<BoardModelDTO>>(`/api/v1/boards/${boardId}`, {withCredentials: true})
-            .pipe(map((res) => toBoardModel(res.data)));
-    }
 }
 

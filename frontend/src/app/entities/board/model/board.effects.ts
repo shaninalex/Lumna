@@ -35,18 +35,4 @@ export class BoardEffects {
             ),
         ),
     );
-
-    get_list$ = createEffect(() =>
-        this.actions$.pipe(
-            ofType(actionBoard.getById),
-            exhaustMap((action) =>
-                this.listApi.get(action.boardId).pipe(
-                    switchMap((board) => of(actionBoard.set({board})),),
-                    catchError((err: HttpErrorResponse) =>
-                        of(actionBoard.getFailed({errors: fromErrorResponse(err)})),
-                    ),
-                ),
-            ),
-        ),
-    );
 }

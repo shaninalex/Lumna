@@ -3,7 +3,6 @@ import { ProjectCreateModel, ProjectModel } from '../model/project.model';
 export interface ProjectModelDTO {
     id: number
     title: string
-    key: string
     workspace_id: number
     owner_id: number
     meta: string
@@ -15,7 +14,6 @@ export function toProjectModel(p: ProjectModelDTO): ProjectModel {
     return {
         id: p.id,
         title: p.title,
-        key: p.key,
         workspaceId: p.workspace_id,
         ownerId: p.owner_id,
         meta: p.meta,

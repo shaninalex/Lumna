@@ -9,12 +9,7 @@ import { actionUser } from '@entities/user';
 @Injectable()
 export class SessionEffects {
     private actions$ = inject(Actions);
-    authenticated_successfull$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(actionSession.authenticatedSuccessfull),
-            map((action) => actionUser.set({user: action.user})),
-        );
-    });
+
     logging_out_completed$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(actionSession.loggedOut),
@@ -35,12 +30,13 @@ export class SessionEffects {
             ofType(actionSession.startAuthenticate),
             exhaustMap((action) =>
                 this.sessionApi.login(action.email, action.password).pipe(
-                    map((user) => actionSession.authenticatedSuccessfull({user: user})),
+                    map(() => actionSession.authenticatedSuccessful()),
                     catchError(() => EMPTY), // TODO: handle auth errors
                 ),
             ),
         );
     });
+
     logging_out_init$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(actionSession.loggingOut),
@@ -52,11 +48,12 @@ export class SessionEffects {
             ),
         );
     });
+
     private router = inject(Router);
     authenticated_successfull_redirect$ = createEffect(
         () => {
             return this.actions$.pipe(
-                ofType(actionSession.authenticatedSuccessfull),
+                ofType(actionSession.authenticatedSuccessful),
                 map(() => this.router.navigateByUrl('/app')),
             );
         },

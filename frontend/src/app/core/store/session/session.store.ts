@@ -12,7 +12,7 @@ const initialState: SessionState = {
 export const sessionReducer = createReducer(
     initialState,
     on(
-        actionSession.authenticatedSuccessfull,
+        actionSession.authenticatedSuccessful,
         actionSession.authenticated,
         () => ({ authenticated: true }),
     ),

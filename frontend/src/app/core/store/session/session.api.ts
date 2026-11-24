@@ -2,7 +2,6 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
-import type { UserModel } from '@entities/user';
 import type { APIResponse } from '@shared/models';
 
 @Injectable({
@@ -11,11 +10,13 @@ import type { APIResponse } from '@shared/models';
 export class SessionApi {
     http = inject(HttpClient);
 
-    login(email: string, password: string): Observable<UserModel> {
+    login(email: string, password: string): Observable<null> {
         return this.http
-            .post<
-                APIResponse<UserModel>
-            >(`/api/v1/auth/login`, { email, password }, { withCredentials: true })
+            .post<APIResponse<null>>(
+                `/api/v1/auth/login`,
+                { email, password },
+                { withCredentials: true },
+            )
             .pipe(map((response) => response.data));
     }
 

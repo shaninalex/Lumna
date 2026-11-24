@@ -15,16 +15,6 @@ export interface TaskModel {
     updatedAt?: Date;
 }
 
-export interface EntityEvent {
-    id: number;
-    identityId?: number;
-    entityId?: number;
-    entityType?: string;
-    eventType: string;
-    data: string;
-    createdAt: Date;
-}
-
 export interface TaskCreateModel {
     title: string;
     body: string;

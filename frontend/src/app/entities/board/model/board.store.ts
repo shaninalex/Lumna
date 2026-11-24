@@ -11,8 +11,5 @@ const initialState = boardAdapter.getInitialState();
 export const boardReducer = createReducer(
     initialState,
     on(actionBoard.setList, (state, { boards }) => boardAdapter.addMany(boards, state)),
-    on(actionBoard.set, (state, { board }) => boardAdapter.upsertOne(board, state)),
     on(actionBoard.createSuccess, (state, { board }) => boardAdapter.upsertOne(board, state)),
-    on(actionBoard.patchSuccess, (state, { board }) => boardAdapter.upsertOne(board, state)),
-    on(actionBoard.deleteSuccess, (state, { boardId }) => boardAdapter.removeOne(boardId, state)),
 );

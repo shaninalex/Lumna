@@ -1,11 +1,9 @@
 export interface ProjectModel {
     id: number
     title: string
-    key: string
     workspaceId: number
     ownerId: number
     meta: string
-
     createdAt: Date;
     updatedAt: Date;
 }
