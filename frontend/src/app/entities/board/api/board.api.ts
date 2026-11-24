@@ -28,17 +28,5 @@ export class BoardApi {
             .get<APIResponse<BoardModelDTO>>(`/api/v1/boards/${boardId}`, {withCredentials: true})
             .pipe(map((res) => toBoardModel(res.data)));
     }
-
-    patch(boardId: number, payload: BoardPayloadModel): Observable<BoardModel> {
-        return this.http
-            .patch<APIResponse<BoardModelDTO>>(`/api/v1/boards/${boardId}`, toBoardCreateDTO(payload), {withCredentials: true})
-            .pipe(map((res) => toBoardModel(res.data)));
-    }
-
-    delete(boardId: number): Observable<void> {
-        return this.http
-            .delete<APIResponse<void>>(`/api/v1/boards/${boardId}`, {withCredentials: true})
-            .pipe(map((res) => res.data));
-    }
 }
 

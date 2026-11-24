@@ -114,8 +114,8 @@ func handleDelete(resolve core.Resolve) gin.HandlerFunc {
 		}
 
 		httpx.Success(c, columnDeleteResponseDto{
-			Id:           commandResponse.StageId,
-			DeletedTasks: commandResponse.DeletedTasks,
+			Id:    commandResponse.StageId,
+			Tasks: commandResponse.DeletedTasks,
 		}, "Stage deleted")
 	}
 }

@@ -67,7 +67,15 @@ export class TaskEffects {
             ofType(actionTask.assignTask),
             switchMap((action) =>
                 this.api.assign(action.action).pipe(
-                    switchMap((result) => of(actionTask.assignTaskSuccess({action: result}))),
+                    switchMap(() => {
+                            return of(actionTask.assignTaskSuccess({
+                                action: {
+                                    taskId: action.action.taskId,
+                                    identityId: action.action.identityId,
+                                }
+                            }))
+                        }
+                    ),
                     catchError((err: HttpErrorResponse) =>
                         of(actionTask.assignTaskFailed({errors: fromErrorResponse(err)}))
                     )
@@ -81,7 +89,7 @@ export class TaskEffects {
             ofType(actionTask.deleteTask),
             switchMap((action) =>
                 this.api.delete(action.taskId).pipe(
-                    switchMap(() => of(actionTask.deleteTaskSuccess({ taskId: action.taskId }))),
+                    switchMap(() => of(actionTask.deleteTaskSuccess({taskId: action.taskId}))),
                     catchError((err: HttpErrorResponse) =>
                         of(actionTask.assignTaskFailed({errors: fromErrorResponse(err)}))
                     )

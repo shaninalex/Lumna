@@ -1,6 +1,6 @@
 export interface ColumnModel {
     id: number;
-    title: number;
+    title: string;
     meta: ColumnMeta;
     boardId: number;
     position: number;
@@ -15,7 +15,6 @@ export interface ColumnPayloadModel {
 }
 
 export interface ColumnMeta {
-    order: number;
     color: string;
     icon: string;
     expanded: boolean;

@@ -13,7 +13,6 @@ export interface TaskModel {
     dueTo?: Date;
     createdAt: Date;
     updatedAt?: Date;
-    taskEvents: EntityEvent[];
 }
 
 export interface EntityEvent {

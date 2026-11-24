@@ -3,6 +3,4 @@ export interface UserModel {
     fullName: string;
     email: string;
     active: boolean;
-    createdAt: Date;
-    updatedAt: Date;
 }

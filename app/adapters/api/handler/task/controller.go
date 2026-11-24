@@ -175,7 +175,7 @@ func handleTaskAssignment(resolve core.Resolve) gin.HandlerFunc {
 			httpx.Fail(c, err)
 			return
 		}
-		httpx.Success(c, data)
+		httpx.Success(c, nil)
 	}
 }
 
