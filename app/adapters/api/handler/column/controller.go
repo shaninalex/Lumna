@@ -48,13 +48,9 @@ func handleList(resolve core.Resolve) gin.HandlerFunc {
 
 func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var data columnCreateDto
-		if err := c.ShouldBindJSON(&data); err != nil {
-			httpx.Fail(c, err)
-			return
-		}
-		if err := data.Validate(); err != nil {
-			httpx.Fail(c, err)
+		data, err := httpx.BindPayload(c, columnCreateDto{})
+		if err != nil {
+			httpx.Invalid(c, err)
 			return
 		}
 

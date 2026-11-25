@@ -56,23 +56,20 @@ func handleChangePassword(resolve core.Resolve, verifier authContract.PasswordVe
 			httpx.Fail(c, errs.Unauthenticated("API001", "authentication required"))
 			return
 		}
-		var data changePasswordDTO
-		if err := c.BindJSON(&data); err != nil {
-			httpx.Fail(c, err)
+
+		data, err := httpx.BindPayload(c, changePasswordDTO{})
+		if err != nil {
+			httpx.Invalid(c, err)
 			return
 		}
 
-		if data.Password != data.PasswordConfirm {
-			httpx.Fail(c, ErrPasswordsDoesNotMatch)
-			return
-		}
 		securePassword := secure.Secret(data.Password)
 		if verifier.Verify(securePassword) < 4 {
 			httpx.Fail(c, ErrPasswordToWeak)
 			return
 		}
 
-		ok, err := contract.ExecPasswordChange(c.Request.Context(), resolve(), contract.PasswordChange{
+		ok, err = contract.ExecPasswordChange(c.Request.Context(), resolve(), contract.PasswordChange{
 			IdentityId: a.IdentityID,
 			Password:   securePassword,
 		})
@@ -97,20 +94,21 @@ func handleUpdateMe(resolve core.Resolve) gin.HandlerFunc {
 			return
 		}
 
-		var data accountChangeDTO
-		if err := c.BindJSON(&data); err != nil {
-			httpx.Fail(c, err)
-			return
-		}
-		email, err := mail.ParseAddress(data.Email)
+		data, err := httpx.BindPayload(c, accountChangeDTO{})
 		if err != nil {
-			httpx.Fail(c, err)
+			httpx.Invalid(c, err)
 			return
 		}
 
+		address, err := mail.ParseAddress(data.Email)
+		// already verified but still we should always check errors
+		if err != nil {
+			httpx.Invalid(c, err)
+			return
+		}
 		identity, err := contract.ExecAccountChange(c.Request.Context(), resolve(), contract.AccountChange{
 			IdentityID: a.IdentityID,
-			Email:      email,
+			Email:      *address,
 			FullName:   data.FullName,
 		})
 		if err != nil {

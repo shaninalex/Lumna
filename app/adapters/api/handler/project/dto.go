@@ -21,7 +21,7 @@ type projectCreateDTO struct {
 	WorkspaceId int    `json:"workspace_id"`
 }
 
-func (a projectCreateDTO) Validate() error {
+func (a projectCreateDTO) Verify() error {
 	return validation.ValidateStruct(
 		&a,
 		validation.Field(&a.Title, validation.Required, validation.Length(3, 50)),

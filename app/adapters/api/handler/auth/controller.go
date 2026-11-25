@@ -16,19 +16,15 @@ func Register(resolve core.Resolve, cookies httpx.CookieConfig, router *gin.Rout
 
 func handleLogin(resolve core.Resolve, cookies httpx.CookieConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		payload := passwordLoginDTO{}
-		if err := c.ShouldBindBodyWithJSON(&payload); err != nil {
-			httpx.Invalid(c, err)
-			return
-		}
-		if err := payload.Validate(); err != nil {
+		data, err := httpx.BindPayload(c, passwordLoginDTO{})
+		if err != nil {
 			httpx.Invalid(c, err)
 			return
 		}
 
 		session, err := contract.ExecEmailLogin(c.Request.Context(), resolve(), contract.EmailLogin{
-			Email:    payload.Email,
-			Password: secure.Secret(payload.Password),
+			Email:    data.Email,
+			Password: secure.Secret(data.Password),
 		})
 		if err != nil {
 			// Status comes from the error's class: wrong credentials are 401,

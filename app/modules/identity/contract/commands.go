@@ -34,7 +34,7 @@ func ExecPasswordChange(ctx context.Context, a *core.App, cmd PasswordChange) (b
 
 type AccountChange struct {
 	IdentityID int
-	Email      *mail.Address
+	Email      mail.Address
 	FullName   string
 }
 

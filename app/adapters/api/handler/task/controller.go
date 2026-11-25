@@ -47,7 +47,12 @@ func handleList(resolve core.Resolve) gin.HandlerFunc {
 
 func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		data := httpx.BindPayload(c, taskCreateDTO{})
+		data, err := httpx.BindPayload(c, taskCreateDTO{})
+		if err != nil {
+			httpx.Invalid(c, err)
+			return
+		}
+
 		result, err := contract.ExecWorkItemCreate(c.Request.Context(), resolve(), contract.WorkItemCreate{
 			Title:       data.Title,
 			Description: data.Body,
@@ -67,9 +72,9 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 
 func handleBoardAction(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var data boardActionPayload
-		if err := c.ShouldBindJSON(&data); err != nil {
-			httpx.Fail(c, err)
+		data, err := httpx.BindPayload(c, boardActionPayload{})
+		if err != nil {
+			httpx.Invalid(c, err)
 			return
 		}
 
@@ -77,7 +82,7 @@ func handleBoardAction(resolve core.Resolve) gin.HandlerFunc {
 		case boardActionMoveTask:
 			var action boardActionMoveTaskDTO
 			if err := json.Unmarshal(data.Data, &action); err != nil {
-				httpx.Fail(c, err)
+				httpx.Invalid(c, err)
 				return
 			}
 			actionMoveWorkItem(c, resolve, action)
@@ -86,7 +91,7 @@ func handleBoardAction(resolve core.Resolve) gin.HandlerFunc {
 		case boardActionMoveColumn:
 			var action boardActionMoveColumnDTO
 			if err := json.Unmarshal(data.Data, &action); err != nil {
-				httpx.Fail(c, err)
+				httpx.Invalid(c, err)
 				return
 			}
 			actionMoveColumn(c, resolve, action)
@@ -95,14 +100,14 @@ func handleBoardAction(resolve core.Resolve) gin.HandlerFunc {
 		case boardActionChangeStage:
 			var action boardActionTransferTaskDTO
 			if err := json.Unmarshal(data.Data, &action); err != nil {
-				httpx.Fail(c, err)
+				httpx.Invalid(c, err)
 				return
 			}
 			actionTransferWorkItem(c, resolve, action)
 			return
 
 		default:
-			httpx.Fail(c, errs.Validation("unknown_board_action", "unknown board action"))
+			httpx.Invalid(c, errs.Validation("unknown_board_action", "unknown board action"))
 			return
 		}
 	}
@@ -150,9 +155,20 @@ func actionMoveColumn(c *gin.Context, resolve core.Resolve, action boardActionMo
 
 func handleTaskUpdate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		data := httpx.BindPayload(c, taskUpdateDTO{})
+		taskId, err := httpx.GetParamInt(c, "task_id")
+		if err != nil {
+			httpx.Invalid(c, err)
+			return
+		}
+
+		data, err := httpx.BindPayload(c, taskUpdateDTO{})
+		if err != nil {
+			httpx.Invalid(c, err)
+			return
+		}
+
 		result, err := contract.ExecWorkItemUpdate(c.Request.Context(), resolve(), contract.WorkItemUpdate{
-			WorkItemId:  data.TaskId,
+			WorkItemId:  taskId,
 			Title:       data.Title,
 			Description: data.Body,
 		})
@@ -166,9 +182,19 @@ func handleTaskUpdate(resolve core.Resolve) gin.HandlerFunc {
 
 func handleTaskAssignment(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		data := httpx.BindPayload(c, taskAssignmentDTO{})
-		_, err := contract.ExecWorkItemAssign(c.Request.Context(), resolve(), contract.WorkItemAssign{
-			WorkItemId: data.TaskId,
+		taskId, err := httpx.GetParamInt(c, "task_id")
+		if err != nil {
+			httpx.Invalid(c, err)
+			return
+		}
+
+		data, err := httpx.BindPayload(c, taskAssignmentDTO{})
+		if err != nil {
+			httpx.Invalid(c, err)
+			return
+		}
+		_, err = contract.ExecWorkItemAssign(c.Request.Context(), resolve(), contract.WorkItemAssign{
+			WorkItemId: taskId,
 			IdentityId: data.IdentityId,
 		})
 		if err != nil {
@@ -181,9 +207,9 @@ func handleTaskAssignment(resolve core.Resolve) gin.HandlerFunc {
 
 func handleTaskDelete(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		taskId, err := strconv.Atoi(c.Param("task_id"))
+		taskId, err := httpx.GetParamInt(c, "task_id")
 		if err != nil {
-			httpx.Fail(c, err)
+			httpx.Invalid(c, err)
 			return
 		}
 		_, err = contract.ExecWorkItemDelete(c.Request.Context(), resolve(), contract.WorkItemDelete{

@@ -17,11 +17,11 @@ type workspaceDTO struct {
 }
 
 type workspaceCreateDTO struct {
-	Title string `json:"title" binding:"required"`
-	Email string `json:"email" binding:"required"`
+	Title string `json:"title"`
+	Email string `json:"email"`
 }
 
-func (a workspaceCreateDTO) Validate() error {
+func (a workspaceCreateDTO) Verify() error {
 	return validation.ValidateStruct(&a,
 		validation.Field(&a.Title, validation.Required, validation.Length(3, 50)),
 		validation.Field(&a.Email, validation.Required, is.Email),
@@ -40,7 +40,7 @@ type invitationDTO struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
-func (a invitationDTO) Validate() error {
+func (a invitationDTO) Verify() error {
 	return validation.ValidateStruct(&a,
 		validation.Field(&a.WorkspaceID, validation.Required),
 		validation.Field(&a.Email, validation.Required, is.Email),
@@ -102,4 +102,11 @@ func toMemberDTO(m contract.MemberView) memberDTO {
 type removeMemberDTO struct {
 	IdentityID  int `json:"identity_id"`
 	WorkspaceID int `json:"workspace_id"`
+}
+
+func (a removeMemberDTO) Verify() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.IdentityID, validation.Required),
+		validation.Field(&a.WorkspaceID, validation.Required),
+	)
 }

@@ -41,15 +41,12 @@ func handleList(resolve core.Resolve) gin.HandlerFunc {
 
 func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var data boardCreateDTO
-		if err := c.ShouldBindJSON(&data); err != nil {
-			httpx.Fail(c, err)
+		data, err := httpx.BindPayload(c, boardCreateDTO{})
+		if err != nil {
+			httpx.Invalid(c, err)
 			return
 		}
-		if err := data.Validate(); err != nil {
-			httpx.Fail(c, err)
-			return
-		}
+
 		scope, err := contract.ExecCreateScope(c.Request.Context(), resolve(), contract.CreateScope{
 			Name:        data.Title,
 			Description: "",

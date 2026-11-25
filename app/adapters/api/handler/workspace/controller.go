@@ -48,14 +48,9 @@ func handleWorkspaceList(resolve core.Resolve) gin.HandlerFunc {
 
 func handleCreateWorkspace(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var data workspaceCreateDTO
-		if err := c.ShouldBindJSON(&data); err != nil {
-			httpx.Fail(c, err)
-			return
-		}
-
-		if err := data.Validate(); err != nil {
-			httpx.Fail(c, err)
+		data, err := httpx.BindPayload(c, workspaceCreateDTO{})
+		if err != nil {
+			httpx.Invalid(c, err)
 			return
 		}
 
@@ -81,19 +76,14 @@ func handleCreateWorkspace(resolve core.Resolve) gin.HandlerFunc {
 
 func handleCreateInvitation(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var data invitationDTO
-		if err := c.ShouldBindJSON(&data); err != nil {
-			httpx.Fail(c, err)
+		data, err := httpx.BindPayload(c, invitationDTO{})
+		if err != nil {
+			httpx.Invalid(c, err)
 			return
 		}
 
 		if a, ok := actor.From(c.Request.Context()); ok {
 			data.InvitedBy = a.IdentityID
-		}
-
-		if err := data.Validate(); err != nil {
-			httpx.Fail(c, err)
-			return
 		}
 
 		invitation, err := contract.ExecCreateInvitation(c.Request.Context(), resolve(), contract.CreateInvitation{
@@ -217,17 +207,15 @@ func handleWorkspaceDelete(resolve core.Resolve) gin.HandlerFunc {
 
 func handleWorkspaceMembersRemove(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var data removeMemberDTO
-		if err := c.ShouldBindJSON(&data); err != nil {
-			httpx.Fail(c, err)
+		data, err := httpx.BindPayload(c, removeMemberDTO{})
+		if err != nil {
+			httpx.Invalid(c, err)
 			return
 		}
-
-		_, err := contract.ExecRemoveMember(c.Request.Context(), resolve(), contract.RemoveMember{
+		_, err = contract.ExecRemoveMember(c.Request.Context(), resolve(), contract.RemoveMember{
 			IdentityId:  data.IdentityID,
 			WorkspaceID: data.WorkspaceID,
 		})
-
 		if err != nil {
 			httpx.Fail(c, err)
 			return

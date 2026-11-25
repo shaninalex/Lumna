@@ -60,7 +60,7 @@ type columnCreateDto struct {
 	BoardId  int     `json:"board_id"`
 }
 
-func (a columnCreateDto) Validate() error {
+func (a columnCreateDto) Verify() error {
 	return validation.ValidateStruct(
 		&a,
 		validation.Field(&a.Title, validation.Required, validation.Length(3, 50)),

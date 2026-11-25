@@ -2,6 +2,7 @@ package task
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -108,6 +109,10 @@ var (
 	boardActionChangeStage boardAction = "change_stage"
 )
 
+var (
+	errInvalidBoardAction = errors.New("invalid board action")
+)
+
 type boardActionMoveTaskDTO struct {
 	BoardId  int     `json:"board_id"`
 	TaskId   int     `json:"task_id"`
@@ -132,28 +137,31 @@ type boardActionPayload struct {
 	Data   json.RawMessage `json:"data"`
 }
 
+func (s boardActionPayload) Verify() error {
+	switch s.Action {
+	case boardActionMoveTask, boardActionMoveColumn, boardActionChangeStage:
+		return nil
+	}
+	return errInvalidBoardAction
+}
+
 type taskUpdateDTO struct {
-	TaskId int    `json:"task_id"`
-	Title  string `json:"title"`
-	Body   string `json:"body"`
+	Title string `json:"title"`
+	Body  string `json:"body"`
 }
 
 func (a taskUpdateDTO) Verify() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.TaskId, validation.Required),
-		validation.Field(&a.TaskId, validation.Min(1)), // task id should not be 0
 		validation.Field(&a.Title, validation.Required),
 	)
 }
 
 type taskAssignmentDTO struct {
-	TaskId     int `json:"task_id"`
 	IdentityId int `json:"identity_id"`
 }
 
 func (a taskAssignmentDTO) Verify() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.TaskId, validation.Required),
 		validation.Field(&a.IdentityId, validation.Required),
 	)
 }

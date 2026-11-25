@@ -34,7 +34,7 @@ type boardCreateDTO struct {
 	ProjectId int    `json:"project_id"`
 }
 
-func (a boardCreateDTO) Validate() error {
+func (a boardCreateDTO) Verify() error {
 	return validation.ValidateStruct(
 		&a,
 		validation.Field(&a.Title, validation.Required, validation.Length(3, 50)),
