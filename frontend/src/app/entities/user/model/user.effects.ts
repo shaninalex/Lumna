@@ -1,6 +1,6 @@
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { inject, Injectable } from '@angular/core';
-import { catchError, of, tap } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { actionUser } from './user.actions';
 import { UserApi } from '../api/user.service';
 import { switchMap } from 'rxjs/operators';
@@ -14,13 +14,6 @@ export class UserEffects {
     private actions$ = inject(Actions);
     private router = inject(Router);
 
-    clearUser$ = createEffect(() =>
-            this.actions$.pipe(
-                ofType(actionUser.clear),
-                tap(() => console.log('user store cleaned')),
-            ),
-        {dispatch: false},
-    );
     private api = inject(UserApi);
     changePassword$ = createEffect(() =>
         this.actions$.pipe(
@@ -56,10 +49,7 @@ export class UserEffects {
             switchMap(() =>
                 this.api.delete().pipe(
                     switchMap(() => of(actionSession.loggedOut())),
-                    catchError((err: HttpErrorResponse) => {
-                        console.log(err)
-                        return of(actionUser.deleteFailed({errors: fromErrorResponse(err)}))
-                    })
+                    catchError((err: HttpErrorResponse) => of(actionUser.deleteFailed({errors: fromErrorResponse(err)})))
                 )
             )
         )

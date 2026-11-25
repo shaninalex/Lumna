@@ -103,7 +103,6 @@ export class ChangePasswordFeature {
     onSubmit(event: Event): void {
         event.preventDefault();
         if (this.changePasswordForm().errors().length) {
-            console.log(this.changePasswordForm().errors())
             return
         }
         this.store.dispatch(actionUser.changePassword({

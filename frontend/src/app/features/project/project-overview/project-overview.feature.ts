@@ -1,9 +1,9 @@
-import { Component, computed, inject, signal, Signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AppRoutes } from '@core';
 import { Store } from '@ngrx/store';
 import { selectProjects } from '@entities/project';
-import { BoardCardComponent, BoardModel, selectBoard } from '@entities/board';
+import { BoardCardComponent, selectBoard } from '@entities/board';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { reiconChevronRight } from '@ng-icons/reicon';
 import { selectWorkspaces } from '@entities/workspace';

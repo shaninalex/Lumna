@@ -2,7 +2,6 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { actionWorkspace, type WorkspaceCreateModel } from '@entities/workspace';
-import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { selectUser } from '@entities/user';
 import { filter } from 'rxjs';
@@ -40,7 +39,6 @@ import { filter } from 'rxjs';
 })
 export class WorkspaceCreateFeature {
     private store = inject(Store);
-    private actions$ = inject(Actions);
     private destroyRef = inject(DestroyRef);
 
     wspFormModel = signal<WorkspaceCreateModel>({
@@ -63,9 +61,6 @@ export class WorkspaceCreateFeature {
             .subscribe((user) => {
                 this.wspFormModel().email = user.email;
             });
-        this.actions$
-            .pipe(ofType(actionWorkspace.createFailed), takeUntilDestroyed(this.destroyRef))
-            .subscribe((action) => console.log(action));
     }
 
     onSubmit(event: Event): void {

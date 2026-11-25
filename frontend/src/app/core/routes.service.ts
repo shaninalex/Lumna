@@ -28,10 +28,6 @@ export class    AppRoutes {
         return ['/app', 'w', this.workspaceId(), 'projects', 'create']
     }
 
-    backlog(): unknown[] {
-        return [...this.projectRoute(), 'backlog'];
-    }
-
     boards(): unknown[] {
         return [...this.projectRoute(), 'boards'];
     }
@@ -42,10 +38,6 @@ export class    AppRoutes {
 
     boardsCreate(): unknown[] {
         return [...this.projectRoute(), 'board', 'create'];
-    }
-
-    createTask(boardId: number): unknown[] {
-        return [...this.board(boardId), 'task', 'create'];
     }
 
     task(boardId: number, taskId: number): unknown[] {

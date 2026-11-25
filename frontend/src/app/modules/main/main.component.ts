@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { WebSocketService } from '@root/src/app/modules/main/websocket.service';
 
@@ -8,12 +8,9 @@ import { WebSocketService } from '@root/src/app/modules/main/websocket.service';
 
     template: `<router-outlet />`,
 })
-export class MainComponent implements OnInit {
-    private ws = inject(WebSocketService);
-
-    ngOnInit() {
-        this.ws.getMessages().subscribe((messages) => {
-            console.log(messages);
-        });
+export class MainComponent {
+    constructor() {
+        // Instantiating the service opens the websocket connection.
+        inject(WebSocketService);
     }
 }

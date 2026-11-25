@@ -45,10 +45,6 @@ export class BoardCreateFeature {
     constructor() {
         const _currentProjectId = this.currentProjectId();
         if (_currentProjectId) this.pFormModel().projectId = _currentProjectId;
-
-        this.actions$
-            .pipe(ofType(actionBoard.createFailed), takeUntilDestroyed(this.destroyRef))
-            .subscribe((action) => console.log(action));
         this.actions$
             .pipe(
                 ofType(actionBoard.createSuccess),

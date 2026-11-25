@@ -1,6 +1,5 @@
 export * from './board';
 export * from './column';
-export * from './comments';
 export * from './invitation';
 export * from './member';
 export * from './notification';

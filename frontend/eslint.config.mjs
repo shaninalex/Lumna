@@ -77,6 +77,7 @@ export default tseslint.config(
                 },
             ],
             'import-x/no-restricted-paths': ['error', { zones: layerZones }],
+            'no-console': ['error', { allow: ['warn', 'error'] }],
             // '@typescript-eslint/consistent-type-imports': [
             //     'error',
             //     { prefer: 'type-imports', fixStyle: 'separate-type-imports' },

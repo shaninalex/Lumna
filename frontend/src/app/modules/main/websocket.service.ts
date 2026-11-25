@@ -29,10 +29,6 @@ export class WebSocketService implements OnDestroy {
         this.connect();
     }
 
-    sendMessage(message: string): void {
-        this.socket$?.next(message);
-    }
-
     getMessages(): Observable<unknown> {
         return this.messages$.asObservable();
     }

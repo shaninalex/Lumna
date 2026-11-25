@@ -1,5 +1,5 @@
 import { routerReducer } from '@ngrx/router-store';
-import { sessionReducer, SessionEffects } from './session';
+import { SessionEffects } from './session';
 import { uiReducer } from './ui';
 
 export const rootEffects = [
@@ -7,7 +7,6 @@ export const rootEffects = [
 ];
 
 export const rootReducers = {
-    session: sessionReducer,
     router: routerReducer,
     ui: uiReducer,
 };
