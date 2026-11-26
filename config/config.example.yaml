@@ -11,7 +11,7 @@ serve:
 database:
   # instead of providing explicit db type we can detect type from connection url
   type: "sqlite" # or "postgres"
-  url: "file::memory:?cache=shared"
+  url: "file::memory:?cache=shared&_foreign_keys=on"
 
 # for jwt signing and verification
 secret_key: "a-string-secret-at-least-256-bits-long"

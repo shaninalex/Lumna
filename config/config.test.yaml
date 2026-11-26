@@ -8,7 +8,7 @@ serve:
 
 database:
   type: "sqlite"
-  url: "file::memory:?cache=shared"
+  url: "file::memory:?cache=shared&_foreign_keys=on"
 
 secret_key: "a-string-secret-at-least-256-bits-long"
 
