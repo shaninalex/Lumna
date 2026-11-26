@@ -114,6 +114,7 @@ export class NewColumnFormComponent implements OnInit {
             order: this.position,
         };
 
+        this.loading.set(true);
         this.store.dispatch(actionsColumns.create({ payload }));
         this.columnForm().reset();
     }
