@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { UiService } from '@shared/ui';
 import { MainLayout } from '@core/layout';
 import { Router } from '@angular/router';
@@ -18,9 +18,9 @@ export class ProjectPage {
     project = this.store.selectSignal(selectProjects.currentProject);
 
     constructor() {
-        const project = this.project()
-        if (!project) { return }
-
-        this.ui.setPageTitle(project.title);
+        effect(() => {
+            const project = this.project();
+            if (project) this.ui.setPageTitle(project.title);
+        });
     }
 }

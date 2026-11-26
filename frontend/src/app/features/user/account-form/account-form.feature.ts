@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, linkedSignal, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -53,11 +53,13 @@ export class AccountFormFeature {
     private readonly actions$ = inject(Actions);
     private destroyRef = inject(DestroyRef);
 
+    user = this.store.selectSignal(selectUser.user)
     loading = signal(false);
-    accountFormModel = signal<{ email: string; fullName: string }>({
-        email: '',
-        fullName: '',
-    });
+    accountFormModel = linkedSignal<{ email: string; fullName: string }>(() => ({
+        email: this.user()?.email ?? '',
+        fullName: this.user()?.fullName ?? '',
+    }));
+
     accountForm = form(this.accountFormModel, (schemaPath) => {
         required(schemaPath.email, {message: 'Email is required'});
         email(schemaPath.email, {message: 'Invalid email format'});
@@ -65,11 +67,6 @@ export class AccountFormFeature {
     });
 
     constructor() {
-        const user = this.store.selectSignal(selectUser.user)()
-        if (!user) return
-
-        this.accountFormModel.set({email: user.email, fullName: user.fullName})
-
         this.actions$.pipe(
             ofType(actionUser.update),
             takeUntilDestroyed(this.destroyRef),

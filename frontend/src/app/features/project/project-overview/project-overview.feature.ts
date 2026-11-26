@@ -44,21 +44,11 @@ export class ProjectOverviewFeature {
         return this.store.selectSignal(selectBoard.byProjectId(project.id))();
     });
 
-    workspaceLink: unknown[] = [];
-    projectsLink: unknown[] = [];
-
-    constructor() {
-        const project = this.project();
-        if (!project) {
-            return;
-        }
-
+    workspaceLink = computed<unknown[]>(() => {
         const wp = this.workspace();
-        if (!wp) {
-            return;
-        }
-
-        this.workspaceLink = this.appRoutes.workspaceDetail(wp.id);
-        this.projectsLink = this.appRoutes.workspaceRoot(['projects']);
-    }
+        return this.project() && wp ? this.appRoutes.workspaceDetail(wp.id) : [];
+    });
+    projectsLink = computed<unknown[]>(() =>
+        this.project() && this.workspace() ? this.appRoutes.workspaceRoot(['projects']) : [],
+    );
 }

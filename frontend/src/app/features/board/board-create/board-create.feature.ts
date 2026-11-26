@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, linkedSignal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -38,12 +38,16 @@ export class BoardCreateFeature {
     private appRoutes = inject(AppRoutes);
     private currentProjectId = this.store.selectSignal(selectProjects.currentProjectId);
 
-    pFormModel = signal<BoardPayloadModel>({ title: '', projectId: 0 });
+    pFormModel = linkedSignal<number | null | undefined, BoardPayloadModel>({
+        source: this.currentProjectId,
+        computation: (projectId, previous) => ({
+            title: previous?.value.title ?? '',
+            projectId: projectId ?? 0,
+        }),
+    });
     pForm = form(this.pFormModel, (schemaPath) => required(schemaPath.title));
 
     constructor() {
-        const _currentProjectId = this.currentProjectId();
-        if (_currentProjectId) this.pFormModel().projectId = _currentProjectId;
         this.actions$
             .pipe(
                 ofType(actionBoard.createSuccess),
