@@ -1,40 +1,37 @@
 import { Component, inject } from '@angular/core';
-import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { Store } from '@ngrx/store';
 import { actionSession } from '@core/store/session/session.actions';
 import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'lu-user-menu',
-    imports: [CdkMenu, CdkMenuItem, CdkMenuTrigger, RouterLink],
+    imports: [MatIconButton, MatIcon, MatMenuModule, RouterLink],
     template: `
-        <button [cdkMenuTriggerFor]="menu" class="btn btn-sm">
-            <img src="images/7.png" alt="" class="rounded-circle" style="width: 24px" />
+        <button matIconButton [matMenuTriggerFor]="menu" aria-label="User menu">
+            <img src="images/7.png" alt="" class="rounded-circle avatar" />
         </button>
 
-        <ng-template #menu>
-            <div class="d-flex flex-column gap-2" cdkMenu>
-                <div class="list-group">
-                    <a
-                        cdkMenuItem
-                        type="button"
-                        class="list-group-item list-group-item-action"
-                        [routerLink]="['/app/settings']"
-                    >
-                        Settings
-                    </a>
-                    <button
-                        cdkMenuItem
-                        type="button"
-                        class="list-group-item list-group-item-action"
-                        (click)="logout()"
-                    >
-                        Logout
-                    </button>
-                </div>
-                <ng-content select="[bottomMenuItems]" />
-            </div>
-        </ng-template>
+        <mat-menu #menu="matMenu" xPosition="before">
+            <a mat-menu-item [routerLink]="['/app/settings']">
+                <mat-icon>settings</mat-icon>
+                <span>Settings</span>
+            </a>
+            <button mat-menu-item type="button" (click)="logout()">
+                <mat-icon>logout</mat-icon>
+                <span>Logout</span>
+            </button>
+            <ng-content select="[bottomMenuItems]" />
+        </mat-menu>
+    `,
+    styles: `
+        .avatar {
+            display: block;
+            width: 24px;
+            height: 24px;
+        }
     `,
 })
 export class UserMenuComponent {

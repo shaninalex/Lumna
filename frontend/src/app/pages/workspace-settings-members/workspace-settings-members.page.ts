@@ -1,34 +1,37 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
 import { AppRoutes } from '@core';
 
 @Component({
     selector: 'lu-workspace-settings-members',
-    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+    imports: [RouterOutlet, RouterLink, RouterLinkActive, MatCardModule, MatTabsModule],
     template: `
-        <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-tabs card-header-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link" [routerLink]="appRoutes.workspaceRoot(['settings', 'members'])"
-                           routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                            List
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page"
-                           [routerLink]="appRoutes.workspaceRoot(['settings', 'members', 'invitations'])"
-                           routerLinkActive="active">
-                            Invitations
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="card-body">
-                <router-outlet/>
-            </div>
-        </div>
-
+        <mat-card>
+            <nav mat-tab-nav-bar [tabPanel]="membersPanel" mat-stretch-tabs="false" mat-align-tabs="start">
+                <a mat-tab-link
+                   [routerLink]="appRoutes.workspaceRoot(['settings', 'members'])"
+                   routerLinkActive
+                   #listRla="routerLinkActive"
+                   [routerLinkActiveOptions]="{exact: true}"
+                   [active]="listRla.isActive">
+                    List
+                </a>
+                <a mat-tab-link
+                   [routerLink]="appRoutes.workspaceRoot(['settings', 'members', 'invitations'])"
+                   routerLinkActive
+                   #invitationsRla="routerLinkActive"
+                   [active]="invitationsRla.isActive">
+                    Invitations
+                </a>
+            </nav>
+            <mat-card-content class="pt-3">
+                <mat-tab-nav-panel #membersPanel>
+                    <router-outlet/>
+                </mat-tab-nav-panel>
+            </mat-card-content>
+        </mat-card>
     `,
 })
 export class WorkspaceSettingsMembersPage {

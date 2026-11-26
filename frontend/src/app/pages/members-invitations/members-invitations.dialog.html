@@ -1,21 +1,19 @@
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">Invite</h5>
-        <div class="mb-3">
-            <input type="email" [(ngModel)]="data.email" name="email" placeholder="Email" autocomplete="off" class="form-control" />
-        </div>
+<h2 mat-dialog-title>Invite</h2>
+<mat-dialog-content>
+    <mat-form-field class="w-100 mt-2">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" [(ngModel)]="data.email" name="email" autocomplete="off" />
+    </mat-form-field>
 
-        <div class="mb-3">
-            <select [(ngModel)]="data.role" class="form-control">
-                <option value="member" selected>Member</option>
-                <option value="admin">Admin</option>
-            </select>
-        </div>
-
-        <div class="d-flex gap-2 justify-content-end">
-            <button class="btn btn-secondary" (click)="close()">Cancel</button>
-            <button class="btn btn-primary" (click)="submit()">Invite</button>
-        </div>
-
-    </div>
-</div>
+    <mat-form-field class="w-100 mt-3">
+        <mat-label>Role</mat-label>
+        <mat-select [(ngModel)]="data.role" name="role">
+            <mat-option value="member">Member</mat-option>
+            <mat-option value="admin">Admin</mat-option>
+        </mat-select>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button matButton type="button" (click)="close()">Cancel</button>
+    <button matButton="filled" type="button" (click)="submit()">Invite</button>
+</mat-dialog-actions>

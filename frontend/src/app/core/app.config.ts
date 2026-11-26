@@ -10,6 +10,9 @@ import { routes } from './app.routes';
 import { apiInterceptor } from './api.interceptor';
 import { rootEffects, rootReducers } from './store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { MAT_CARD_CONFIG } from '@angular/material/card';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -19,6 +22,11 @@ export const appConfig: ApplicationConfig = {
         provideEffects(rootEffects),
         provideStore(rootReducers),
         provideRouterStore(),
+
+        // Material defaults
+        { provide: MAT_ICON_DEFAULT_OPTIONS, useValue: { fontSet: 'material-symbols-outlined' } },
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', subscriptSizing: 'dynamic' } },
+        { provide: MAT_CARD_CONFIG, useValue: { appearance: 'outlined' } },
 
         provideStoreDevtools({
             maxAge: 25,

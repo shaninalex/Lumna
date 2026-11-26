@@ -1,0 +1,31 @@
+// ngx-editor follows the Material 3 system tokens, so it switches with the theme.
+.NgxEditor__Wrapper {
+    --ngx-editor-border-radius: var(--mat-sys-corner-small);
+    --ngx-editor-popup-border-radius: var(--mat-sys-corner-small);
+
+    --ngx-editor-background-color: var(--mat-sys-surface);
+    --ngx-editor-text-color: var(--mat-sys-on-surface);
+    --ngx-editor-placeholder-color: var(--mat-sys-on-surface-variant);
+    --ngx-editor-border-color: var(--mat-sys-outline-variant);
+    --ngx-editor-wrapper-border-color: var(--mat-sys-outline);
+    --ngx-editor-menubar-bg-color: var(--mat-sys-surface-container);
+    --ngx-editor-menubar-padding: 3px;
+    --ngx-editor-menubar-height: 30px;
+    --ngx-editor-blockquote-color: var(--mat-sys-on-surface-variant);
+    --ngx-editor-blockquote-border-width: 3px;
+    --ngx-editor-icon-size: 30px;
+    --ngx-editor-popup-bg-color: var(--mat-sys-surface-container);
+    --ngx-editor-popup-shadow: var(--mat-sys-level2);
+    --ngx-editor-menu-item-border-radius: var(--mat-sys-corner-extra-small);
+    --ngx-editor-menu-item-active-color: var(--mat-sys-on-secondary-container);
+    --ngx-editor-menu-item-hover-bg-color: var(--mat-sys-surface-container-highest);
+    --ngx-editor-menu-item-active-bg-color: var(--mat-sys-secondary-container);
+    --ngx-editor-seperator-color: var(--mat-sys-outline-variant);
+    --ngx-editor-bubble-bg-color: var(--mat-sys-inverse-surface);
+    --ngx-editor-bubble-text-color: var(--mat-sys-inverse-on-surface);
+    --ngx-editor-bubble-item-hover-color: var(--mat-sys-surface-container-highest);
+    --ngx-editor-bubble-seperator-color: var(--mat-sys-inverse-on-surface);
+    --ngx-editor-table-header-bg-color: var(--mat-sys-surface-container-high);
+    --ngx-editor-focus-ring-color: var(--mat-sys-primary);
+    --ngx-editor-error-color: var(--mat-sys-error);
+}

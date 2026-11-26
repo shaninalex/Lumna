@@ -1,18 +1,15 @@
 import { Component, inject, input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { actionUI } from '@core/store/ui';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { reiconPlus } from '@ng-icons/reicon';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'lu-add-task-plus-btn',
-    imports: [
-        NgIcon
-    ],
-    providers: [provideIcons({ reiconPlus })],
+    imports: [MatIconButton, MatIcon],
     template: `
-        <button class="button" (click)="openForm($event)">
-            <ng-icon name="reiconPlus"/>
+        <button matIconButton type="button" aria-label="Add task" (click)="openForm($event)">
+            <mat-icon>add</mat-icon>
         </button>
     `
 })

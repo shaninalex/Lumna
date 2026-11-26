@@ -1,50 +1,55 @@
 import { Component, inject } from '@angular/core';
-import { Dialog, DialogRef } from '@angular/cdk/dialog';
+import { MatButton } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDivider } from '@angular/material/divider';
+import { MatIcon } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuItem } from '@angular/material/menu';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectWorkspaces } from '@entities/workspace/model';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { filter, map, switchMap } from 'rxjs';
 
 @Component({
     selector: 'lu-workspace-switcher',
-    imports: [AsyncPipe, RouterLink],
+    imports: [AsyncPipe, RouterLink, MatDivider, MatIcon, MatMenuItem],
 
     template: `
         @if (workspace$ | async; as workspace) {
-            <button
-                class="btn btn-sm btn-secondary d-block w-100 text-left bg-body text-body"
-                (click)="openDialog()"
-            >
-                <span class="d-block text-start">
-                    {{ workspace.title }}
+            <mat-divider />
+            <button mat-menu-item type="button" class="switcher-item" (click)="openDialog()">
+                <mat-icon>swap_horiz</mat-icon>
+                <span>
+                    <span class="d-block">{{ workspace.title }}</span>
+                    <small class="d-block text-muted">Switch workspace</small>
                 </span>
-                <small class="d-block text-start" style="font-size: 0.7rem">
-                    Switch workspace
-                </small>
             </button>
         } @else if (workspaces$ | async; as workspaces) {
+            <mat-divider />
             @if (workspaces.length > 0) {
-                <button
-                    class="btn btn-sm btn-secondary d-block w-100 text-left bg-body text-body"
-                    (click)="openDialog()"
-                >
-                    <span class="d-block text-start"> Select workspace </span>
+                <button mat-menu-item type="button" (click)="openDialog()">
+                    <mat-icon>workspaces</mat-icon>
+                    <span>Select workspace</span>
                 </button>
             } @else {
-                <a
-                    class="btn btn-sm btn-secondary d-block bg-body text-body"
-                    routerLink="/app/workspaces/create"
-                >
-                    Create Workspace
+                <a mat-menu-item routerLink="/app/workspaces/create">
+                    <mat-icon>add</mat-icon>
+                    <span>Create Workspace</span>
                 </a>
             }
+        }
+    `,
+    styles: `
+        .switcher-item {
+            height: auto;
+            min-height: 56px;
         }
     `,
 })
 export class WorkspaceSwitcherComponent {
     private store = inject(Store);
-    dialog = inject(Dialog);
+    dialog = inject(MatDialog);
     workspace$ = this.store.select(selectWorkspaces.currentWorkspace);
     workspaces$ = this.store.select(selectWorkspaces.all);
 
@@ -57,29 +62,33 @@ export class WorkspaceSwitcherComponent {
 
 @Component({
     selector: 'lu-switch-workspace-modal',
-    imports: [AsyncPipe, NgClass],
+    imports: [AsyncPipe, MatButton, MatDialogModule, MatListModule],
 
     template: `
-        <div class="card">
+        <h2 mat-dialog-title>Switch workspace</h2>
+        <mat-dialog-content class="p-0">
             @if (data$ | async; as data) {
-                <div class="list-group overflow-y-auto" style="max-height: 20rem">
+                <mat-action-list class="overflow-y-auto" style="max-height: 20rem">
                     @for (item of data.workspaces; track $index) {
                         <button
+                            mat-list-item
                             (click)="handleLink(['/app/w', item.id.toString()])"
-                            [ngClass]="{ active: data.currentWorkspace!.id === item.id }"
-                            class="list-group-item list-group-item-action"
+                            [activated]="data.currentWorkspace?.id === item.id"
                         >
-                            {{ item.title }}
+                            <span matListItemAvatar class="lu-avatar lu-avatar--tertiary">{{ item.title.charAt(0) }}</span>
+                            <span matListItemTitle>{{ item.title }}</span>
                         </button>
                     }
-                </div>
+                </mat-action-list>
             }
-            <button (click)="handleLink(['/app/workspaces'])" class="btn btn-link">See all</button>
-        </div>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button matButton type="button" (click)="handleLink(['/app/workspaces'])">See all</button>
+        </mat-dialog-actions>
     `,
 })
 export class SwitchWorkspaceModal {
-    private dialogRef = inject(DialogRef);
+    private dialogRef = inject(MatDialogRef);
     private router = inject(Router);
     private store = inject(Store);
 

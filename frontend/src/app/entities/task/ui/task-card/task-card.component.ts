@@ -3,29 +3,29 @@ import { RouterLink } from '@angular/router';
 import { StripHtmlPipe, TrimPipe } from '@shared/utils';
 import { DatePipe } from '@angular/common';
 import { AppRoutes } from '@core';
-import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
+import { MatIconButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { actionTask, TaskModel } from '../../model';
 import { Store } from '@ngrx/store';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { reiconCalendar, reiconMenu2, reiconTextalignLeft } from '@ng-icons/reicon';
 
 @Component({
     selector: 'lu-task-card',
-    imports: [RouterLink, TrimPipe, DatePipe, CdkMenu, CdkMenuItem, CdkMenuTrigger, StripHtmlPipe, NgIcon],
+    imports: [RouterLink, TrimPipe, DatePipe, StripHtmlPipe, MatCardModule, MatIconButton, MatIcon, MatMenuModule],
     styleUrl: './task-card.component.scss',
-    providers: [provideIcons({ reiconMenu2, reiconTextalignLeft, reiconCalendar })],
     template: `
-        <div class="card text-decoration-none text-body">
-            <div class="card-body p-2">
+        <mat-card>
+            <mat-card-content class="p-2">
                 <!--
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="badge text-bg-primary"> Feature </span>
+                        <span class="lu-tag lu-tag--primary"> Feature </span>
 
                         <small class="text-muted"> #FEAT-212 </small>
                     </div>
                 -->
-                <div class="d-flex justify-content-between mb-2 align-items-start">
+                <div class="d-flex justify-content-between mb-2 align-items-start gap-1">
                     <h6 class="flex-grow-1 mb-0">
                         <a
                             class="task-card-link"
@@ -34,8 +34,14 @@ import { reiconCalendar, reiconMenu2, reiconTextalignLeft } from '@ng-icons/reic
                             {{ task.title }}
                         </a>
                     </h6>
-                    <button [cdkMenuTriggerFor]="taskMenu" class="btn btn-sm p-1 lh-1">
-                        <ng-icon name="reiconMenu2" />
+                    <button
+                        matIconButton
+                        type="button"
+                        class="task-menu-trigger"
+                        [matMenuTriggerFor]="taskMenu"
+                        aria-label="Task menu"
+                    >
+                        <mat-icon>menu</mat-icon>
                     </button>
                 </div>
 
@@ -44,37 +50,29 @@ import { reiconCalendar, reiconMenu2, reiconTextalignLeft } from '@ng-icons/reic
                 }
 
                 <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex gap-2 align-items-start">
+                    <div class="d-flex gap-2 align-items-center">
                         <!-- Slot for feature actions (assignment, status change, etc.) -->
                         <ng-content select="[assignmentSlot]" />
 
                         @if (task.dueTo) {
-                            <span class="badge rounded-pill text-bg-secondary">
-                                <ng-icon name="reiconCalendar" />
+                            <span class="lu-tag lu-tag--neutral">
+                                <mat-icon>calendar_today</mat-icon>
                                 {{ task.dueTo | date: 'd MMM' }}
                             </span>
                         }
                     </div>
-                    @if (task.body !== '') {
-                        <ng-icon name="reiconTextalignLeft" />
-                    }
                 </div>
-            </div>
-        </div>
+            </mat-card-content>
+        </mat-card>
 
-        <ng-template #taskMenu>
-            <div class="list-group" cdkMenu>
-                <button
-                    cdkMenuItem
-                    type="button"
-                    class="list-group-item list-group-item-action"
-                    (click)="delete()"
-                >
-                    Delete
-                </button>
-            </div>
-        </ng-template>
+        <mat-menu #taskMenu="matMenu">
+            <button mat-menu-item type="button" (click)="delete()">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+            </button>
+        </mat-menu>
     `,
+
 })
 export class TaskCardComponent {
     @Input({ required: true }) task: TaskModel;

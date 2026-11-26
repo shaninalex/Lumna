@@ -1,4 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { Store } from '@ngrx/store';
 import { actionUser, selectUser } from '@entities/user';
@@ -11,49 +14,39 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     imports: [
         FormField,
         SpinnerComponent,
+        MatButton,
+        MatFormFieldModule,
+        MatInput,
     ],
     selector: 'lu-account-form-feature',
     template: `
         <form (submit)="onSubmit($event)">
-            <div class="mb-4">
-                <label for="email" class="form-label">Email</label>
-                <input
-                    class="form-control"
-                    type="email"
-                    id="email"
-                    placeholder="example@email.com"
-                    [class.is-invalid]="accountForm().dirty() && accountForm.email().invalid()"
-                    [formField]="accountForm.email"
-                />
+            <mat-form-field class="w-100 mb-3">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" id="email" placeholder="example@email.com" [formField]="accountForm.email" />
                 @if (accountForm().dirty() && accountForm.email().invalid()) {
                     @for (error of accountForm.email().errors(); track error.kind) {
-                        <div class="invalid-feedback">{{ error.message }}</div>
+                        <mat-error>{{ error.message }}</mat-error>
                     }
                 }
-            </div>
-            <div class="mb-4">
-                <label for="fullName" class="form-label">Full Name</label>
-                <input
-                    class="form-control"
-                    type="text"
-                    id="fullName"
-                    placeholder="Full Name"
-                    [class.is-invalid]="accountForm().dirty() && accountForm.fullName().invalid()"
-                    [formField]="accountForm.fullName"
-                />
+            </mat-form-field>
+            <mat-form-field class="w-100 mb-3">
+                <mat-label>Full Name</mat-label>
+                <input matInput type="text" id="fullName" placeholder="Full Name" [formField]="accountForm.fullName" />
                 @if (accountForm().dirty() && accountForm.fullName().invalid()) {
                     @for (error of accountForm.fullName().errors(); track error.kind) {
-                        <div class="invalid-feedback">{{ error.message }}</div>
+                        <mat-error>{{ error.message }}</mat-error>
                     }
                 }
-            </div>
+            </mat-form-field>
 
-            <button class="btn btn-primary" type="submit" [disabled]="!accountForm().valid()">
+            <button matButton="filled" type="submit" [disabled]="!accountForm().valid()">
                 Save
                 <lu-spinner [loading]="loading()"/>
             </button>
         </form>
     `,
+
 })
 export class AccountFormFeature {
     private store = inject(Store);

@@ -1,4 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
 import { actionProject, ProjectCreateModel, ProjectModel } from '@entities/project';
@@ -12,26 +15,22 @@ import { AppRoutes } from '@core';
 
 @Component({
     selector: 'lu-project-create-feature',
-    imports: [FormField, SpinnerComponent],
+    imports: [FormField, SpinnerComponent, MatButton, MatFormFieldModule, MatInput],
     template: `
         <form (submit)="onSubmit($event)">
-            <div class="mb-4">
-                <label for="project_title" class="form-label">Project title</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="project_title"
-                    [formField]="pForm.title"
-                />
-            </div>
+            <mat-form-field class="w-100 mb-3">
+                <mat-label>Project title</mat-label>
+                <input matInput type="text" id="project_title" [formField]="pForm.title" />
+            </mat-form-field>
             <div>
-                <button class="btn btn-primary" type="submit">
+                <button matButton="filled" type="submit">
                     Create
                     <lu-spinner [loading]="loading()"/>
                 </button>
             </div>
         </form>
     `,
+
 })
 export class ProjectCreateFeature {
     loading = signal(false);

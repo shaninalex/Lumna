@@ -24,8 +24,8 @@ import { AppRoutes } from '@core';
 import { AssignmentDropdown, TaskColumnForm } from '@features/task';
 import { ColumnDeletePromptComponent, NewColumnFormComponent } from '@features/stage';
 import { selectProjects } from '@entities/project';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { reiconHand } from '@ng-icons/reicon';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'lu-kanban-board-feature',
@@ -44,11 +44,12 @@ import { reiconHand } from '@ng-icons/reicon';
         AssignmentDropdown,
         ColumnMenuDropdownComponent,
         ColumnDeletePromptComponent,
-        NgIcon,
+        MatIconButton,
+        MatIcon,
     ],
     templateUrl: './kanban-widget.component.html',
     styleUrl: './kanban-widget.component.scss',
-    providers: [KanbanService, provideIcons({ reiconHand })],
+    providers: [KanbanService],
 })
 export class KanbanBoardWidget implements OnInit {
     readonly appRoutes = inject(AppRoutes);

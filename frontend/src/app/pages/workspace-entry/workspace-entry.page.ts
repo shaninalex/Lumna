@@ -5,15 +5,29 @@ import { Store } from '@ngrx/store';
 import { selectWorkspaces } from '@entities/workspace';
 import { AppRoutes } from '@core';
 import { RouterLink } from '@angular/router';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { reiconPlus, reiconSettings2 } from '@ng-icons/reicon';
+import { MatButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIcon } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { ProjectModel, selectProjects } from '@entities/project';
 
 @Component({
     selector: 'lu-workspace-entry-page',
-    imports: [MainLayout, RouterLink, NgIcon],
+    imports: [MainLayout, RouterLink, MatButton, MatCardModule, MatCheckbox, MatIcon, MatListModule],
     templateUrl: "./workspace-entry.page.html",
-    providers: [provideIcons({reiconPlus, reiconSettings2})],
+    styles: `
+        .task-check {
+            width: auto !important;
+            height: auto !important;
+            margin-block: 0 !important;
+            align-self: center !important;
+        }
+
+        .projects-list {
+            --mat-list-list-item-leading-avatar-shape: var(--mat-sys-corner-medium);
+        }
+    `,
 })
 export class WorkspaceEntryPage {
     readonly appRoutes = inject(AppRoutes);

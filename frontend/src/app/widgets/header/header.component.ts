@@ -5,9 +5,10 @@ import { NotificationsDropdownComponent } from '@entities/notification';
 import { ThemeSwitcherComponent } from '@shared/ui';
 import { WorkspaceSwitcherComponent } from '@features';
 import { actionUI, selectUI } from '@core/store/ui';
-import { NgClass } from '@angular/common';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { reiconChevronLeft, reiconMenu } from '@ng-icons/reicon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
     selector: 'lu-header',
@@ -16,37 +17,40 @@ import { reiconChevronLeft, reiconMenu } from '@ng-icons/reicon';
         ThemeSwitcherComponent,
         NotificationsDropdownComponent,
         WorkspaceSwitcherComponent,
-        NgClass,
-        NgIcon,
+        MatToolbarModule,
+        MatIconButton,
+        MatIcon,
+        MatTooltip,
     ],
-    providers: [provideIcons({ reiconChevronLeft, reiconMenu })],
     styleUrl: './header.component.scss',
     template: `
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <div class="d-flex align-items-center gap-2">
-                    <button class="button logo-button"
-                            [ngClass]="{'logo-button-closed': !sidebarOpen()}"
-                            (click)="toggleSidebar()">
-                        @if (!sidebarOpen()) {
-                            <ng-icon name="reiconChevronLeft" />
-                        } @else {
-                            <ng-icon name="reiconMenu" />
-                            <img src="images/logo-icon.svg">
-                        }
-                    </button>
-                    <h3 class="my-0">Lumna</h3>
-                </div>
-
-                <div class="flex align-items-center">
-                    <lu-theme-switcher />
-                    <lu-notifications-dropdown />
-                    <lu-user-menu>
-                        <lu-workspace-switcher bottomMenuItems />
-                    </lu-user-menu>
-                </div>
+        <mat-toolbar>
+            <div class="d-flex align-items-center gap-2">
+                <button matIconButton
+                        class="logo-button"
+                        [class.logo-button-closed]="!sidebarOpen()"
+                        [matTooltip]="sidebarOpen() ? 'Collapse menu' : 'Expand menu'"
+                        (click)="toggleSidebar()">
+                    @if (!sidebarOpen()) {
+                        <mat-icon>menu</mat-icon>
+                    } @else {
+                        <mat-icon class="hover-icon">menu_open</mat-icon>
+                        <img src="images/logo-icon.svg" alt="">
+                    }
+                </button>
+                <span class="lu-page-title">Lumna</span>
             </div>
-        </nav>
+
+            <span class="flex-grow-1"></span>
+
+            <div class="d-flex align-items-center gap-1">
+                <lu-theme-switcher />
+                <lu-notifications-dropdown />
+                <lu-user-menu>
+                    <lu-workspace-switcher bottomMenuItems />
+                </lu-user-menu>
+            </div>
+        </mat-toolbar>
     `,
 })
 export class HeaderComponent {

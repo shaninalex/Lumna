@@ -1,19 +1,15 @@
 import { Component, input } from '@angular/core';
-import { reiconRefresh } from '@ng-icons/reicon';
-import { NgIcon, provideIcons } from '@ng-icons/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
-    imports: [NgIcon],
-    providers: [provideIcons({reiconRefresh})],
+    imports: [MatProgressSpinner],
     selector: 'lu-spinner',
-    styleUrl: "./spinner.component.scss",
     template: `
         @if (loading()) {
-            <div class="spinner">
-                <ng-icon name="reiconRefresh"/>
-            </div>
+            <mat-progress-spinner mode="indeterminate" [diameter]="diameter()" />
         }`
 })
 export class SpinnerComponent {
     loading = input.required();
+    diameter = input(18);
 }

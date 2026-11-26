@@ -16,9 +16,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { actionTask, TaskCreateModel, taskCreateModelDefault } from '@entities/task';
 import { form, FormField } from '@angular/forms/signals';
 import { Store } from '@ngrx/store';
+import { MatIconButton } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 
 @Component({
-    imports: [FormField],
+    imports: [FormField, MatIconButton, MatFormFieldModule, MatIcon, MatInput],
     selector: 'lu-task-column-form',
     styleUrl: './task-column-form.scss',
     templateUrl: './task-column-form.html',

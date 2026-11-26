@@ -1,4 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { debounce, form, FormField, minLength, required, validate } from '@angular/forms/signals';
 import { Store } from '@ngrx/store';
 import { actionUser } from '@entities/user';
@@ -13,48 +16,38 @@ const defaultValue = {
 }
 
 @Component({
-    imports: [FormField, SpinnerComponent],
+    imports: [FormField, SpinnerComponent, MatButton, MatFormFieldModule, MatInput],
     selector: 'lu-change-password-feature',
     template: `
         <form (submit)="onSubmit($event)">
             <div class="mb-4">
-                <div class="mb-3">
-                    <label for="password" class="form-label">New password</label>
-                    <input type="password"
-                           class="form-control"
-                           id="password"
-                           placeholder="***"
-                           [class.is-invalid]="changePasswordForm().dirty() && changePasswordForm.password().invalid()"
-                           [formField]="changePasswordForm.password">
+                <mat-form-field class="w-100 mb-3">
+                    <mat-label>New password</mat-label>
+                    <input matInput type="password" id="password" placeholder="***" [formField]="changePasswordForm.password">
                     @if (changePasswordForm().dirty() && changePasswordForm.password().invalid()) {
                         @for (error of changePasswordForm.password().errors(); track error.kind) {
-                            <div class="invalid-feedback">{{ error.message }}</div>
+                            <mat-error>{{ error.message }}</mat-error>
                         }
                     }
-                </div>
-                <div class="mb-3">
-                    <label for="password-confirm" class="form-label">Password Confirm</label>
-                    <input type="password"
-                           class="form-control"
-                           id="password-confirm"
-                           placeholder="***"
-                           [class.is-invalid]="changePasswordForm().dirty() && changePasswordForm.passwordConfirm().invalid()"
-                           [formField]="changePasswordForm.passwordConfirm">
+                </mat-form-field>
+                <mat-form-field class="w-100 mb-3">
+                    <mat-label>Password Confirm</mat-label>
+                    <input matInput type="password" id="password-confirm" placeholder="***" [formField]="changePasswordForm.passwordConfirm">
                     @if (changePasswordForm().dirty() && changePasswordForm.passwordConfirm().invalid()) {
                         @for (error of changePasswordForm.passwordConfirm().errors(); track error.kind) {
-                            <div class="invalid-feedback">{{ error.message }}</div>
+                            <mat-error>{{ error.message }}</mat-error>
                         }
                     }
-                </div>
+                </mat-form-field>
 
-                <button type="submit" class="btn btn-primary"
-                        [disabled]="!changePasswordForm().valid()">
+                <button matButton="filled" type="submit" [disabled]="!changePasswordForm().valid()">
                     Save
                     <lu-spinner [loading]="loading()"/>
                 </button>
             </div>
         </form>
     `,
+
 })
 export class ChangePasswordFeature {
     private store = inject(Store);

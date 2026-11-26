@@ -1,0 +1,202 @@
+// Small app-level pieces that Angular Material does not provide.
+// All colors come from Material 3 system tokens (or the --lu-* roles in
+// _theme.scss), so they follow light/dark automatically.
+
+@use "sass:list";
+
+$roles: (
+    primary: (var(--mat-sys-primary), var(--mat-sys-primary-container), var(--mat-sys-on-primary-container)),
+    secondary: (var(--mat-sys-secondary), var(--mat-sys-secondary-container), var(--mat-sys-on-secondary-container)),
+    tertiary: (var(--mat-sys-tertiary), var(--mat-sys-tertiary-container), var(--mat-sys-on-tertiary-container)),
+    danger: (var(--mat-sys-error), var(--mat-sys-error-container), var(--mat-sys-on-error-container)),
+    success: (var(--lu-success), var(--lu-success-container), var(--lu-on-success-container)),
+    warning: (var(--lu-warning), var(--lu-warning-container), var(--lu-on-warning-container)),
+    info: (var(--lu-info), var(--lu-info-container), var(--lu-on-info-container)),
+    neutral: (var(--mat-sys-outline), var(--mat-sys-surface-container-highest), var(--mat-sys-on-surface-variant)),
+);
+
+// ------------------------------------------------------------------ tag
+// Small status label (replaces Bootstrap .badge).
+// <span class="lu-tag lu-tag--success">Done</span>
+.lu-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--mat-sys-corner-small);
+    font: var(--mat-sys-label-medium);
+    letter-spacing: var(--mat-sys-label-medium-tracking);
+    white-space: nowrap;
+    background-color: var(--mat-sys-surface-container-highest);
+    color: var(--mat-sys-on-surface-variant);
+
+    .mat-icon {
+        width: 14px;
+        height: 14px;
+        font-size: 1rem;
+    }
+}
+
+// ------------------------------------------------------------------ banner
+// Inline message (replaces Bootstrap .alert).
+// <div class="lu-banner lu-banner--danger" role="alert">…</div>
+.lu-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--mat-sys-corner-medium);
+    background-color: var(--mat-sys-surface-container-highest);
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-medium);
+}
+
+// ------------------------------------------------------------------ avatar
+// Round initials / icon holder.
+// <span class="lu-avatar">AB</span>, sizes: --sm (24px), default 32px, --lg 40px
+.lu-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    font: var(--mat-sys-label-large);
+    text-transform: uppercase;
+    line-height: 1;
+    overflow: hidden;
+    font-size: 1rem;
+    &--sm { width: 24px; height: 24px; font: var(--mat-sys-label-small); }
+    &--lg { width: 40px; height: 40px; font: var(--mat-sys-title-medium); }
+}
+
+// ------------------------------------------------------------------ icon tile
+// Rounded square with a tinted background holding an icon (stat cards etc.).
+// <span class="lu-icon-tile lu-icon-tile--primary"><mat-icon>folder</mat-icon></span>
+.lu-icon-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--mat-sys-corner-medium);
+    background-color: var(--mat-sys-surface-container-highest);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+// ------------------------------------------------------------------ accent
+// Colored left edge on a card or block (replaces border-start border-3 border-*).
+.lu-accent {
+    border-left: 3px solid var(--mat-sys-outline-variant) !important;
+}
+
+@each $name, $c in $roles {
+    $role: list.nth($c, 1);
+    $container: list.nth($c, 2);
+    $on-container: list.nth($c, 3);
+
+    .lu-tag--#{$name},
+    .lu-banner--#{$name},
+    .lu-avatar--#{$name},
+    .lu-icon-tile--#{$name} {
+        background-color: $container;
+        color: $on-container;
+    }
+
+    .lu-accent--#{$name} {
+        border-left-color: $role !important;
+    }
+}
+
+// ------------------------------------------------------------------ breadcrumb
+// <nav class="lu-breadcrumb"><a>Workspace</a><mat-icon>chevron_right</mat-icon><span>Project</span></nav>
+.lu-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+
+    a {
+        color: inherit;
+        text-decoration: none;
+
+        &:hover {
+            color: var(--mat-sys-primary);
+        }
+    }
+
+    .mat-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 1rem;
+    }
+}
+
+// ------------------------------------------------------------------ page header
+.lu-page-title {
+    font: var(--mat-sys-headline-small);
+    margin: 0;
+}
+
+// ------------------------------------------------------------------ cards
+// mat-card with no elevation and an outline is the default card in this app;
+// stack content with consistent spacing.
+.mat-mdc-card.lu-card-flat {
+    --mat-card-elevated-container-elevation: none;
+}
+
+// Clickable card / list row link that should not look like a text link.
+a.lu-plain-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+// ------------------------------------------------------------------ destructive buttons
+// M3 removed the `color` input; use this class on matButton for destructive actions.
+// <button matButton="filled" class="lu-danger">Delete</button>
+.mat-mdc-button-base.lu-danger {
+    --mat-button-filled-container-color: var(--mat-sys-error);
+    --mat-button-filled-label-text-color: var(--mat-sys-on-error);
+    --mat-button-tonal-container-color: var(--mat-sys-error-container);
+    --mat-button-tonal-label-text-color: var(--mat-sys-on-error-container);
+    --mat-button-outlined-label-text-color: var(--mat-sys-error);
+    --mat-button-outlined-outline-color: var(--mat-sys-error);
+    --mat-button-text-label-text-color: var(--mat-sys-error);
+    --mat-icon-button-icon-color: var(--mat-sys-error);
+}
+
+// ------------------------------------------------------------------ meta / caption
+// Inline "icon + text" metadata (dates, counts) with a 16px icon.
+// <span class="lu-meta"><mat-icon>event</mat-icon> 12 Mar</span>
+.lu-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.lu-meta .mat-icon,
+.mat-icon.lu-icon-sm {
+    width: 16px;
+    height: 16px;
+    font-size: 1rem;
+}
+
+.lu-caption {
+    font: var(--mat-sys-label-small);
+    letter-spacing: var(--mat-sys-label-small-tracking);
+}
+
+// Card headers that carry a trailing action need breathing room.
+.mat-mdc-card-header {
+    gap: 1rem;
+}
+
+.task-menu-trigger .mat-icon,
+.column-header .mat-icon {
+    font-size: 1.2rem;
+}

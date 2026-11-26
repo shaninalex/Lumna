@@ -6,6 +6,10 @@ import {
     Input,
     signal,
 } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatIcon } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormField, form, required } from '@angular/forms/signals';
 import { actionsColumns } from '@entities/column/model';
@@ -16,21 +20,18 @@ import { tap } from 'rxjs';
 
 @Component({
     selector: 'lu-new-column-form',
-    imports: [FormField],
+    imports: [FormField, MatButton, MatFormFieldModule, MatIcon, MatInput],
     template: `
         @if (openedForm()) {
-            <form (submit)="submit($event)" class="w-[280px]">
-                <div class="mb-2">
-                    <input
-                        class="form-control w-full"
-                        placeholder="Column name"
-                        [formField]="columnForm.title"
-                    />
-                </div>
+            <form (submit)="submit($event)" class="new-column-form">
+                <mat-form-field class="w-100 mb-2">
+                    <mat-label>Column name</mat-label>
+                    <input matInput [formField]="columnForm.title" />
+                </mat-form-field>
 
                 <div class="d-flex gap-2">
                     <button
-                        class="button button-outline-pill"
+                        matButton
                         (click)="submit($event)"
                         [disabled]="columnForm().invalid()"
                     >
@@ -40,13 +41,21 @@ import { tap } from 'rxjs';
                             Create
                         }
                     </button>
-                    <button class="button button-pill" (click)="this.openedForm.set(false)">
+                    <button matButton type="button" (click)="this.openedForm.set(false)">
                         Cancel
                     </button>
                 </div>
             </form>
         } @else {
-            <button class="btn btn-sm btn-secondary" (click)="openForm()">Create new column</button>
+            <button matButton="tonal" type="button" (click)="openForm()">
+                <mat-icon>add</mat-icon> Create new column
+            </button>
+        }
+    `,
+
+    styles: `
+        .new-column-form {
+            width: 280px;
         }
     `,
     host: { class: 'flex-shrink-0' },

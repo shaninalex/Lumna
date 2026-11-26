@@ -8,10 +8,12 @@ import { filter, switchMap, map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AppRoutes } from '@core';
 import { GlobalLayout } from '@core/layout';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'lu-project-list-page',
-    imports: [GlobalLayout, RouterLink, AsyncPipe, ProjectCardComponent],
+    imports: [GlobalLayout, RouterLink, AsyncPipe, ProjectCardComponent, MatButton, MatIcon],
 
     templateUrl: './project-list-page.component.html',
 })

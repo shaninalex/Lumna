@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MatTabsModule } from '@angular/material/tabs';
 import { GlobalLayout } from '@core/layout';
 
 @Component({
@@ -7,39 +8,38 @@ import { GlobalLayout } from '@core/layout';
         RouterOutlet,
         GlobalLayout,
         RouterLink,
-        RouterLinkActive
+        RouterLinkActive,
+        MatTabsModule,
     ],
     selector: 'lu-settings_root',
     template: `
         <lu-global-layout>
-            <nav class="navbar navbar-expand-lg bg-body-tertiary">
-                <div class="container">
-                    <div class="navbar-brand">Settings</div>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" routerLinkActive="active"
-                                   [routerLinkActiveOptions]="{ exact: true }" [routerLink]="['/app/settings']">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" routerLinkActive="active" [routerLink]="['/app/settings/sessions']">Sessions</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" routerLinkActive="active" [routerLink]="['/app/settings/security']">Security</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link secondary" routerLinkActive="active" [routerLink]="['/app/settings/remove']">Remove</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-
             <div class="container pt-4">
-                <router-outlet/>
+                <h1 class="lu-page-title mb-3">Settings</h1>
+                <nav mat-tab-nav-bar [tabPanel]="settingsPanel" mat-stretch-tabs="false" mat-align-tabs="start">
+                    @for (link of links; track link.path) {
+                        <a mat-tab-link
+                           [routerLink]="link.path"
+                           routerLinkActive
+                           #rla="routerLinkActive"
+                           [routerLinkActiveOptions]="{ exact: link.exact }"
+                           [active]="rla.isActive">
+                            {{ link.label }}
+                        </a>
+                    }
+                </nav>
+                <mat-tab-nav-panel #settingsPanel class="d-block pt-4">
+                    <router-outlet/>
+                </mat-tab-nav-panel>
             </div>
         </lu-global-layout>
     `
 })
 export class SettingsRoot {
+    readonly links: { path: string[]; label: string; exact: boolean }[] = [
+        { path: ['/app/settings'], label: 'Home', exact: true },
+        { path: ['/app/settings/sessions'], label: 'Sessions', exact: false },
+        { path: ['/app/settings/security'], label: 'Security', exact: false },
+        { path: ['/app/settings/remove'], label: 'Remove', exact: false },
+    ];
 }

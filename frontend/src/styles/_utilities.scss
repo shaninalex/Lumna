@@ -1,0 +1,143 @@
+// Layout / spacing / text helpers used by the templates.
+// Names follow Bootstrap's so existing markup keeps working; values use the
+// Material 3 system tokens. Add a class here only when a template needs it.
+
+@use "sass:math";
+
+// ---------------------------------------------------------------- display
+.d-block { display: block !important; }
+.d-flex { display: flex !important; }
+
+// ---------------------------------------------------------------- flex
+.flex-column { flex-direction: column !important; }
+.flex-wrap { flex-wrap: wrap !important; }
+.flex-grow-1 { flex-grow: 1 !important; }
+.flex-shrink-0 { flex-shrink: 0 !important; }
+.align-items-start { align-items: flex-start !important; }
+.align-items-center { align-items: center !important; }
+.align-items-baseline { align-items: baseline !important; }
+.justify-content-center { justify-content: center !important; }
+.justify-content-between { justify-content: space-between !important; }
+.justify-content-end { justify-content: flex-end !important; }
+
+// ---------------------------------------------------------------- spacing
+$spacers: (
+    0: 0,
+    1: 0.25rem,
+    2: 0.5rem,
+    3: 1rem,
+    4: 1.5rem,
+    5: 3rem,
+);
+
+@each $key, $value in $spacers {
+    .gap-#{$key} { gap: $value !important; }
+
+    .m-#{$key} { margin: $value !important; }
+    .mt-#{$key} { margin-top: $value !important; }
+    .mb-#{$key} { margin-bottom: $value !important; }
+    .ms-#{$key} { margin-left: $value !important; }
+    .me-#{$key} { margin-right: $value !important; }
+    .mx-#{$key} { margin-left: $value !important; margin-right: $value !important; }
+    .my-#{$key} { margin-top: $value !important; margin-bottom: $value !important; }
+
+    .p-#{$key} { padding: $value !important; }
+    .pt-#{$key} { padding-top: $value !important; }
+    .pb-#{$key} { padding-bottom: $value !important; }
+    .ps-#{$key} { padding-left: $value !important; }
+    .pe-#{$key} { padding-right: $value !important; }
+    .px-#{$key} { padding-left: $value !important; padding-right: $value !important; }
+    .py-#{$key} { padding-top: $value !important; padding-bottom: $value !important; }
+}
+
+.ms-auto { margin-left: auto !important; }
+
+// ---------------------------------------------------------------- sizing
+.w-100 { width: 100% !important; }
+.h-100 { height: 100% !important; }
+.vw-100 { width: 100vw !important; }
+.vh-100 { height: 100vh !important; }
+.min-w-0 { min-width: 0 !important; }
+.overflow-y-auto { overflow-y: auto !important; }
+
+// ---------------------------------------------------------------- grid
+// A small 12-column grid (replaces .container/.row/.col-*).
+$breakpoints: (
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+);
+
+.container,
+.container-fluid {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 1rem;
+}
+
+.container { max-width: 1320px; }
+
+.row {
+    --gutter-x: 1.5rem;
+    --gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1 * var(--gutter-y));
+    margin-inline: calc(-0.5 * var(--gutter-x));
+
+    > * {
+        flex-shrink: 0;
+        width: 100%;
+        max-width: 100%;
+        padding-inline: calc(0.5 * var(--gutter-x));
+        margin-top: var(--gutter-y);
+    }
+}
+
+.g-3 { --gutter-x: 1rem; --gutter-y: 1rem; }
+.g-4 { --gutter-x: 1.5rem; --gutter-y: 1.5rem; }
+
+@mixin cols($infix) {
+    .col#{$infix} { flex: 1 0 0; width: auto; }
+    @for $i from 1 through 12 {
+        .row > .col#{$infix}-#{$i} {
+            flex: 0 0 auto;
+            width: math.percentage(math.div($i, 12));
+        }
+    }
+}
+
+@include cols("");
+
+@each $name, $min in $breakpoints {
+    @media (min-width: $min) {
+        @include cols("-#{$name}");
+    }
+}
+
+// ---------------------------------------------------------------- text
+.small { font: var(--mat-sys-body-small); letter-spacing: var(--mat-sys-body-small-tracking); }
+.fs-4 { font: var(--mat-sys-title-large) !important; }
+.h3 { font: var(--mat-sys-headline-small); }
+.display-5 { font: var(--mat-sys-display-small); }
+
+.fw-medium { font-weight: 500 !important; }
+.fw-semibold { font-weight: 600 !important; }
+
+.text-center { text-align: center !important; }
+.text-end { text-align: right !important; }
+.text-nowrap { white-space: nowrap !important; }
+.text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.text-decoration-none { text-decoration: none !important; }
+
+.text-muted { color: var(--mat-sys-on-surface-variant) !important; }
+.text-primary { color: var(--mat-sys-primary) !important; }
+.text-danger { color: var(--mat-sys-error) !important; }
+.text-success { color: var(--lu-success) !important; }
+
+// ---------------------------------------------------------------- borders
+.border { border: 1px solid var(--mat-sys-outline-variant) !important; }
+.border-bottom { border-bottom: 1px solid var(--mat-sys-outline-variant) !important; }
+.rounded { border-radius: var(--mat-sys-corner-small) !important; }
+.rounded-circle { border-radius: 50% !important; }

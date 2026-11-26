@@ -1,82 +1,71 @@
-<nav class="sidebar h-100 bg-body-tertiary" [ngClass]="{ 'sidebar-closed': !hideSidebar() }">
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a routerLink="/app/overview" class="nav-link text-body fs-6">
-                <ng-icon name="reiconInbox"/>
-                <span class="sidebar-nav-link">Overview</span>
+<nav class="sidebar" [class.sidebar-closed]="!hideSidebar()">
+    <mat-nav-list>
+        @for (item of mainLinks; track item.link) {
+            <a mat-list-item
+               [routerLink]="item.link"
+               routerLinkActive
+               #rla="routerLinkActive"
+               [activated]="rla.isActive"
+               [matTooltip]="item.label"
+               [matTooltipDisabled]="hideSidebar()"
+               matTooltipPosition="right">
+                <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                <span matListItemTitle class="sidebar-nav-link">{{ item.label }}</span>
             </a>
-        </li>
-        <li class="nav-item">
-            <a routerLink="/app/recent" class="nav-link text-body fs-6">
-                <ng-icon name="reiconClockSquare"/>
-                <span class="sidebar-nav-link">Recent</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a routerLink="/app/notifications" class="nav-link text-body fs-6">
-                <ng-icon name="reiconBell"/>
-                <span class="sidebar-nav-link">Notifications</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a routerLink="/app/plugins" class="nav-link text-body fs-6">
-                <ng-icon name="reiconPlug2"/>
-                <span class="sidebar-nav-link">Plugins</span>
-            </a>
-        </li>
-        <li>
-            <hr>
-        </li>
-        <li class="nav-item">
-            <span class="nav-link fs-6"
-               [ngClass]="{
-                    'disabled': projects().length === 0,
-                    'text-body': projects().length > 0,
-               }">
-                <ng-icon name="reiconPage"/>
-                <span class="sidebar-nav-link">Projects</span>
-            </span>
-            <ul>
-                @for (p of projects(); track p.id) {
-                    <li>
-                        <a [routerLink]="appRoutes.projectDetail(p.id)"
-                           class="text-body text-decoration-none"
-                           [ngClass]="{'fw-bold': p.id === currentProject()?.id}">
-                            <span class="sidebar-nav-link">{{ p.title }}</span>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </li>
+        }
 
-        <li class="nav-item">
-            <span class="nav-link text-body fs-6">
-                <ng-icon name="reiconNotebookSquare"/>
-                <span class="sidebar-nav-link">Workspaces</span>
-            </span>
-            <ul>
-                @for (wp of workspaces(); track wp.id) {
-                    <li>
-                        <a [routerLink]="appRoutes.workspaceDetail(wp.id)"
-                           class="text-body text-decoration-none"
-                           [ngClass]="{'fw-bold': wp.id === currentWorkspace()?.id}">
-                            <span class="sidebar-nav-link">{{ wp.title }}</span>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </li>
-    </ul>
+        <mat-divider />
 
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <hr class="mb-0"/>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-body fs-6" [routerLink]="['/app/settings']">
-                <ng-icon name="reiconSettings2"/>
-                <span class="sidebar-nav-link">Settings</span>
+        <div mat-subheader class="sidebar-nav-link">
+            <mat-icon class="me-2">description</mat-icon>
+            Projects
+        </div>
+        @for (p of projects(); track p.id) {
+            <a mat-list-item
+               class="sidebar-sub-item"
+               [routerLink]="appRoutes.projectDetail(p.id)"
+               [activated]="p.id === currentProject()?.id"
+               [matTooltip]="p.title"
+               [matTooltipDisabled]="hideSidebar()"
+               matTooltipPosition="right">
+                <span matListItemIcon class="lu-avatar lu-avatar--sm lu-avatar--primary">{{ p.title.charAt(0) }}</span>
+                <span matListItemTitle class="sidebar-nav-link">{{ p.title }}</span>
             </a>
-        </li>
-    </ul>
+        } @empty {
+            <div class="sidebar-nav-link px-3 small text-muted">No projects yet</div>
+        }
+
+        <mat-divider />
+
+        <div mat-subheader class="sidebar-nav-link">
+            <mat-icon class="me-2">workspaces</mat-icon>
+            Workspaces
+        </div>
+        @for (wp of workspaces(); track wp.id) {
+            <a mat-list-item
+               class="sidebar-sub-item"
+               [routerLink]="appRoutes.workspaceDetail(wp.id)"
+               [activated]="wp.id === currentWorkspace()?.id"
+               [matTooltip]="wp.title"
+               [matTooltipDisabled]="hideSidebar()"
+               matTooltipPosition="right">
+                <span matListItemIcon class="lu-avatar lu-avatar--sm lu-avatar--tertiary">{{ wp.title.charAt(0) }}</span>
+                <span matListItemTitle class="sidebar-nav-link">{{ wp.title }}</span>
+            </a>
+        }
+    </mat-nav-list>
+
+    <mat-nav-list>
+        <a mat-list-item
+           [routerLink]="['/app/settings']"
+           routerLinkActive
+           #settingsRla="routerLinkActive"
+           [activated]="settingsRla.isActive"
+           matTooltip="Settings"
+           [matTooltipDisabled]="hideSidebar()"
+           matTooltipPosition="right">
+            <mat-icon matListItemIcon>settings</mat-icon>
+            <span matListItemTitle class="sidebar-nav-link">Settings</span>
+        </a>
+    </mat-nav-list>
 </nav>

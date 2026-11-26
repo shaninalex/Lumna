@@ -1,5 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { actionSession } from '@core/store/session/session.actions';
 import { Store } from '@ngrx/store';
 import { form, required, email, FormField } from '@angular/forms/signals';
@@ -11,7 +14,7 @@ interface LoginFormPayload {
 
 @Component({
     selector: 'lu-auth-login-feature',
-    imports: [FormsModule, FormField],
+    imports: [FormsModule, FormField, MatButton, MatFormFieldModule, MatInput],
 
     templateUrl: './auth-login.component.html',
 })

@@ -1,6 +1,10 @@
 @if (visible()) {
-    <form (submit)="submit($event)" class="input-group mb-3">
-        <input type="text" class="form-control form-control-sm" placeholder="Task title" [formField]="taskEditForm.title">
-        <button class="btn btn-sm btn-outline-secondary" type="submit" [disabled]="taskEditFormModel().title === ''">Save</button>
+    <form (submit)="submit($event)" class="mb-3">
+        <mat-form-field class="w-100">
+            <input matInput type="text" placeholder="Task title" aria-label="Task title" [formField]="taskEditForm.title">
+            <button matIconButton matSuffix type="submit" aria-label="Save" [disabled]="taskEditFormModel().title === ''">
+                <mat-icon>check</mat-icon>
+            </button>
+        </mat-form-field>
     </form>
 }

@@ -1,5 +1,11 @@
 .board-card {
+    transition: background-color 150ms;
+
     &:hover {
-        background-color: rgba(var(--bs-secondary-rgb), 0.1);
+        background-color: var(--mat-sys-surface-container-low);
     }
+}
+
+mat-progress-bar {
+    border-radius: var(--mat-sys-corner-full);
 }
