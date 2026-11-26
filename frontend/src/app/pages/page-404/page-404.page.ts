@@ -21,7 +21,7 @@ import { UiService } from '@shared/ui';
                 <mat-icon class="not-found-icon text-muted">explore_off</mat-icon>
                 <h1 class="m-0">Page Not Found</h1>
                 <p class="text-muted m-0">The page you are looking for does not exist or has been moved.</p>
-                <a matButton="filled" routerLink="/">
+                <a matButton="filled" routerLink="/app">
                     <mat-icon>home</mat-icon>
                     Go home
                 </a>

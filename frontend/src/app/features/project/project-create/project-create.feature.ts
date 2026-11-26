@@ -67,7 +67,7 @@ export class ProjectCreateFeature {
             takeUntilDestroyed(this.destroyRef),
             map(project => project.project),
         ).subscribe((project: ProjectModel) => this.router.navigate(
-            this.appRoutes.workspaceRoot(['p', project.id, 'inbox'])
+            this.appRoutes.projectDetail(project.id)
         ));
     }
 
