@@ -1,6 +1,7 @@
 package httpx
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,8 +21,9 @@ var httpStatus = map[errs.Kind]int{
 }
 
 const (
-	codeInternal   = "INTERNAL_ERROR"
-	codeValidation = "VALIDATION_ERROR"
+	codeInternal             = "INTERNAL_ERROR"
+	codeValidation           = "VALIDATION_ERROR"
+	codeUnsupportedMediaType = "UNSUPPORTED_MEDIA_TYPE"
 
 	// An internal error's own text may name tables, hosts or queries, so the
 	// client gets a fixed string instead. The original belongs in the log.
@@ -57,7 +59,12 @@ func Fail(c *gin.Context, err error) {
 
 // Invalid answers 400 for input that never reached a module: malformed JSON
 // or a failed struct validation. Its text comes from the binder, so it is
-// safe to echo and useful to the client.
+// safe to echo and useful to the client. A body that is not JSON at all
+// (ErrUnsupportedMediaType) answers 415 instead.
 func Invalid(c *gin.Context, err error) {
+	if errors.Is(err, ErrUnsupportedMediaType) {
+		ReturnJSON(c, http.StatusUnsupportedMediaType, nil, NewApiError(err.Error(), codeUnsupportedMediaType, nil))
+		return
+	}
 	ReturnJSON(c, http.StatusBadRequest, nil, NewApiError(err.Error(), codeValidation, nil))
 }

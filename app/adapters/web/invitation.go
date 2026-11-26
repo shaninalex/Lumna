@@ -74,6 +74,9 @@ func handleConfirmInvitation(app core.Resolve, cookieConfig httpx.CookieConfig) 
 			return
 		}
 
+		// The invitation pages are always server-rendered on this origin, so
+		// the cookie never needs to travel cross-site.
+		c.SetSameSite(http.SameSiteLaxMode)
 		c.SetCookie(
 			InvitationCookieAccessToken,
 			session.AccessToken,
@@ -190,6 +193,7 @@ func handleAcceptInvitation(app core.Resolve, verifier authContract.PasswordVeri
 		}
 
 		// remove temp session cookie
+		c.SetSameSite(http.SameSiteLaxMode)
 		c.SetCookie(InvitationCookieAccessToken, "", -1, "/invitation", "", cookieConfig.Secure, true)
 
 		// redirect to /auth/login

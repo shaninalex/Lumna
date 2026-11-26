@@ -4,9 +4,6 @@ serve:
   port: 8000
   setup: true
   embed_spa: true
-  # allow a SPA on another origin to call the API with cookies;
-  # empty = same-origin only
-  cors_origins: []
   # false only for plain-http local development
   secure_cookies: false
   url: http://localhost:8080

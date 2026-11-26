@@ -65,8 +65,8 @@
   set the Cookie header - so the Authorize dialog of Swagger UI cannot help here.
   What a script *can* do is write a real cookie on its own origin through
   document.cookie. That only works when this page is served by the API itself
-  (GET /docs), because CORS is configured with Allow-Credentials: false and the
-  cookies are scoped to the API host.
+  (GET /docs): the API serves no CORS headers at all, and the cookies are scoped
+  to the API host.
 -->
 <div class="cookie-bar">
     <h2>Session cookies</h2>

@@ -55,10 +55,13 @@ func serveCmd(resolve core.Resolve, app appRef) *cobra.Command {
 			router := gin.Default()
 			router.Use(httpx.LoggingMiddleware())
 
+			// CSRF: in front of every route, so the server-rendered forms
+			// (/setup, /invitation/password) are covered along with the API.
+			router.Use(httpx.CrossOriginMiddleware())
+
 			web.RegisterWebRoutes(cfg, resolve, app().Bridges.InvitationVerifier, app().Bridges.PasswordVerifier, router)
 			ws.RegisterWebsocketRoute(app().Realtime, app().Bridges.AccessVerifier, router)
 			api.RegisterApiRoutes(resolve, app().Bridges.AccessVerifier, api.Config{
-				CORSOrigins:   cfg.CORSOrigins(),
 				SecureCookies: cfg.SecureCookies(),
 			}, router, app().Bridges.PasswordVerifier)
 

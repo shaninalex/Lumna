@@ -67,6 +67,15 @@ func WithActor(a actor.Actor) RequestOption {
 	}
 }
 
+// WithHeader sets a request header, overriding the JSON Content-Type that
+// Serve sets by default.
+func WithHeader(key, value string) RequestOption {
+	return func(r *http.Request) *http.Request {
+		r.Header.Set(key, value)
+		return r
+	}
+}
+
 // Serve sends one JSON request to h and decodes the response envelope.
 // A panic in a handler fails the test.
 func Serve(t *testing.T, h http.Handler, method, path, body string, opts ...RequestOption) (*httptest.ResponseRecorder, Response) {

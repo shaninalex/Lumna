@@ -19,14 +19,12 @@ import (
 // Config is the deployment-dependent part of the HTTP API, resolved in
 // bootstrap so no controller reaches for the config itself.
 type Config struct {
-	CORSOrigins   []string
 	SecureCookies bool
 }
 
 // RegisterApiRoutes mounts the API.
 func RegisterApiRoutes(resolve core.Resolve, verifier authc.Verifier[actor.Actor], cfg Config, router *gin.Engine, pwdVerifier authc.PasswordVerifier) {
 	cookies := httpx.CookieConfig{Secure: cfg.SecureCookies}
-	router.Use(httpx.CORSMiddleware(cfg.CORSOrigins))
 
 	public := router.Group("/api/v1")
 	auth.Register(resolve, cookies, public.Group("auth"))

@@ -35,7 +35,10 @@ func newRouter(app *core.App) *gin.Engine {
 	return r
 }
 
-const codeValidation = "VALIDATION_ERROR"
+const (
+	codeValidation           = "VALIDATION_ERROR"
+	codeUnsupportedMediaType = "UNSUPPORTED_MEDIA_TYPE"
+)
 
 func TestTaskController(t *testing.T) {
 	tests := []struct {
@@ -43,6 +46,7 @@ func TestTaskController(t *testing.T) {
 		method     string
 		path       string
 		body       string
+		header     map[string]string // overrides, e.g. Content-Type
 		wantStatus int
 		wantCode   string // first error code; "" means a successful response
 		wantCmd    any    // the one command the module must receive; nil means none
@@ -73,6 +77,37 @@ func TestTaskController(t *testing.T) {
 			body: ``, wantStatus: http.StatusBadRequest, wantCode: codeValidation,
 		},
 		{
+			name: "create: text/plain body (issue #16 CSRF repro)", method: http.MethodPost, path: "/tasks",
+			body:       `{"title":"Write tests","x":"="}`,
+			header:     map[string]string{"Content-Type": "text/plain"},
+			wantStatus: http.StatusUnsupportedMediaType, wantCode: codeUnsupportedMediaType,
+		},
+		{
+			name: "create: form-urlencoded body", method: http.MethodPost, path: "/tasks",
+			body:       `title=Write+tests`,
+			header:     map[string]string{"Content-Type": "application/x-www-form-urlencoded"},
+			wantStatus: http.StatusUnsupportedMediaType, wantCode: codeUnsupportedMediaType,
+		},
+		{
+			name: "create: multipart body", method: http.MethodPost, path: "/tasks",
+			body:       `--b--`,
+			header:     map[string]string{"Content-Type": "multipart/form-data; boundary=b"},
+			wantStatus: http.StatusUnsupportedMediaType, wantCode: codeUnsupportedMediaType,
+		},
+		{
+			name: "create: no Content-Type", method: http.MethodPost, path: "/tasks",
+			body:       `{"title":"Write tests"}`,
+			header:     map[string]string{"Content-Type": ""},
+			wantStatus: http.StatusUnsupportedMediaType, wantCode: codeUnsupportedMediaType,
+		},
+		{
+			name: "create: JSON with charset passes", method: http.MethodPost, path: "/tasks",
+			body:       `{"title":"Write tests"}`,
+			header:     map[string]string{"Content-Type": "application/json; charset=utf-8"},
+			wantStatus: http.StatusOK,
+			wantCmd:    contract.WorkItemCreate{Title: "Write tests"},
+		},
+		{
 			name: "create: wrong field type", method: http.MethodPost, path: "/tasks",
 			body: `{"title":42}`, wantStatus: http.StatusBadRequest, wantCode: codeValidation,
 		},
@@ -95,6 +130,12 @@ func TestTaskController(t *testing.T) {
 		{
 			name: "update: empty title", method: http.MethodPatch, path: "/tasks/5",
 			body: `{"title":""}`, wantStatus: http.StatusBadRequest, wantCode: codeValidation,
+		},
+		{
+			name: "update: text/plain body", method: http.MethodPatch, path: "/tasks/5",
+			body:       `{"title":"New title"}`,
+			header:     map[string]string{"Content-Type": "text/plain"},
+			wantStatus: http.StatusUnsupportedMediaType, wantCode: codeUnsupportedMediaType,
 		},
 		{
 			name: "update: malformed JSON", method: http.MethodPatch, path: "/tasks/5",
@@ -159,6 +200,12 @@ func TestTaskController(t *testing.T) {
 			body: `{"data":{}}`, wantStatus: http.StatusBadRequest, wantCode: codeValidation,
 		},
 		{
+			name: "move: text/plain body", method: http.MethodPost, path: "/tasks/move",
+			body:       `{"action":"move_task","data":{"board_id":3,"task_id":5,"position":2.5}}`,
+			header:     map[string]string{"Content-Type": "text/plain"},
+			wantStatus: http.StatusUnsupportedMediaType, wantCode: codeUnsupportedMediaType,
+		},
+		{
 			name: "move: malformed JSON", method: http.MethodPost, path: "/tasks/move",
 			body: `{`, wantStatus: http.StatusBadRequest, wantCode: codeValidation,
 		},
@@ -175,7 +222,11 @@ func TestTaskController(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			app, calls := newTrackerApp(t)
-			w, resp := test.Serve(t, newRouter(app), tt.method, tt.path, tt.body)
+			var opts []test.RequestOption
+			for k, v := range tt.header {
+				opts = append(opts, test.WithHeader(k, v))
+			}
+			w, resp := test.Serve(t, newRouter(app), tt.method, tt.path, tt.body, opts...)
 
 			if w.Code != tt.wantStatus {
 				t.Errorf("status = %d, want %d\nbody: %s", w.Code, tt.wantStatus, w.Body.String())
