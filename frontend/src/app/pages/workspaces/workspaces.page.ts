@@ -6,10 +6,12 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AsyncPipe } from '@angular/common';
 import { GlobalLayout } from '@core/layout';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'lu-workspaces-page',
-    imports: [GlobalLayout, WorkspaceCardComponent, RouterLink, AsyncPipe],
+    imports: [GlobalLayout, WorkspaceCardComponent, RouterLink, AsyncPipe, MatButton, MatIcon],
 
     templateUrl: 'workspaces.page.html',
 })

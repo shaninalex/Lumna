@@ -1,15 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { SidebarComponent, HeaderComponent } from '@widgets';
-import { NgClass } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { selectUI } from '@core/store/ui';
 
 @Component({
     selector: 'lu-main-layout',
-    imports: [SidebarComponent, HeaderComponent, NgClass],
+    imports: [SidebarComponent, HeaderComponent],
     styleUrl: './main.layout.scss',
     template: `
-        <div class="dashboard" [ngClass]="{ 'sidebar-closed': !sidebarOpen() }">
+        <div class="dashboard" [class.sidebar-closed]="!sidebarOpen()">
             <div class="dashboard-header">
                 <lu-header/>
             </div>

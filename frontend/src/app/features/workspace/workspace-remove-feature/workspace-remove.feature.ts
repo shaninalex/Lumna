@@ -1,32 +1,36 @@
 import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { actionWorkspace, selectWorkspaces } from '@entities/workspace';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-    imports: [],
+    imports: [MatButton, MatIcon],
     selector: 'lu-workspace-remove-feature',
     template: `
-        <div class="alert alert-danger">
-            <h4>Remove Workspace</h4>
-            <p>Warning! This is destructive operation that can't be undone.</p>
-            <hr>
-            <button class="btn btn-danger" (click)="openConfirmationWindow()">Remove</button>
+        <div class="lu-banner lu-banner--danger" role="alert">
+            <mat-icon>error</mat-icon>
+            <div class="flex-grow-1">
+                <h4 class="mt-0">Remove Workspace</h4>
+                <p>Warning! This is destructive operation that can't be undone.</p>
+                <button matButton="filled" class="lu-danger" (click)="openConfirmationWindow()">Remove</button>
+            </div>
         </div>
     `,
 })
 export class WorkspaceRemoveFeature {
     private store = inject(Store);
-    dialog = inject(Dialog);
+    dialog = inject(MatDialog);
     private workspaceID = this.store.selectSignal(selectWorkspaces.currentWorkspaceId)
 
     openConfirmationWindow(): void {
-        const dialogRef = this.dialog.open<dialogData>(WorkspaceRemoveFeatureDialog, {
-            width: '250px',
+        const dialogRef = this.dialog.open<WorkspaceRemoveFeatureDialog, object, dialogData>(WorkspaceRemoveFeatureDialog, {
+            width: '400px',
             data: {},
         });
 
-        dialogRef.closed.subscribe((data) => {
+        dialogRef.afterClosed().subscribe((data) => {
             if (!data || !data.confirm) { return }
 
             const id = this.workspaceID()
@@ -42,27 +46,19 @@ interface dialogData {
 
 @Component({
     selector: 'lu-workspace-remove-feature-dialog',
+    imports: [MatDialogModule, MatButton],
     template: `
-        <div class="modal d-block">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Warning!</h5>
-                        <button type="button" class="btn-close" (click)="dialogRef.close({ confirm: false })"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure want to delete workspace?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" (click)="dialogRef.close({ confirm: true })">Yes</button>
-                        <button type="button" class="btn btn-secondary" (click)="dialogRef.close({ confirm: false })">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <h2 mat-dialog-title>Warning!</h2>
+        <mat-dialog-content>
+            <p>Are you sure want to delete workspace?</p>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button type="button" matButton (click)="dialogRef.close({ confirm: false })">Cancel</button>
+            <button type="button" matButton="filled" class="lu-danger" (click)="dialogRef.close({ confirm: true })">Yes</button>
+        </mat-dialog-actions>
     `,
 })
 export class WorkspaceRemoveFeatureDialog {
-    dialogRef = inject<DialogRef<dialogData>>(DialogRef<dialogData>);
-    data = inject(DIALOG_DATA);
+    dialogRef = inject<MatDialogRef<WorkspaceRemoveFeatureDialog, dialogData>>(MatDialogRef);
+    data = inject(MAT_DIALOG_DATA);
 }

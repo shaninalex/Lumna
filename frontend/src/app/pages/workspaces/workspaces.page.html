@@ -4,13 +4,14 @@
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="mb-1">Workspaces</h2>
+                <h2 class="lu-page-title mb-1">Workspaces</h2>
                 <p class="text-muted mb-0">
                     Select a workspace to access its projects and members.
                 </p>
             </div>
 
-            <a routerLink="/app/workspaces/create" class="btn btn-primary">
+            <a matButton="filled" routerLink="/app/workspaces/create">
+                <mat-icon>add</mat-icon>
                 New Workspace
             </a>
         </div>

@@ -1,152 +1,102 @@
-<button [cdkMenuTriggerFor]="menu" class="btn btn-sm">
-    <ng-icon name="reiconBell" />
+<button matIconButton
+        [matMenuTriggerFor]="menu"
+        matBadge="3"
+        matBadgeSize="small"
+        aria-label="Notifications">
+    <mat-icon>notifications</mat-icon>
 </button>
 
-<ng-template #menu>
-    <div class="card shadow-sm" cdkMenu style="width: 380px;">
-
-        <!-- Header -->
-        <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-            <div>
-                <h6 class="mb-0">Notifications</h6>
-                <small class="text-muted">3 unread</small>
-            </div>
-
-            <button
-                type="button"
-                class="btn btn-sm btn-link text-decoration-none"
-                cdkMenuItem>
-                Mark all as read
-            </button>
-        </div>
-        <!-- Notifications -->
-        <div class="list-group list-group-flush">
-            <!-- Unread -->
-            <a href="#" class="list-group-item list-group-item-action px-3 py-3 bg-body-tertiary">
-                <div class="d-flex gap-3">
-                    <div class="flex-shrink-0">
-                        <div class="rounded-circle bg-primary-subtle text-primary
-                                    d-flex align-items-center justify-content-center"
-                             style="width: 38px; height: 38px;">
-                            <ng-icon name="reiconAtFill" />
-                        </div>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between gap-2">
-                            <strong class="small">
-                                You were mentioned
-                            </strong>
-
-                            <small class="text-muted text-nowrap">
-                                5 min
-                            </small>
-                        </div>
-                        <div class="small text-muted mt-1">
-                            Kate mentioned you in
-                            <strong>Implement OAuth login</strong>.
-                        </div>
-                    </div>
-                    <span class="bg-primary rounded-circle flex-shrink-0"
-                          style="width: 7px; height: 7px; margin-top: 6px;">
-                    </span>
-                </div>
-            </a>
-            <!-- Unread -->
-            <a href="#" class="list-group-item list-group-item-action px-3 py-3 bg-body-tertiary">
-                <div class="d-flex gap-3">
-
-                    <div class="flex-shrink-0">
-                        <div class="rounded-circle bg-success-subtle text-success
-                                    d-flex align-items-center justify-content-center"
-                             style="width: 38px; height: 38px;">
-                            <ng-icon name="reiconPlus" />
-                        </div>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between gap-2">
-                            <strong class="small">
-                                Task assigned to you
-                            </strong>
-
-                            <small class="text-muted text-nowrap">
-                                1h
-                            </small>
-                        </div>
-                        <div class="small text-muted mt-1">
-                            You were assigned
-                            <strong>Refactor permissions service</strong>.
-                        </div>
-                    </div>
-                    <span class="bg-primary rounded-circle flex-shrink-0"
-                          style="width: 7px; height: 7px; margin-top: 6px;">
-                    </span>
-                </div>
-            </a>
-
-            <!-- Read -->
-            <a href="#" class="list-group-item list-group-item-action px-3 py-3">
-                <div class="d-flex gap-3">
-                    <div class="flex-shrink-0">
-                        <div class="rounded-circle bg-warning-subtle text-warning
-                                    d-flex align-items-center justify-content-center"
-                             style="width: 38px; height: 38px;">
-                            <ng-icon name="reiconCommentDots" />
-                        </div>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between gap-2">
-                            <strong class="small">
-                                New comment
-                            </strong>
-
-                            <small class="text-muted text-nowrap">
-                                3h
-                            </small>
-                        </div>
-                        <div class="small text-muted mt-1">
-                            Alex commented on
-                            <strong>Redesign login page</strong>.
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Read -->
-            <a href="#" class="list-group-item list-group-item-action px-3 py-3">
-                <div class="d-flex gap-3">
-                    <div class="flex-shrink-0">
-                        <div class="rounded-circle bg-info-subtle text-info
-                                    d-flex align-items-center justify-content-center"
-                             style="width: 38px; height: 38px;">
-                            <ng-icon name="reiconArrowToTopLeftFill" />
-                        </div>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between gap-2">
-                            <strong class="small">
-                                Task moved
-                            </strong>
-
-                            <small class="text-muted text-nowrap">
-                                Yesterday
-                            </small>
-                        </div>
-                        <div class="small text-muted mt-1">
-                            <strong>AUTH-42</strong> was moved from
-                            <strong>Todo</strong> to <strong>In Progress</strong>.
-                        </div>
-                    </div>
-                </div>
-            </a>
-
+<mat-menu #menu="matMenu" class="lu-notifications-menu" xPosition="before">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center px-3 py-2">
+        <div (click)="$event.stopPropagation()">
+            <h6 class="mb-0">Notifications</h6>
+            <small class="text-muted">3 unread</small>
         </div>
 
-        <!-- Footer -->
-        <div class="card-footer bg-transparent text-center">
-            <a routerLink="/app/notifications" class="small text-decoration-none">
-                View all notifications
-            </a>
-        </div>
-
+        <button type="button" matButton>Mark all as read</button>
     </div>
-</ng-template>
+    <mat-divider />
+
+    <!-- Notifications -->
+    <!-- Unread -->
+    <a href="#" mat-menu-item class="notification notification--unread">
+        <div class="d-flex gap-3 py-2">
+            <span class="lu-avatar lu-avatar--lg lu-avatar--primary">
+                <mat-icon>alternate_email</mat-icon>
+            </span>
+            <div class="flex-grow-1 min-w-0">
+                <div class="d-flex justify-content-between gap-2">
+                    <strong class="small">You were mentioned</strong>
+                    <small class="text-muted text-nowrap">5 min</small>
+                </div>
+                <div class="small text-muted mt-1 description">
+                    Kate mentioned you in
+                    <strong>Implement OAuth login</strong>.
+                </div>
+            </div>
+            <span class="unread-dot"></span>
+        </div>
+    </a>
+    <!-- Unread -->
+    <a href="#" mat-menu-item class="notification notification--unread">
+        <div class="d-flex gap-3 py-2">
+            <span class="lu-avatar lu-avatar--lg lu-avatar--success">
+                <mat-icon>add</mat-icon>
+            </span>
+            <div class="flex-grow-1 min-w-0">
+                <div class="d-flex justify-content-between gap-2">
+                    <strong class="small">Task assigned to you</strong>
+                    <small class="text-muted text-nowrap">1h</small>
+                </div>
+                <div class="small text-muted mt-1 description">
+                    You were assigned
+                    <strong>Refactor permissions service</strong>.
+                </div>
+            </div>
+            <span class="unread-dot"></span>
+        </div>
+    </a>
+    <!-- Read -->
+    <a href="#" mat-menu-item class="notification">
+        <div class="d-flex gap-3 py-2">
+            <span class="lu-avatar lu-avatar--lg lu-avatar--warning">
+                <mat-icon>chat_bubble</mat-icon>
+            </span>
+            <div class="flex-grow-1 min-w-0">
+                <div class="d-flex justify-content-between gap-2">
+                    <strong class="small">New comment</strong>
+                    <small class="text-muted text-nowrap">3h</small>
+                </div>
+                <div class="small text-muted mt-1 description">
+                    Alex commented on
+                    <strong>Redesign login page</strong>.
+                </div>
+            </div>
+        </div>
+    </a>
+    <!-- Read -->
+    <a href="#" mat-menu-item class="notification">
+        <div class="d-flex gap-3 py-2">
+            <span class="lu-avatar lu-avatar--lg lu-avatar--info">
+                <mat-icon>north_east</mat-icon>
+            </span>
+            <div class="flex-grow-1 min-w-0">
+                <div class="d-flex justify-content-between gap-2">
+                    <strong class="small">Task moved</strong>
+                    <small class="text-muted text-nowrap">Yesterday</small>
+                </div>
+                <div class="small text-muted mt-1 description">
+                    <strong>AUTH-42</strong> was moved from
+                    <strong>Todo</strong> to <strong>In Progress</strong>.
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <mat-divider />
+    <!-- Footer -->
+    <div class="text-center py-1">
+        <a matButton routerLink="/app/notifications">View all notifications</a>
+    </div>
+</mat-menu>

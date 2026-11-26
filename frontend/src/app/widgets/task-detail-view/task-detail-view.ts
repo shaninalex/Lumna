@@ -24,6 +24,11 @@ import {
     toHTML,
 } from 'ngx-editor';
 import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { defaultToolbar, SpinnerComponent } from '@shared/ui';
 import { Actions, ofType } from '@ngrx/effects';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -40,6 +45,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
         NgxEditorMenuComponent,
         FormsModule,
         SpinnerComponent,
+        MatButton,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInput,
+        MatListModule,
     ],
     templateUrl: './task-detail-view.html',
 })

@@ -1,18 +1,17 @@
 import { Component, inject } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 import { UiService } from '@shared/ui';
 
 @Component({
     selector: 'lu-auth-layout',
-
+    imports: [MatCardModule],
     template: `
         <div class="vh-100 vw-100 d-flex align-items-center justify-content-center">
-            <div style="width: 18rem">
-                <div class="card">
-                    <div class="card-body">
-                        <ng-content />
-                    </div>
-                </div>
-            </div>
+            <mat-card appearance="raised" style="width: 22rem">
+                <mat-card-content class="p-4">
+                    <ng-content />
+                </mat-card-content>
+            </mat-card>
         </div>
     `,
 })

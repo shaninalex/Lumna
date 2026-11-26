@@ -4,23 +4,43 @@
 }
 
 .sidebar {
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    position: relative;
+    padding: 0 0.75rem;
+
+    // M3 navigation-drawer look: pill-shaped, secondary-container when active.
+    --mat-list-active-indicator-shape: var(--mat-sys-corner-full);
+    --mat-list-active-indicator-color: var(--mat-sys-secondary-container);
+    --mat-list-list-item-container-shape: var(--mat-sys-corner-full);
 }
 
-.sidebar.sidebar-closed .sidebar-nav-link {
-    display: none;
+.mat-mdc-nav-list {
+    padding-top: 0;
 }
 
-.nav-link {
+.mat-mdc-subheader {
     display: flex;
-    gap: 0.5rem;
     align-items: center;
 }
 
-.dashboard-sidebar {
-    grid-area: sidebar;
-    overflow-y: auto;
+mat-divider {
+    margin: 0.5rem 0;
+}
+
+.lu-avatar {
+    font-size: 0.8rem;
+}
+
+.sidebar-sub-item .lu-avatar {
+    align-self: center;
+}
+
+.sidebar.sidebar-closed {
+    padding: 0 0.5rem;
+
+    .sidebar-nav-link {
+        display: none;
+    }
 }

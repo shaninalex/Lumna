@@ -4,14 +4,27 @@ import { AppRoutes } from '@core';
 import { Store } from '@ngrx/store';
 import { selectProjects } from '@entities/project';
 import { BoardCardComponent, selectBoard } from '@entities/board';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { reiconChevronRight } from '@ng-icons/reicon';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { selectWorkspaces } from '@entities/workspace';
 
 @Component({
-    imports: [RouterLink, BoardCardComponent, NgIcon, RouterLink],
+    imports: [
+        RouterLink,
+        BoardCardComponent,
+        MatButton,
+        MatIconButton,
+        MatCardModule,
+        MatIcon,
+        MatListModule,
+        MatProgressBar,
+        MatTabsModule,
+    ],
     selector: 'lu-project-overview-feature',
-    providers: [provideIcons({ reiconChevronRight })],
     templateUrl: './project-overview.feature.html',
 })
 export class ProjectOverviewFeature {

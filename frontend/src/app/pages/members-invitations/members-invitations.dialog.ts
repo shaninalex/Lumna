@@ -1,6 +1,10 @@
 import { FormsModule } from '@angular/forms';
 import { Component, inject } from '@angular/core';
-import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatButton } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 export interface InviteData {
     email: string;
@@ -10,11 +14,11 @@ export interface InviteData {
 @Component({
     selector: 'lu-members-invitations-dialog',
     templateUrl: 'members-invitations.dialog.html',
-    imports: [FormsModule],
+    imports: [FormsModule, MatDialogModule, MatButton, MatFormFieldModule, MatInputModule, MatSelectModule],
 })
 export class MembersInvitationsDialogComponent {
-    dialogRef = inject<DialogRef<InviteData>>(DialogRef<InviteData>);
-    data = inject(DIALOG_DATA);
+    dialogRef = inject<MatDialogRef<MembersInvitationsDialogComponent, InviteData>>(MatDialogRef);
+    data = inject<InviteData>(MAT_DIALOG_DATA);
 
     close(): void {
         this.dialogRef.close()

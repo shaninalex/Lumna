@@ -1,4 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
@@ -12,24 +15,20 @@ import { tap } from 'rxjs';
 
 @Component({
     selector: 'lu-board-create-feature',
-    imports: [FormField],
+    imports: [FormField, MatButton, MatFormFieldModule, MatInput],
     template: `
         <form (submit)="onSubmit($event)">
-            <div class="mb-4">
-                <label for="board_title" class="form-label">Board title</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="board_title"
-                    [formField]="pForm.title"
-                />
-            </div>
+            <mat-form-field class="w-100 mb-3">
+                <mat-label>Board title</mat-label>
+                <input matInput type="text" id="board_title" [formField]="pForm.title" />
+            </mat-form-field>
 
             <div>
-                <button class="btn btn-primary" type="submit">Create</button>
+                <button matButton="filled" type="submit">Create</button>
             </div>
         </form>
     `,
+
 })
 export class BoardCreateFeature {
     private store = inject(Store);

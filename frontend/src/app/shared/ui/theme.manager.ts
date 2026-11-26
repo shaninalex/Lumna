@@ -43,8 +43,10 @@ export class ThemeManager {
     }
 
     private updateDomTheme(theme: Theme) {
+        // Material 3 tokens are built on light-dark(), so the color-scheme
+        // property is all that is needed to switch themes.
         const resolvedTheme = theme === 'auto' ? this.getSystemTheme() : theme;
-        document.documentElement.setAttribute('data-bs-theme', resolvedTheme);
+        document.documentElement.style.colorScheme = resolvedTheme;
     }
 
     public applyTheme(theme: Theme) {

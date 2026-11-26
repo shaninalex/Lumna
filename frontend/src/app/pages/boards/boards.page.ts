@@ -4,39 +4,32 @@ import { RouterLink } from '@angular/router';
 import { AppRoutes } from '@core';
 import { BoardListFeature } from '@features';
 import { MainLayout } from '@core/layout';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { reiconPlus } from '@ng-icons/reicon';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'lu-boards-page',
-    imports: [MainLayout, RouterLink, BoardListFeature, NgIcon  ],
-    providers: [provideIcons({ reiconPlus })],
+    imports: [MainLayout, RouterLink, BoardListFeature, MatButton, MatIcon],
     template: `
         <lu-main-layout>
             <div class="container-fluid py-4">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <a [routerLink]=""
-                       class="text-muted text-decoration-none small">
-                        Workspace
-                    </a>
-                    <i class="text-muted small">></i>
-                    <a [routerLink]=""
-                       class="text-muted text-decoration-none small">
-                        Project
-                    </a>
-                </div>
+                <nav class="lu-breadcrumb mb-2" aria-label="Breadcrumb">
+                    <a [routerLink]="">Workspace</a>
+                    <mat-icon>chevron_right</mat-icon>
+                    <a [routerLink]="">Project</a>
+                </nav>
 
                 <!-- Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="mb-1">Boards</h2>
+                        <h2 class="lu-page-title mb-1">Boards</h2>
                         <p class="text-muted mb-0">
                             Organize your project's work into multiple boards.
                         </p>
                     </div>
 
-                    <a [routerLink]="appRoutes.boardsCreate()" class="btn btn-primary btn-sm">
-                        <ng-icon name="reiconPlus" />
+                    <a matButton="filled" [routerLink]="appRoutes.boardsCreate()">
+                        <mat-icon>add</mat-icon>
                         New Board
                     </a>
                 </div>

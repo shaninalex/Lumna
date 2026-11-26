@@ -12,25 +12,24 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { selectWorkspaces } from '@entities/workspace';
 import { selectProjects } from '@entities/project';
 import { AppRoutes } from '@core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'lu-board-detail-page',
-    imports: [MainLayout, AsyncPipe, KanbanBoardWidget, RouterOutlet, RouterLink],
+    imports: [MainLayout, AsyncPipe, KanbanBoardWidget, RouterOutlet, RouterLink, MatIcon],
     template: `
         <lu-main-layout>
             @if (boardId$ | async; as boardId) {
                 <div class="container-fluid pt-0 h-100 d-flex flex-column">
-                    <div class="d-flex align-items-center gap-2">
-                        <a [routerLink]="appRoutes.workspaceDetail(workspace()?.id)"
-                           class="text-muted text-decoration-none small">
+                    <nav class="lu-breadcrumb" aria-label="Breadcrumb">
+                        <a [routerLink]="appRoutes.workspaceDetail(workspace()?.id)">
                             {{ workspace()?.title }}
                         </a>
-                        <i class="text-muted small">></i>
-                        <a [routerLink]="appRoutes.projectDetail(project()?.id)"
-                           class="text-muted text-decoration-none small">
+                        <mat-icon>chevron_right</mat-icon>
+                        <a [routerLink]="appRoutes.projectDetail(project()?.id)">
                             {{ project()?.title }}
                         </a>
-                    </div>
+                    </nav>
                     <lu-kanban-board-feature [boardId]="boardId" />
                 </div>
             }

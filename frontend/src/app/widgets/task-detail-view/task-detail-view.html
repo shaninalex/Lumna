@@ -2,15 +2,13 @@
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="mb-3 d-flex gap-2 justify-content-between">
-                <nav class="">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a [routerLink]="appRoutes.board(t.boardId)">Development</a></li>
-                    </ol>
+            <div class="mb-3 d-flex gap-2 align-items-center justify-content-between">
+                <nav class="lu-breadcrumb">
+                    <a [routerLink]="appRoutes.board(t.boardId)">Development</a>
                 </nav>
 
                 <button
-                    class="btn btn-sm btn-primary d-inline-flex align-items-center"
+                    matButton="filled"
                     type="submit"
                     (click)="submit($event)"
                     [disabled]="taskEditForm().invalid()">
@@ -20,13 +18,13 @@
             </div>
 
             <div class="w-100">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input id="title" class="form-control" type="text" placeholder="Task title"
+                <mat-form-field class="w-100 mb-3">
+                    <mat-label>Title</mat-label>
+                    <input matInput id="title" type="text" placeholder="Task title"
                            [formField]="taskEditForm.title"/>
-                </div>
+                </mat-form-field>
                 <div class="mb-3">
-                    <label class="form-label">Description</label>
+                    <div class="text-muted small mb-2">Description</div>
                     <div class="NgxEditor__Wrapper">
                         <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
                         <ngx-editor
@@ -43,29 +41,29 @@
 
         <!-- Sidebar -->
         <div class="col-lg-4">
-            <div class="card mb-3">
-                <div class="card-header">
-                    Details
-                </div>
-                <div class="list-group list-group-flush">
+            <mat-card class="mb-3 mt-5">
+                <mat-card-header>
+                    <mat-card-title>Details</mat-card-title>
+                </mat-card-header>
+                <mat-list>
                     @if (t.dueTo) {
-                        <div class="list-group-item d-flex justify-content-between">
-                            <span class="text-muted">Due to</span>
-                            <span>{{ t.dueTo | date }}</span>
-                        </div>
+                        <mat-list-item>
+                            <span matListItemTitle class="text-muted">Due to</span>
+                            <span matListItemMeta>{{ t.dueTo | date }}</span>
+                        </mat-list-item>
                     }
-                    <div class="list-group-item d-flex justify-content-between">
-                        <span class="text-muted">Created</span>
-                        <span>{{ t.createdAt | date }}</span>
-                    </div>
+                    <mat-list-item>
+                        <span matListItemTitle class="text-muted">Created</span>
+                        <span matListItemMeta>{{ t.createdAt | date }}</span>
+                    </mat-list-item>
                     @if (t.updatedAt) {
-                        <div class="list-group-item d-flex justify-content-between">
-                            <span class="text-muted">Updated</span>
-                            <span>{{ t.updatedAt | timeAgo }}</span>
-                        </div>
+                        <mat-list-item>
+                            <span matListItemTitle class="text-muted">Updated</span>
+                            <span matListItemMeta>{{ t.updatedAt | timeAgo }}</span>
+                        </mat-list-item>
                     }
-                </div>
-            </div>
+                </mat-list>
+            </mat-card>
         </div>
     </div>
 }

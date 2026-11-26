@@ -1,0 +1,67 @@
+// Minimal document reset (replaces Bootstrap's reboot).
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: var(--mat-sys-surface-container-low);
+    color: var(--mat-sys-on-surface);
+    font: var(--mat-sys-body-medium);
+    letter-spacing: var(--mat-sys-body-medium-tracking);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin-top: 0;
+}
+
+h1 { font: var(--mat-sys-headline-large); margin-bottom: 0.5rem; }
+h2 { font: var(--mat-sys-headline-medium); margin-bottom: 0.5rem; }
+h3 { font: var(--mat-sys-headline-small); margin-bottom: 0.5rem; }
+h4 { font: var(--mat-sys-title-large); margin-bottom: 0.5rem; }
+h5 { font: var(--mat-sys-title-medium); margin-bottom: 0.5rem; }
+h6 { font: var(--mat-sys-title-small); margin-bottom: 0.5rem; }
+p { margin-bottom: 1rem; }
+
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--mat-sys-primary);
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    margin: 1rem 0;
+}
+
+img, svg {
+    vertical-align: middle;
+}
+
+// Material Symbols are used through <mat-icon>; keep them aligned with text.
+.mat-icon {
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.app-version {
+    position: fixed;
+    z-index: 10;
+    bottom: 0;
+    right: 15px;
+    font-size: 10px;
+    opacity: 0.5;
+}

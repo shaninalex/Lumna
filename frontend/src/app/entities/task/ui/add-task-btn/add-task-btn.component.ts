@@ -1,18 +1,22 @@
 import { Component, inject, input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { actionUI } from '@core/store/ui';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { reiconPlus } from '@ng-icons/reicon';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'lu-add-task-btn',
-    imports: [NgIcon],
-    providers: [provideIcons({ reiconPlus })],
+    imports: [MatButton, MatIcon],
     template: `
-        <button class="button button-pill w-100 text-start" (click)="openForm($event)">
-            <ng-icon name="reiconPlus" /> Add Task
+        <button matButton type="button" class="w-100 add-task" (click)="openForm($event)">
+            <mat-icon>add</mat-icon> Add Task
         </button>
-    `
+    `,
+    styles: `
+        .add-task {
+            justify-content: flex-start;
+        }
+    `,
 })
 export class AddTaskBtnComponent {
     columnId = input.required<number>();

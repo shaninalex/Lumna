@@ -1,25 +1,25 @@
 <form (submit)="onSubmit()">
-    <div class="mb-3">
-        <label for="email" class="form-label">Email address</label>
-        <input id="email" class="form-control" type="email" placeholder="your@mail.org" [formField]="loginForm.email" />
+    <mat-form-field class="w-100 mb-3">
+        <mat-label>Email address</mat-label>
+        <input matInput id="email" type="email" placeholder="your@mail.org" [formField]="loginForm.email" />
         @if (loginForm.email().dirty() && loginForm.email().errors()) {
             @for (error of loginForm.email().errors(); track error) {
-                <div class="text-danger small">{{ error.message }}</div>
+                <mat-error>{{ error.message }}</mat-error>
             }
         }
-    </div>
+    </mat-form-field>
 
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input class="form-control" id="password" type="password" placeholder="***" [formField]="loginForm.password" />
+    <mat-form-field class="w-100 mb-3">
+        <mat-label>Password</mat-label>
+        <input matInput id="password" type="password" placeholder="***" [formField]="loginForm.password" />
         @if (loginForm.password().dirty() && loginForm.password().errors()) {
             @for (error of loginForm.password().errors(); track error) {
-                <div class="text-danger small">{{ error.message }}</div>
+                <mat-error>{{ error.message }}</mat-error>
             }
         }
-    </div>
-    <hr>
+    </mat-form-field>
+
     <div class="control">
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" matButton="filled" class="w-100">Login</button>
     </div>
 </form>

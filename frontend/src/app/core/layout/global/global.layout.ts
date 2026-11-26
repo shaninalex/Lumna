@@ -4,28 +4,25 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectWorkspaces } from '@entities/workspace';
 import { ThemeSwitcherComponent } from '@shared/ui';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { reiconBell } from '@ng-icons/reicon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'lu-global-layout',
-    imports: [ThemeSwitcherComponent, UserMenuComponent, RouterLink, NgIcon],
-    providers: [provideIcons({ reiconBell })],
+    imports: [ThemeSwitcherComponent, UserMenuComponent, RouterLink, MatToolbarModule, MatIconButton, MatIcon],
     template: `
-        <nav class="navbar navbar-expand-lg border-bottom bg-body">
-            <div class="container-fluid">
-                <a [routerLink]="['/app/w', currentWorkspaceId() || '']">
-                    <img src="images/logo-h.svg" alt="" style="width: 160px" />
-                </a>
-                <div class="flex align-items-center">
-                    <lu-theme-switcher />
-                    <button class="btn btn-sm">
-                        <ng-icon name="reiconBell" />
-                    </button>
-                    <lu-user-menu />
-                </div>
-            </div>
-        </nav>
+        <mat-toolbar class="border-bottom">
+            <a [routerLink]="['/app/w', currentWorkspaceId() || '']" class="d-flex">
+                <img src="images/logo-h.svg" alt="Lumna" style="width: 160px" />
+            </a>
+            <span class="flex-grow-1"></span>
+            <lu-theme-switcher />
+            <button matIconButton aria-label="Notifications">
+                <mat-icon>notifications</mat-icon>
+            </button>
+            <lu-user-menu />
+        </mat-toolbar>
 
         <ng-content />
     `,
