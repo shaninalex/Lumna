@@ -9,8 +9,6 @@ import (
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 )
 
-// TB is the part of testing.TB that NewInstance needs. Both *testing.T and
-// ginkgo's GinkgoT() satisfy it.
 type TB interface {
 	Helper()
 	TempDir() string
@@ -38,7 +36,7 @@ func NewInstance(t TB, cfg ...MockConfig) *bootstrap.Instance {
 	if err != nil {
 		t.Fatalf("migrator: %v", err)
 	}
-	if err := m.Up(); err != nil {
+	if err = m.Up(); err != nil {
 		t.Fatalf("migrate up: %v", err)
 	}
 	return app

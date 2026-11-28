@@ -12,8 +12,6 @@ type Validatable interface {
 	Verify() error
 }
 
-const ()
-
 var (
 	errUnsupportedMediaType = errs.Conflict("VLD000", "Content-Type must be application/json")
 )
@@ -25,7 +23,7 @@ func BindPayload[T Validatable](c *gin.Context, payload T) (T, error) {
 		return zero, errUnsupportedMediaType
 	}
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		return zero, err
+		return zero, errs.Validation("VLD002", "invalid payload", err.Error())
 	}
 	if err := payload.Verify(); err != nil {
 		return zero, err
