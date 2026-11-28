@@ -54,7 +54,7 @@ type modulesDeps struct {
 }
 
 func buildModules(
-	cfg *config.Config,
+	cfg config.Interface,
 	db *database.DB,
 	log *slog.Logger,
 	clk clock.Clock,

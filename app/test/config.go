@@ -48,3 +48,11 @@ func (m MockConfig) EmailConfig() config.EmailerConfig {
 		ServerUrl: m.String("smtp.server_url"),
 	}
 }
+
+func (m MockConfig) SetKey(key string, value any) { m.data[key] = value }
+
+func DefaultConfig() MockConfig {
+	return NewMockConfig(map[string]any{
+		"secret_key": "a-string-secret-at-least-256-bits-long",
+	})
+}

@@ -12,7 +12,7 @@ import (
 )
 
 func RegisterWebRoutes(
-	cfg *config.Config,
+	cfg config.Interface,
 	resolve core.Resolve,
 	invitationVerifier authc.Verifier[authc.InvitationClaims],
 	passwordVerifier authc.PasswordVerifier,

@@ -46,7 +46,7 @@ func NewCLI(assets Assets) (*cobra.Command, func()) {
 			path, _ := cmd.Flags().GetString("config")
 			cfg := config.ReadConfig(path)
 			var err error
-			app, err = New(cmd.Context(), cfg, assets)
+			app, err = New(cfg, assets)
 
 			return err
 		},

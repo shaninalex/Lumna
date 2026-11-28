@@ -20,7 +20,7 @@ import (
 
 type Instance struct {
 	Core     *core.App
-	Config   *config.Config
+	Config   config.Interface
 	Log      *slog.Logger
 	Clock    clock.Clock
 	Bridges  Bridges
@@ -50,7 +50,7 @@ type Assets struct {
 	Version    string
 }
 
-func New(ctx context.Context, cfg *config.Config, assets Assets) (*Instance, error) {
+func New(cfg config.Interface, assets Assets) (*Instance, error) {
 	// ======= Platform (logger, db, clock...) =======
 	log := slog.New(slog.NewTextHandler(os.Stderr, nil))
 	db := database.New(cfg)

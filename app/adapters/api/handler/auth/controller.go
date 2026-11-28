@@ -9,12 +9,12 @@ import (
 )
 
 func Register(resolve core.Resolve, cookies httpx.CookieConfig, router *gin.RouterGroup) {
-	router.POST("/login", handleLogin(resolve, cookies))
+	router.POST("/login", HandleLogin(resolve, cookies))
 	router.POST("/logout", handleLogout(resolve, cookies))
 	router.POST("/refresh", handleRefresh(resolve, cookies))
 }
 
-func handleLogin(resolve core.Resolve, cookies httpx.CookieConfig) gin.HandlerFunc {
+func HandleLogin(resolve core.Resolve, cookies httpx.CookieConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		data, err := httpx.BindPayload(c, passwordLoginDTO{})
 		if err != nil {
