@@ -96,12 +96,12 @@ func Forbidden(code, msg string) *Error {
 	}
 }
 
-func Unauthenticated(code, msg string) *Error {
+func Unauthenticated(code, msg string, data ...any) *Error {
 	return &Error{
 		Kind:    KindUnauthenticated,
 		Code:    code,
 		Message: msg,
-		Data:    nil,
+		Data:    data,
 		cause:   errors.New(msg),
 	}
 }

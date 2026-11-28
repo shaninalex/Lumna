@@ -27,8 +27,6 @@ func HandleLogin(resolve core.Resolve, cookies httpx.CookieConfig) gin.HandlerFu
 			Password: secure.Secret(data.Password),
 		})
 		if err != nil {
-			// Status comes from the error's class: wrong credentials are 401,
-			// not 400.
 			httpx.Fail(c, err)
 			return
 		}

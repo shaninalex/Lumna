@@ -12,8 +12,6 @@ import (
 	. "github.com/onsi/gomega"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/auth"
 	"gitlab.com/shaninalex/lumna/app/adapters/httpx"
-	"gitlab.com/shaninalex/lumna/app/bootstrap"
-	"gitlab.com/shaninalex/lumna/app/core"
 	"gitlab.com/shaninalex/lumna/app/test"
 )
 
@@ -23,36 +21,30 @@ func TestControllers(t *testing.T) {
 }
 
 var _ = Describe("Login endpoint", func() {
-	var resolve core.Resolve
-	config := test.DefaultConfig()
+	var url string
 
 	BeforeEach(func() {
-		app, err := bootstrap.New(&config, bootstrap.Assets{})
-		if err != nil {
-			panic(err)
-		}
-		resolve = func() *core.App { return app.Core }
+		app := test.NewInstance(GinkgoT())
+
+		router := gin.Default()
+		router.POST("/", auth.HandleLogin(test.Resolve(app.Core), httpx.CookieConfig{}))
+
+		ts := httptest.NewServer(router)
+		DeferCleanup(ts.Close)
+		url = ts.URL
 	})
 
-	Describe("payload invalid", func() {
-		It("returns 400", func() {
-			// move to golang http router or chi router
-			router := gin.Default()
-			router.POST("/", auth.HandleLogin(resolve, httpx.CookieConfig{}))
-
-			ts := httptest.NewServer(router)
-			DeferCleanup(ts.Close)
-
-			data := map[string]string{
-				"email":    "",
-				"password": "",
-			}
-
+	DescribeTable("rejects invalid credentials",
+		func(data map[string]string, status int) {
 			b, _ := json.Marshal(data)
-			res, err := http.Post(ts.URL, "application/json", bytes.NewReader(b))
+			res, err := http.Post(url, "application/json", bytes.NewReader(b))
 			Expect(err).NotTo(HaveOccurred())
-			Expect(res).To(HaveHTTPStatus(http.StatusBadRequest))
-		})
-	})
-
+			DeferCleanup(res.Body.Close)
+			Expect(res).To(HaveHTTPStatus(status))
+		},
+		Entry("empty credentials", map[string]string{"email": "", "password": ""}, http.StatusUnauthorized),
+		Entry("invalid email", map[string]string{"email": "invalid email", "password": ""}, http.StatusUnauthorized),
+		Entry("empty pwd", map[string]string{"email": "valid@email.com", "password": ""}, http.StatusUnauthorized),
+		Entry("unknown user", map[string]string{"email": "valid@email.com", "password": "123"}, http.StatusUnauthorized),
+	)
 })
