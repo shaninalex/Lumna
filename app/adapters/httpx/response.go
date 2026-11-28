@@ -47,10 +47,9 @@ func ReturnJSON(c *gin.Context, status int, data any, params ...any) {
 	c.JSON(status, resp)
 }
 
-func NewApiError(message, code string, meta any) ApiError {
+func NewApiError(message string, meta any) ApiError {
 	s := ApiError{
 		Message: message,
-		Code:    code,
 	}
 
 	if meta != nil {
@@ -63,7 +62,6 @@ func NewApiError(message, code string, meta any) ApiError {
 type ApiError struct {
 	Message string `json:"message"`
 	Meta    any    `json:"meta,omitempty"`
-	Code    string `json:"code"`
 }
 
 func (s ApiError) Error() string {

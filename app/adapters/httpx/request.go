@@ -1,30 +1,28 @@
 package httpx
 
 import (
-	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"gitlab.com/shaninalex/lumna/app/core/errs"
 )
 
 type Validatable interface {
 	Verify() error
 }
 
-// ErrUnsupportedMediaType is returned by BindPayload for a body that is not
-// declared as JSON; Invalid turns it into 415.
-var ErrUnsupportedMediaType = errors.New("Content-Type must be application/json")
+const ()
+
+var (
+	errUnsupportedMediaType = errs.Conflict("VLD000", "Content-Type must be application/json")
+)
 
 // BindPayload decodes a JSON body into payload and verifies it.
-//
-// The body must be declared as application/json: gin would otherwise decode
-// a text/plain body as JSON, and text/plain is what a cross-site HTML form
-// can send (CSRF, issue #16). Endpoints taking other formats, such as file
-// uploads, read the body themselves and never call this.
 func BindPayload[T Validatable](c *gin.Context, payload T) (T, error) {
 	var zero T
 	if c.ContentType() != "application/json" {
-		return zero, ErrUnsupportedMediaType
+		return zero, errUnsupportedMediaType
 	}
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		return zero, err
@@ -37,5 +35,11 @@ func BindPayload[T Validatable](c *gin.Context, payload T) (T, error) {
 }
 
 func GetParamInt(c *gin.Context, name string) (int, error) {
-	return strconv.Atoi(c.Param(name))
+	v, err := strconv.Atoi(c.Param(name))
+	if err != nil {
+		return 0, errs.Validation("VLD001", "Validation error", map[string]any{
+			name: fmt.Sprintf("%s is in wrong type", name),
+		})
+	}
+	return v, nil
 }

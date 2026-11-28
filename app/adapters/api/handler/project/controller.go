@@ -54,7 +54,7 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		data, err := httpx.BindPayload(c, projectCreateDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
@@ -91,7 +91,7 @@ func handleUpdate(resolve core.Resolve) gin.HandlerFunc {
 
 		data, err := httpx.BindPayload(c, projectCreateDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 

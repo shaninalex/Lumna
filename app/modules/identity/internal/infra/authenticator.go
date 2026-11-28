@@ -28,7 +28,7 @@ func (a *Authenticator) VerifyPassword(ctx context.Context, email string, passwo
 	ident, err := a.identities.ByEmail(ctx, email)
 	if err != nil {
 		if errors.Is(err, domain.ErrNotFound) {
-			return 0, domain.ErrBadCredentials
+			return 0, domain.ErrBadCredentials // Do not expose user existence!
 		}
 		return 0, err
 	}

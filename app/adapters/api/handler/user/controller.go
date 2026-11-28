@@ -59,7 +59,7 @@ func handleChangePassword(resolve core.Resolve, verifier authContract.PasswordVe
 
 		data, err := httpx.BindPayload(c, changePasswordDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
@@ -96,14 +96,14 @@ func handleUpdateMe(resolve core.Resolve) gin.HandlerFunc {
 
 		data, err := httpx.BindPayload(c, accountChangeDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
 		address, err := mail.ParseAddress(data.Email)
 		// already verified but still we should always check errors
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 		identity, err := contract.ExecAccountChange(c.Request.Context(), resolve(), contract.AccountChange{

@@ -50,7 +50,7 @@ func handleCreateWorkspace(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		data, err := httpx.BindPayload(c, workspaceCreateDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
@@ -78,7 +78,7 @@ func handleCreateInvitation(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		data, err := httpx.BindPayload(c, invitationDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
@@ -209,7 +209,7 @@ func handleWorkspaceMembersRemove(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		data, err := httpx.BindPayload(c, removeMemberDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 		_, err = contract.ExecRemoveMember(c.Request.Context(), resolve(), contract.RemoveMember{

@@ -49,7 +49,7 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		data, err := httpx.BindPayload(c, taskCreateDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
@@ -74,7 +74,7 @@ func handleBoardAction(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		data, err := httpx.BindPayload(c, boardActionPayload{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
@@ -82,7 +82,7 @@ func handleBoardAction(resolve core.Resolve) gin.HandlerFunc {
 		case boardActionMoveTask:
 			var action boardActionMoveTaskDTO
 			if err := json.Unmarshal(data.Data, &action); err != nil {
-				httpx.Invalid(c, err)
+				httpx.Fail(c, err)
 				return
 			}
 			actionMoveWorkItem(c, resolve, action)
@@ -91,7 +91,7 @@ func handleBoardAction(resolve core.Resolve) gin.HandlerFunc {
 		case boardActionMoveColumn:
 			var action boardActionMoveColumnDTO
 			if err := json.Unmarshal(data.Data, &action); err != nil {
-				httpx.Invalid(c, err)
+				httpx.Fail(c, err)
 				return
 			}
 			actionMoveColumn(c, resolve, action)
@@ -100,14 +100,14 @@ func handleBoardAction(resolve core.Resolve) gin.HandlerFunc {
 		case boardActionChangeStage:
 			var action boardActionTransferTaskDTO
 			if err := json.Unmarshal(data.Data, &action); err != nil {
-				httpx.Invalid(c, err)
+				httpx.Fail(c, err)
 				return
 			}
 			actionTransferWorkItem(c, resolve, action)
 			return
 
 		default:
-			httpx.Invalid(c, errs.Validation("unknown_board_action", "unknown board action"))
+			httpx.Fail(c, errs.Validation("unknown_board_action", "unknown board action"))
 			return
 		}
 	}
@@ -157,13 +157,13 @@ func handleTaskUpdate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		taskId, err := httpx.GetParamInt(c, "task_id")
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
 		data, err := httpx.BindPayload(c, taskUpdateDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
@@ -184,13 +184,13 @@ func handleTaskAssignment(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		taskId, err := httpx.GetParamInt(c, "task_id")
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
 		data, err := httpx.BindPayload(c, taskAssignmentDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 		_, err = contract.ExecWorkItemAssign(c.Request.Context(), resolve(), contract.WorkItemAssign{
@@ -209,7 +209,7 @@ func handleTaskDelete(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		taskId, err := httpx.GetParamInt(c, "task_id")
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 		_, err = contract.ExecWorkItemDelete(c.Request.Context(), resolve(), contract.WorkItemDelete{

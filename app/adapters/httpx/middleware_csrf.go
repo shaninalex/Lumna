@@ -6,7 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const codeCrossOrigin = "CROSS_ORIGIN_REQUEST"
+var (
+	errCrossOriginError = NewApiError("cross-origin request rejected", nil)
+)
 
 // CrossOriginMiddleware rejects unsafe requests (POST, PUT, PATCH, DELETE)
 // that a browser sent on behalf of another site. It is the token-less CSRF
@@ -23,7 +25,7 @@ func CrossOriginMiddleware() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		if err := protection.Check(c.Request); err != nil {
-			ReturnJSON(c, http.StatusForbidden, nil, NewApiError("cross-origin request rejected", codeCrossOrigin, nil))
+			ReturnJSON(c, http.StatusForbidden, nil, errCrossOriginError)
 			c.Abort()
 			return
 		}

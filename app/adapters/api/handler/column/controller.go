@@ -50,7 +50,7 @@ func handleCreate(resolve core.Resolve) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		data, err := httpx.BindPayload(c, columnCreateDto{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 

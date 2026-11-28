@@ -18,7 +18,7 @@ func handleLogin(resolve core.Resolve, cookies httpx.CookieConfig) gin.HandlerFu
 	return func(c *gin.Context) {
 		data, err := httpx.BindPayload(c, passwordLoginDTO{})
 		if err != nil {
-			httpx.Invalid(c, err)
+			httpx.Fail(c, err)
 			return
 		}
 
