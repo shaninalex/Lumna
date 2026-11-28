@@ -2,10 +2,13 @@ package test
 
 import (
 	"context"
+	"fmt"
 	"path/filepath"
 
 	"gitlab.com/shaninalex/lumna"
 	"gitlab.com/shaninalex/lumna/app/bootstrap"
+	"gitlab.com/shaninalex/lumna/app/core/secure"
+	"gitlab.com/shaninalex/lumna/app/modules/identity/contract"
 	"gitlab.com/shaninalex/lumna/app/platform/database"
 )
 
@@ -39,5 +42,16 @@ func NewInstance(t TB, cfg ...MockConfig) *bootstrap.Instance {
 	if err = m.Up(); err != nil {
 		t.Fatalf("migrate up: %v", err)
 	}
+
+	profile, err := contract.ExecRegister(context.Background(), app.Core, contract.Register{
+		Email:    "test@test.com",
+		FullName: "Tester Tester",
+		Password: secure.Secret("password"),
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Test profile created", profile.Email)
+
 	return app
 }

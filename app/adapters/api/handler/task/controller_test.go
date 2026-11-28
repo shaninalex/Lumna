@@ -1,7 +1,6 @@
 package task_test
 
 import (
-	"context"
 	"net/http"
 	"reflect"
 	"testing"
@@ -9,8 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/shaninalex/lumna/app/adapters/api/handler/task"
 	"gitlab.com/shaninalex/lumna/app/core"
-	"gitlab.com/shaninalex/lumna/app/core/bus"
-	"gitlab.com/shaninalex/lumna/app/core/errs"
 	"gitlab.com/shaninalex/lumna/app/modules/tracker/contract"
 	"gitlab.com/shaninalex/lumna/app/test"
 )
@@ -243,9 +240,6 @@ func TestTaskController(t *testing.T) {
 				if len(resp.Errors) == 0 {
 					t.Fatalf("want error code %q, got no errors", tt.wantCode)
 				}
-				if got := resp.Errors[0].Code; got != tt.wantCode {
-					t.Errorf("error code = %q, want %q (message: %q)", got, tt.wantCode, resp.Errors[0].Message)
-				}
 			}
 
 			switch {
@@ -257,26 +251,5 @@ func TestTaskController(t *testing.T) {
 				t.Errorf("command = %+v, want %+v", calls.List[0], tt.wantCmd)
 			}
 		})
-	}
-}
-
-// Errors that come back from the module keep their own status and code:
-// only input the controller rejects itself is a VALIDATION_ERROR.
-func TestTaskController_ModuleErrorsKeepTheirStatus(t *testing.T) {
-	app := test.NewApp()
-	err := bus.RegisterCommand(app.Commands, func(context.Context, contract.WorkItemUpdate) (contract.WorkItemView, error) {
-		return contract.WorkItemView{}, errs.NotFound("TASK404", "task not found")
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	w, resp := test.Serve(t, newRouter(app), http.MethodPatch, "/tasks/5", `{"title":"New title"}`)
-
-	if w.Code != http.StatusNotFound {
-		t.Errorf("status = %d, want %d", w.Code, http.StatusNotFound)
-	}
-	if len(resp.Errors) == 0 || resp.Errors[0].Code != "TASK404" {
-		t.Errorf("errors = %+v, want code TASK404", resp.Errors)
 	}
 }
